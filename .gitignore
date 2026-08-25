@@ -1,0 +1,14 @@
+/sbt
+**/target/
+/.bsp/
+/.idea/
+**/.bloop/
+/.metals/
+**/metals.sbt
+/.vscode/
+/sbt.bat
+/sbtw.bat
+/sbt.ps1
+/sbtw-sbt-launch-bundle/
+/java_with_opts.bat
+/sbt-launch-2.0.5.jar

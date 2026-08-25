@@ -1,0 +1,31 @@
+@(TupleSize: Int)
+
+package net.scalax.simple.adt
+package typedadt
+
+import instance._
+
+@AppendFunc2(i2: Int, sum: Int) = {
+    @if(i2 < sum) {
+        Successor[AdtFunction[Target, T@i2], @AppendFunc2(i2+1, sum)]
+    } else {
+        One[AdtFunction[Target, T@i2]]
+    }
+}
+
+@for(i1 <- 1 to TupleSize) {
+
+    object IndexOf@{i1} {
+        @for(i2 <- i1 to TupleSize) {
+
+            @if(i1 == 1 && i2 == 1) {
+                def unapply[T1](p: CoProduct1[T1]): Some[T1] = Some(p.value)
+            } else {
+                def unapply[@for(i3 <- 1 to i2) { T@i3, }](p: CoProduct@{i2}[@for(i3 <- 1 to i2) { T@i3, }]): Option[T@{i1}] =
+                    p.fold(@for(i3 <- 1 to i2) { @if(i3 == i1) { (t => Some(t)), } else { (_ => Option.empty), } })
+            }
+
+        }
+    }
+
+}

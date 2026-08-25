@@ -1,0 +1,23 @@
+@(TupleSize: Int)
+
+package net.scalax.simple.adt
+
+import instance._
+
+@TypeName1(i2: Int, sum: Int) = {
+    @if(i2 < sum) {
+        Successor[AdtFunction[Target, T@i2], @{TypeName1(i2 + 1, sum)}]
+    } else {
+        One[AdtFunction[Target, T@i2]]
+    }
+}
+
+package object typedadt {
+
+    @for(i1 <- 2 to TupleSize) {
+
+        type CoProducts@{i1}[Target, @for(i2 <- 1 to i1) { T@i2, }] = ADTValue[@TypeName1(1, i1)]
+
+    }
+
+}

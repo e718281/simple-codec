@@ -1,0 +1,16 @@
+@(TupleSize: Int)
+
+package net.scalax.simple.adt
+package instance
+
+trait ADTFoldApplyImpl1[Target0, T1] {
+  def fold1[TargetOther0 >: Target0](param1: T1 => TargetOther0): TargetOther0
+}
+
+@for(i1 <- 2 to TupleSize) {
+
+    trait ADTFoldApplyImpl@{i1}[Target @for(i2 <- 1 to i1) { ,T@i2 }] {
+        def fold@{i1}[TargetOther >: Target](param1: T1 => TargetOther): ADTFoldApplyImpl@{i1-1}[TargetOther @for(i2 <- 2 to i1) { ,T@i2 }]
+    }
+
+}

@@ -1,0 +1,36 @@
+@(TupleSize: Int)
+
+package net.scalax.simple.adt
+package instance
+
+import typedadt._
+
+@AppendFunc1(i2: Int) = {
+    @if(i2 > 1) {
+        Successor.Right(@AppendFunc1(i2-1))
+    } else {
+        Successor.Left(t)
+    }
+}
+
+@AppendFunc2(i2: Int) = {
+    @if(i2 > 1) {
+        Successor.Right(@AppendFunc2(i2-1))
+    } else {
+        One.value(t)
+    }
+}
+
+@for(i1 <- 1 to TupleSize) {
+
+    trait CoProduct@{i1}ApplyHelper[T1 @for(i2 <- 2 to i1) { ,T@i2 }] {
+        @for(i2 <- 1 to i1 - 1) {
+            def instance@{i2}(t: T@{i2}): CoProduct@{i1}[T1 @for(i3 <- 2 to i1) { ,T@i3 }] =
+                new CoProduct@{i1}[T1 @for(i3 <- 2 to i1) { ,T@i3 }](@AppendFunc1(i2))
+        }
+
+        def instance@{i1}(t: T@{i1}): CoProduct@{i1}[T1 @for(i2 <- 2 to i1) { ,T@i2 }] =
+            new CoProduct@{i1}[T1 @for(i2 <- 2 to i1) { ,T@i2 }](@AppendFunc2(i1))
+    }
+
+}
