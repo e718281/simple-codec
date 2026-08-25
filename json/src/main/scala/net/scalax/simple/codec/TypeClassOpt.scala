@@ -2,7 +2,7 @@ package net.scalax.simple
 package codec
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
-import net.scalax.simple.adt.nat.support.ABCFunc
+import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance}
 import net.scalax.simple.codec.utils.ByNameImplicit
 
@@ -39,7 +39,7 @@ trait Builder[En[_]] { Builder1Self =>
       labelled: BasedInstalledLabelled[F],
       simpleProduct: BasedInstalledSimpleProduct[F]
     ): TypeClassContent[F, En] = {
-      val sp4 = simpleProduct.simpleRunner.simpleRunner4
+      val sp4 = simpleProduct.simpleRunner.simpleRelease4
 
       val appender: AppenderSupport1.Simple4.Appender[ToCol, TC1, EncoderGetter, TC2, TC3] =
         new AppenderSupport1.Simple4.Appender[ToCol, TC1, EncoderGetter, TC2, TC3] {
@@ -68,13 +68,31 @@ trait Builder[En[_]] { Builder1Self =>
           }
         }
 
-      val zero: AppenderSupport1.Simple4.Zero[ToCol] = new AppenderSupport1.Simple4.Zero[ToCol] {
-        override def zero[B1, B2, B3, B4](b1: B1, b2: B2, b3: B3, b4: B4): ToCol[B1, B2, B3, B4] = (b1: B1, b2: B2) =>
-          (b3, b4, List.empty[FieldsInfo])
-      }
+      val one: AppenderSupport1.Simple4.One[ToCol, TC1, EncoderGetter, TC2, TC3] =
+        new AppenderSupport1.Simple4.One[ToCol, TC1, EncoderGetter, TC2, TC3] {
+          override def one[T, B1, B2, B3, B4](
+            func1: FromToFunc[String, B1],
+            func2: FromToFunc[EncoderGetter[T], B2],
+            func3: FromToFunc[FieldsContent[En, T], B3],
+            func4: FromToFunc[FieldsInfo, B4]
+          ): (B1, B2) => (B3, B4, List[FieldsInfo]) = (b1: B1, b2: B2) => {
+            val nameStr: String         = func1.to(b1)
+            val enGet: EncoderGetter[T] = func2.to(b2)
+
+            val typeClassOpt: Option[() => En[T]] = enGet.value
+            val enValueOpt: FieldsContent[En, T]  = FieldsContent[En, T](nameStr, typeClassOpt)
+            val b3: B3                            = func3.from(enValueOpt)
+
+            val nameTuple2: FieldsInfo   = FieldsInfo(nameStr, typeClassOpt.isDefined)
+            val b4: B4                   = func4.from(nameTuple2)
+            val listEn: List[FieldsInfo] = List(nameTuple2)
+
+            (b3, b4, listEn)
+          }
+        }
 
       val func: (F[TC1], F[EncoderGetter]) => (F[TC2], F[TC3], List[FieldsInfo]) =
-        sp4.append[ToCol, TC1, EncoderGetter, TC2, TC3](appender = appender, zero = zero)
+        sp4.append[ToCol, TC1, EncoderGetter, TC2, TC3](appender = appender, zero = one)
 
       val result: (F[TC2], F[TC3], List[FieldsInfo]) = func(labelled.labelled.stringLabelled, ins)
 

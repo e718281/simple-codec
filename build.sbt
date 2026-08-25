@@ -16,7 +16,8 @@ lazy val nat = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= libScalax.`scalatest`.value.map(_ % Test),
     libraryDependencies ++= libScalax.`simple-induction`.value,
     libraryDependencies ++= libScalax.`shapeless`.value,
-    useKindProjector
+    useKindProjector,
+      scalafmtOnCompile:=true
   )
 
 lazy val codec = crossProject(JSPlatform, JVMPlatform)
@@ -33,7 +34,8 @@ lazy val codec = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= libScalax.`magnolia1.scala3`.value,
     libraryDependencies ++= libScalax.`scala-compiler`.value,
     libraryDependencies ++= libScalax.`scala-collection-compat`.value,
-    useKindProjector
+    useKindProjector,
+      scalafmtOnCompile:=true
   )
   .dependsOn(nat)
 
@@ -50,7 +52,8 @@ lazy val json = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= libScalax.`circe`.value,
     libraryDependencies ++= libScalax.`play-json`.value,
     libraryDependencies ++= libScalax.`circe-extras`.value,
-    useKindProjector
+    useKindProjector,
+      scalafmtOnCompile:=true
   )
   .dependsOn(codec)
 
@@ -58,13 +61,14 @@ lazy val config = project
   .in(file("") / "config")
   .settings(
     scalaVersion       := scalaV.v213,
-    crossScalaVersions := Seq( scalaV.v213, scalaV.v3),
+    crossScalaVersions := Seq(scalaV.v213, scalaV.v3),
     scalafmtOnCompile  := true,
     publishTo          := localStaging.value,
     name               := "simple-codec-config",
     libraryDependencies ++= libScalax.`scalatest`.value.map(_ % Test),
     libraryDependencies ++= libScalax.`pureconfig`.value,
-    useKindProjector
+    useKindProjector,
+      scalafmtOnCompile:=true
   )
   .dependsOn(codec.jvm)
 
@@ -79,6 +83,7 @@ val slick = project
     libraryDependencies ++= libScalax.`scalatest`.value.map(_ % Test),
     libraryDependencies ++= libScalax.`slick`.value,
     libraryDependencies ++= libScalax.`h2`.value,
-    useKindProjector
+    useKindProjector,
+      scalafmtOnCompile:=true
   )
   .dependsOn(codec.jvm)

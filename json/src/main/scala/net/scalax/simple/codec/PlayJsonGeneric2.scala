@@ -5,7 +5,7 @@ import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
-import net.scalax.simple.adt.nat.support.ABCFunc
+import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 
 object PlayJsonGeneric2 {
   type Named[_]  = String
@@ -13,7 +13,7 @@ object PlayJsonGeneric2 {
 
   type EncodeAction[Name, Enc, Model] = (Name, Enc, Model) => List[(String, JsValue)]
 
-  def encodeImpl[F[_[_]]](sp3: AppenderSupport1.Simple3.Runner[F], namedIns: F[Named], encIns: () => F[Writes]): F[IdType] => JsValue = {
+  def encodeImpl[F[_[_]]](sp3: AppenderSupport1.Simple3.Release[F], namedIns: F[Named], encIns: () => F[Writes]): F[IdType] => JsValue = {
     val appender: AppenderSupport1.Simple3.Appender[EncodeAction, Named, Writes, IdType] =
       new AppenderSupport1.Simple3.Appender[EncodeAction, Named, Writes, IdType] {
         override def append[T, B1, B2, B3, C1, C2, C3](
@@ -32,13 +32,22 @@ object PlayJsonGeneric2 {
         }
       }
 
-    val zero: AppenderSupport1.Simple3.Zero[EncodeAction] = new AppenderSupport1.Simple3.Zero[EncodeAction] {
-      override def zero[B1, B2, B3](b1: B1, b2: B2, b3: B3): (B1, B2, B3) => List[(String, JsValue)] = (b1: B1, b2: B2, b3: B3) =>
-        List.empty[(String, JsValue)]
-    }
+    val one: AppenderSupport1.Simple3.One[EncodeAction, Named, Writes, IdType] =
+      new AppenderSupport1.Simple3.One[EncodeAction, Named, Writes, IdType] {
+        override def one[T, B1, B2, B3](
+          func1: FromToFunc[String, B1],
+          func2: FromToFunc[Writes[T], B2],
+          func3: FromToFunc[T, B3]
+        ): (B1, B2, B3) => List[(String, JsValue)] = (b1: B1, b2: B2, b3: B3) => {
+          val key: String   = func1.to(b1)
+          val wt: Writes[T] = func2.to(b2)
+          val t: T          = func3.to(b3)
+          List(key -> wt.writes(t))
+        }
+      }
 
     val action: (F[Named], F[Writes], F[IdType]) => List[(String, JsValue)] =
-      sp3.append[EncodeAction, Named, Writes, IdType](appender = appender, zero = zero)
+      sp3.append[EncodeAction, Named, Writes, IdType](appender = appender, zero = one)
 
     (model: F[IdType]) => {
       val list: List[(String, JsValue)] = action(namedIns, encIns(), model)
@@ -50,7 +59,7 @@ object PlayJsonGeneric2 {
 
   def decodeImpl[F[_[_]]](
     sp2: AppenderSupport1.Simple2.Release[F],
-    sp4: AppenderSupport1.Simple4.Runner[F],
+    sp4: AppenderSupport1.Simple4.Release[F],
     named: F[Named],
     g: () => F[Reads],
     defaultValue: Option[F[({ type OptF[TU] = Option[() => TU] })#OptF]]
@@ -93,13 +102,33 @@ object PlayJsonGeneric2 {
         }
       }
 
-    val zero: AppenderSupport1.Simple4.Zero[DecodeJson] = new AppenderSupport1.Simple4.Zero[DecodeJson] {
-      override def zero[B1, B2, B3, B4](b1: B1, b2: B2, b3: B3, b4: B4): DecodeJson[B1, B2, B3, B4] = (b1: B1, b2: B2, b4: B4) =>
-        JsSuccess(b3)
-    }
+    val one: AppenderSupport1.Simple4.One[DecodeJson, Named, Reads, IdType, OptFGet] =
+      new AppenderSupport1.Simple4.One[DecodeJson, Named, Reads, IdType, OptFGet] {
+        override def one[T, B1, B2, B3, B4](
+          func1: FromToFunc[String, B1],
+          func2: FromToFunc[Reads[T], B2],
+          func3: FromToFunc[T, B3],
+          func4: FromToFunc[OptFGet[T], B4]
+        ): (B1, B2, B4) => JsResult[B3] = (b1: B1, b2: B2, b4: B4) => {
+          val nameStr: String                  = func1.to(b1)
+          val readT: Reads[T]                  = func2.to(b2)
+          val get1: F[OptF] => Option[() => T] = func4.to(b4)
+
+          val jsPath: JsPath      = JsPath() \ nameStr
+          val read1: Reads[T]     = Reads.at[T](jsPath)(readT)
+          val value2: JsResult[T] = read1.reads(hCursor)
+
+          val value3: JsResult[T] = value2.recoverWith[T] { error =>
+            val optIns = defaultValue.flatMap(get1)
+            optIns.fold[JsResult[T]](error)(dInstance => JsSuccess(dInstance()))
+          }
+
+          for (m2 <- value3) yield func3.from(m2)
+        }
+      }
 
     val decoderFunc: DecodeJson[F[Named], F[Reads], F[IdType], F[OptFGet]] =
-      sp4.append[DecodeJson, Named, Reads, IdType, OptFGet](appender = appender, zero = zero)
+      sp4.append[DecodeJson, Named, Reads, IdType, OptFGet](appender = appender, zero = one)
 
     decoderFunc(named, g(), getField.getFieldModel[OptF])
   }

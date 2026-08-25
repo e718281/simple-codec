@@ -1,6 +1,6 @@
 package net.scalax.simple.codec
 
-import net.scalax.simple.adt.nat.support.ABCFunc
+import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.codec.to_list_generic.{
   BasedInstalledLabelled,
@@ -98,12 +98,25 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
       }
     }
 
-    val zero = new AppenderSupport1.Simple4.Zero[TypeFunc4] {
-      override def zero[B1, B2, B3, B4](b1: B1, b2: B2, b3: B3, b4: B4): (B1, B2, B3) => B4 = (b1: B1, b2: B2, b3: B3) => b4
-    }
+    val one: AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] =
+      new AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] {
+        override def one[T, B1, B2, B3, B4](
+          func1: FromToFunc[String, B1],
+          func2: FromToFunc[ColumnOpt[T], B2],
+          func3: FromToFunc[TypedType[T], B3],
+          func4: FromToFunc[Rep[T], B4]
+        ): (B1, B2, B3) => B4 = (b1: B1, b2: B2, b3: B3) => {
+          val str1: String            = func1.to(b1)
+          val colOpt: ColumnOpt[T]    = func2.to(b2)
+          val typedType: TypedType[T] = func3.to(b3)
+          val repT: Rep[T]            = colN[T](str1, colOpt, typedType)
+
+          func4.from(repT)
+        }
+      }
 
     val func: (F[Type1], F[ColumnOpt], F[TypedType]) => F[Rep] =
-      labelled.simpleRunner.simpleRunner4.append[TypeFunc4, Type1, ColumnOpt, TypedType, Rep](appender = appender, zero = zero)
+      labelled.simpleRunner.simpleRelease4.append[TypeFunc4, Type1, ColumnOpt, TypedType, Rep](appender = appender, zero = one)
 
     func(l1, opt, typedType)
   }
