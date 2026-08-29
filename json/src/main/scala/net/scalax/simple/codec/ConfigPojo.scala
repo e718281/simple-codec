@@ -7,6 +7,7 @@ import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.codec.to_list_generic.BasedInstalledSimpleProduct
 
 trait ConfigPojo[F[_[_]]] { Self =>
+
   type StrF[_]    = String
   type OptVal[U1] = Option[() => U1]
 
@@ -25,14 +26,16 @@ trait ConfigPojo[F[_[_]]] { Self =>
     override def defaultValue: Option[F[OptVal]]       = Some(func)
   }
 
+  def map(m: ConfigPojo[F] => ConfigPojo[F]): ConfigPojo[F] = m(Self)
+
 }
 
 object ConfigPojo {
   type StrF[_]  = String
   type Type2[T] = Option[JsonKey]
 
-  def fromAnnotation[F[_[_]]](ann: ModelAnnotations[F, JsonKey])(implicit bs: BasedInstalledSimpleProduct[F]): F[StrF] => F[StrF] = {
-    val map2Generc = Map2Generc[F].derived(bs.simpleRunner.simpleRelease3)
+  def fromAnnotationImpl[F[_[_]]](ann: ModelAnnotations[F, JsonKey], sp3: AppenderSupport1.Simple3.Release[F]): F[StrF] => F[StrF] = {
+    val map2Generc = Map2Generc[F].derived(sp3)
     val mapper2    = new Map2Generc.Map2Function[StrF, Type2, StrF] {
       override def map[X1](in: String, in2: Option[JsonKey]): String = in2.fold(in)(ann => ann.value)
     }
@@ -40,6 +43,14 @@ object ConfigPojo {
     val func: (F[StrF], F[Type2]) => F[StrF] = map2Generc.map[StrF, Type2, StrF](mapper2)
 
     (labelled: F[StrF]) => func(labelled, ann.annInstance)
+  }
+
+  def fromAnnotation[F[_[_]]](implicit
+    ann: ModelAnnotations[F, JsonKey],
+    bs: BasedInstalledSimpleProduct[F]
+  ): ConfigPojo[F] => ConfigPojo[F] = {
+    val mapLabelled = fromAnnotationImpl[F](ann, bs.simpleRunner.simpleRelease3)
+    (conf: ConfigPojo[F]) => conf.mapLabelled(mapLabelled)
   }
 
 }
