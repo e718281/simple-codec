@@ -1,0 +1,22 @@
+@(TupleSize: Int)
+
+package net.scalax.simple.adt
+package nat
+package support
+package v5
+
+@AppendFunc2(i2: Int, sum: Int) = {
+    @if(i2 < sum) {
+        Successor[AdtFunction[Target, T@i2], @AppendFunc2(i2+1, sum)]
+    } else {
+        One[AdtFunction[Target, T@i2]]
+    }
+}
+
+object AppenderSupport1_1 {
+    @for(i1 <- 1 to TupleSize) {
+        object Simple@{i1} {
+
+        }
+    }
+}
