@@ -5,7 +5,7 @@ package support
 import net.scalax.simple.adt.nat.support.v5.{Append2Impl, AppenderSupport2, AppenderSupport3, AppenderSupport4}
 import shapeless.{HList, HNil}
 
-object ExtractProductUtil extends NatNext5[shapeless.HList, shapeless.::, shapeless.HNil] {
+/*object ExtractProductUtil extends NatNext5[shapeless.HList, shapeless.::, shapeless.HNil] {
 
   override object extraAbstraction extends NatNext4[shapeless.HList, shapeless.::, shapeless.HNil] {
     extraAbstractionSelf =>
@@ -26,7 +26,7 @@ object ExtractProductUtil extends NatNext5[shapeless.HList, shapeless.::, shapel
 
   }
 
-}
+}*/
 
 trait Append3Impl1 extends AppenderSupport3[shapeless.HList, shapeless.::, shapeless.HNil] {
   Append3Impl1Self =>

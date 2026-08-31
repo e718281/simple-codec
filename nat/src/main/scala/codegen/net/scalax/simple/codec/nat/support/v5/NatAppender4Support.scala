@@ -3,7 +3,7 @@ package nat
 package support
 package v5
 
-trait AppenderSupport4_1[F[_[_]]] {
+trait AppenderSupport4[F[_[_]]] {
 
   def simpleRelease1: AppenderSupport1.Simple1.Release[F]
 

@@ -3,13 +3,11 @@ package nat
 package support
 package v5
 
-object SimpleRunnerIt10Codengen_1 { SimpleRunnerIt10Codengen =>
+object SimpleRunnerIt10Codengen { SimpleRunnerIt10Codengen =>
 
-  def toItera[F[_[_]], T](
-    spc: AppenderSupport4_1[F]
-  ): AppenderSupport4_1[({ type TPF[MXX[_]] = F[({ type XUU[_] = MXX[T] })#XUU] })#TPF] = {
+  def toItera[F[_[_]], T](spc: AppenderSupport4[F]): AppenderSupport4[({ type TPF[MXX[_]] = F[({ type XUU[_] = MXX[T] })#XUU] })#TPF] = {
     type TPF[MXX[_]] = F[({ type XUU[_] = MXX[T] })#XUU]
-    new AppenderSupport4_1[TPF] {
+    new AppenderSupport4[TPF] {
 
       override def simpleRelease1: AppenderSupport1.Simple1.Release[TPF] = new AppenderSupport1.Simple1.Release[TPF] {
         override def append[M[_], N1[_]](

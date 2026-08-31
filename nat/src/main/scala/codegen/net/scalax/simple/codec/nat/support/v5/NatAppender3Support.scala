@@ -3,7 +3,7 @@ package nat
 package support
 package v5
 
-trait AppenderSupport3_1[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero <: HListLike] { AppenderSupport3Self =>
+trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero <: HListLike] { AppenderSupport3Self =>
 
   def appSupport2: AppenderSupport2[HListLike, AppLike]
   def hZero: HZero
@@ -13,10 +13,10 @@ trait AppenderSupport3_1[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZe
     length: Int,
     toModel: HListLike => F[({ type AnyF[_] = Any })#AnyF],
     fromModel: F[({ type AnyF[_] = Any })#AnyF] => HListLike
-  ): AppenderSupport4_1[F] = {
+  ): AppenderSupport4[F] = {
     val autalLen: Int = length - 1
 
-    new AppenderSupport4_1[F] {
+    new AppenderSupport4[F] {
 
       override final def simpleRelease1: AppenderSupport1.Simple1.Release[F] = new AppenderSupport1.Simple1.Release[F] {
         override final def append[M[_], N1[_]](

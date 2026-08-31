@@ -3,7 +3,7 @@ package nat
 package support
 package v5
 
-object AppenderSupport1_1 {
+object AppenderSupport1 {
 
   object Simple1 {
     trait Appender[M[_], N1[_]] {
@@ -15,7 +15,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_], N1[_]] {
-      def append[T, B1](
+      def one[T, B1](
         abc1: FromToFunc[N1[T], B1]
       ): M[B1]
     }
@@ -40,7 +40,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _], N1[_], N2[_]] {
-      def append[T, B1, B2](
+      def one[T, B1, B2](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2]
@@ -69,7 +69,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _], N1[_], N2[_], N3[_]] {
-      def append[T, B1, B2, B3](
+      def one[T, B1, B2, B3](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -102,7 +102,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _], N1[_], N2[_], N3[_], N4[_]] {
-      def append[T, B1, B2, B3, B4](
+      def one[T, B1, B2, B3, B4](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -139,7 +139,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_]] {
-      def append[T, B1, B2, B3, B4, B5](
+      def one[T, B1, B2, B3, B4, B5](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -180,7 +180,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6](
+      def one[T, B1, B2, B3, B4, B5, B6](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -225,7 +225,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7](
+      def one[T, B1, B2, B3, B4, B5, B6, B7](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -274,7 +274,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -327,7 +327,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -384,7 +384,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -445,7 +445,7 @@ object AppenderSupport1_1 {
     }
 
     trait One[M[_, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[_], N11[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -526,7 +526,7 @@ object AppenderSupport1_1 {
       N11[_],
       N12[_]
     ] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -601,7 +601,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[_], N11[_], N12[
       _
     ], N13[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -710,7 +710,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[_], N11[
       _
     ], N12[_], N13[_], N14[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -825,7 +825,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[_], N11[
       _
     ], N12[_], N13[_], N14[_], N15[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -946,7 +946,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[_], N11[
       _
     ], N12[_], N13[_], N14[_], N15[_], N16[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -1073,7 +1073,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[
       _
     ], N11[_], N12[_], N13[_], N14[_], N15[_], N16[_], N17[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -1206,7 +1206,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[_], N10[
       _
     ], N11[_], N12[_], N13[_], N14[_], N15[_], N16[_], N17[_], N18[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -1347,7 +1347,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[
       _
     ], N10[_], N11[_], N12[_], N13[_], N14[_], N15[_], N16[_], N17[_], N18[_], N19[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -1494,7 +1494,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[
       _
     ], N10[_], N11[_], N12[_], N13[_], N14[_], N15[_], N16[_], N17[_], N18[_], N19[_], N20[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -1647,7 +1647,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[_], N9[
       _
     ], N10[_], N11[_], N12[_], N13[_], N14[_], N15[_], N16[_], N17[_], N18[_], N19[_], N20[_], N21[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20, B21](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20, B21](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
@@ -1806,7 +1806,7 @@ object AppenderSupport1_1 {
     trait One[M[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _], N1[_], N2[_], N3[_], N4[_], N5[_], N6[_], N7[_], N8[
       _
     ], N9[_], N10[_], N11[_], N12[_], N13[_], N14[_], N15[_], N16[_], N17[_], N18[_], N19[_], N20[_], N21[_], N22[_]] {
-      def append[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20, B21, B22](
+      def one[T, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, B16, B17, B18, B19, B20, B21, B22](
         abc1: FromToFunc[N1[T], B1],
 
         abc2: FromToFunc[N2[T], B2],
