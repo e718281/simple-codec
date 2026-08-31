@@ -5,7 +5,7 @@ package nat
 package support
 package v5
 
-trait AppenderSupport4_1[F[_[_]]] {
+trait AppenderSupport4[F[_[_]]] {
     @for(i1 <- 1 to TupleSize) {
         def simpleRelease@{i1}: AppenderSupport1.Simple@{i1}.Release[F]
     }

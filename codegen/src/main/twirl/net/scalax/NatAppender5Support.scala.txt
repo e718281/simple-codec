@@ -1,0 +1,57 @@
+@(TupleSize: Int)
+
+package net.scalax.simple.adt
+package nat
+package support
+package v5
+
+object SimpleRunnerIt10Codengen { SimpleRunnerIt10Codengen =>
+
+    def toItera[F[_[_]], T](spc: AppenderSupport4_1[F]): AppenderSupport4_1[({ type TPF[MXX[_]] = F[({ type XUU[_] = MXX[T] })#XUU] })#TPF] = {
+        type TPF[MXX[_]] = F[({ type XUU[_] = MXX[T] })#XUU]
+        new AppenderSupport4_1[TPF] {
+            @for(i1 <- 1 to TupleSize) {
+                override def simpleRelease@{i1}: AppenderSupport1.Simple@{i1}.Release[TPF] = new AppenderSupport1.Simple@{i1}.Release[TPF] {
+                    override def append[M[_ @for(i2 <- 2 to i1){ , _ }] @for(i2 <- 1 to i1){ ,N@{i2}[_] }](
+                        sAppender: AppenderSupport1.Simple@{i1}.Appender[M @for(i2 <- 1 to i1){ ,N@{i2} }],
+                        sOne: AppenderSupport1.Simple@{i1}.One[M @for(i2 <- 1 to i1){ ,N@{i2} }]
+                    ): M[TPF[({ type NXX[_] = N1[T] })#NXX] @for(i2 <- 2 to i1){ , TPF[({ type NXX[_] = N@{i2}[T] })#NXX] }] =
+                      spc.simpleRelease@{i1}.append[M @for(i2 <- 1 to i1){ , ({ type NXX[_] = N@{i2}[T] })#NXX }](
+                        new AppenderSupport1.Simple@{i1}.Appender[
+                          M
+                          @for(i2 <- 1 to i1){ , ({ type NXX[_] = N@{i2}[T] })#NXX }
+                        ] {
+                          override def append[
+                            U1
+                            @for(i2 <- 1 to i1){ , B@{i2} }
+                            @for(i2 <- 1 to i1){ , C@{i2} }
+                          ](
+                            @for(i2 <- 1 to i1){ abc@{i2}: ABCFunc[N@{i2}[T], B@{i2}, C@{i2}], }
+                            ma: M[B1 @for(i2 <- 2 to i1){ , B@{i2} }]
+                          ): M[C1 @for(i2 <- 2 to i1){ , C@{i2} }] = sAppender.append[
+                            T
+                            @for(i2 <- 1 to i1){ , B@{i2} }
+                            @for(i2 <- 1 to i1){ , C@{i2} }
+                          ](@for(i2 <- 1 to i1){ abc@{i2}, } ma)
+                        },
+                        new AppenderSupport1.Simple@{i1}.One[
+                          M
+                          @for(i2 <- 1 to i1){ , ({ type NXX[_] = N@{i2}[T] })#NXX }
+                        ] {
+                          override def one[
+                            U1
+                            @for(i2 <- 1 to i1){ , B@{i2} }
+                          ](
+                            func1: FromToFunc[N1[T], B1]
+                             @for(i2 <- 2 to i1){ , func@{i2}: FromToFunc[N@{i2}[T], B@{i2}] }
+                          ): M[B1 @for(i2 <- 2 to i1){ , B@{i2} }] = sOne.one[
+                            T @for(i2 <- 1 to i1){ , B@{i2} }
+                          ](func1 @for(i2 <- 2 to i1){ , func@{i2} })
+                        }
+                      )
+                  }
+            }
+        }
+    }
+
+}
