@@ -5,18 +5,33 @@ package nat
 package support
 package v5
 
-@AppendFunc2(i2: Int, sum: Int) = {
-    @if(i2 < sum) {
-        Successor[AdtFunction[Target, T@i2], @AppendFunc2(i2+1, sum)]
-    } else {
-        One[AdtFunction[Target, T@i2]]
-    }
-}
-
 object AppenderSupport1_1 {
     @for(i1 <- 1 to TupleSize) {
         object Simple@{i1} {
+            trait Appender[M[_ @for(i2 <- 2 to i1) { , _ }] @for(i2 <- 1 to i1) { , N@{i2}[_] }] {
+                def append[T @for(i2 <- 1 to i1) { , B@i2 } @for(i2 <- 1 to i1) { , C@i2 }](
+                    @for(i2 <- 1 to i1) {
+                        abc@{i2}: ABCFunc[N@{i2}[T], B@{i2}, C@{i2}],
+                    }
+                    ma: M[B1 @for(i2 <- 2 to i1) { , B@{i2} }]
+                ): M[C1 @for(i2 <- 2 to i1) { , C@{i2} }]
+            }
 
+            trait One[M[_ @for(i2 <- 2 to i1) { , _ }] @for(i2 <- 1 to i1) { , N@{i2}[_] }] {
+                def append[T @for(i2 <- 1 to i1) { , B@i2 }](
+                    abc1: FromToFunc[N1[T], B1],
+                    @for(i2 <- 2 to i1) {
+                        abc@{i2}: FromToFunc[N@{i2}[T], B@{i2}],
+                    }
+                ): M[B1 @for(i2 <- 2 to i1) { , B@{i2} }]
+            }
+
+            trait Release[F[_[_]]] {
+              def append[M[_ @for(i2 <- 2 to i1) { , _ }] @for(i2 <- 1 to i1) { , N@{i2}[_] }](
+                appender: Appender[M @for(i2 <- 1 to i1) { , N@{i2} }],
+                zero: One[M @for(i2 <- 1 to i1) { , N@{i2} }]
+              ): M[F[N1] @for(i2 <- 2 to i1) { , F[N@{i2}] }]
+            }
         }
     }
 }

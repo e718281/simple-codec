@@ -1,0 +1,83 @@
+@(TupleSize: Int)
+
+package net.scalax.simple.adt
+package nat
+package support
+package v5
+
+trait AppenderSupport3_1[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero <: HListLike] { AppenderSupport3Self =>
+
+    def appSupport2: AppenderSupport2[HListLike, AppLike]
+    def hZero: HZero
+    def fromToFunc[X1]: FromToFunc[X1, AppLike[X1, HZero]]
+
+    final def genSimpleProduct[F[_[_]]](
+        length: Int,
+        toModel: HListLike => F[({ type AnyF[_] = Any })#AnyF],
+        fromModel: F[({ type AnyF[_] = Any })#AnyF] => HListLike
+    ): AppenderSupport4_1[F] = {
+        val autalLen: Int = length - 1
+
+        new AppenderSupport4_1[F] {
+            @for(i1 <- 1 to TupleSize) {
+                override final def simpleRelease@{i1}: AppenderSupport1.Simple@{i1}.Release[F] = new AppenderSupport1.Simple@{i1}.Release[F] {
+                    override final def append[M[_ @for(i2 <- 2 to i1){ , _ }] @for(i2 <- 1 to i1){ ,N@{i2}[_] }](
+                        sAppender: AppenderSupport1.Simple@{i1}.Appender[M @for(i2 <- 1 to i1){ ,N@{i2} }],
+                        one: AppenderSupport1.Simple@{i1}.One[M@for(i2 <- 1 to i1){ ,N@{i2} }]
+                    ): M[F[N1] @for(i2 <- 2 to i1){ , F[N@{i2}] }] = {
+                        val ctxPre = AppenderSupport3Self.appSupport2
+                            val ctx    = new ctxPre.Support@{i1}Context(sAppender)
+                            val ap1: ctx.SupportInstance[AppLike[N1[Any], HZero] @for(i2 <- 2 to i1){ ,AppLike[N@{i2}[Any], HZero] }] =
+                            new ctx.SupportInstance[AppLike[N1[Any], HZero] @for(i2 <- 2 to i1){ ,AppLike[N@{i2}[Any], HZero] }](
+                                current = one.one[Any, AppLike[N1[Any], HZero] @for(i2 <- 2 to i1){ ,AppLike[N@{i2}[Any], HZero] }](
+                                    AppenderSupport3Self.fromToFunc[N1[Any]]
+                                    @for(i2 <- 2 to i1){ , AppenderSupport3Self.fromToFunc[N@{i2}[Any]] }
+                                )
+                            )
+                            val ap2: ctx.SupportInstance[HListLike @for(i2 <- 2 to i1){ , HListLike }] =
+                                ap1.asInstanceOf[ctx.SupportInstance[HListLike @for(i2 <- 2 to i1){ , HListLike }]]
+
+                      @@scala.annotation.tailrec
+                      def appendImpl1(
+                        len: Int,
+                        model: ctx.SupportInstance[HListLike @for(i2 <- 2 to i1){ , HListLike }]
+                      ): ctx.SupportInstance[HListLike @for(i2 <- 2 to i1){ , HListLike }] = {
+                        if (len > 0) {
+                          val nextModel = model
+                            .next[Any, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing]
+                            .asInstanceOf[
+                              ctx.SupportInstance[HListLike @for(i2 <- 2 to i1){ , HListLike }]
+                            ]
+                          appendImpl1(len - 1, nextModel)
+                        } else
+                          model
+                      }
+
+                      def simpleFunc1[U[_]]: ABCFunc[U[Any], HListLike, F[U]] = new ABCFunc[U[Any], HListLike, F[U]] {
+                        override def takeHead(m: F[U]): U[Any] =
+                          AppenderSupport3Self.appSupport2.abcGen.takeHead[U[Any], HListLike](
+                            fromModel(m.asInstanceOf[F[({ type AnyF[_] = Any })#AnyF]]).asInstanceOf[AppLike[U[Any], HListLike]]
+                          )
+                        override def takeTail(m: F[U]): HListLike =
+                          AppenderSupport3Self.appSupport2.abcGen.takeTail[Any, HListLike](
+                            fromModel(m.asInstanceOf[F[({ type AnyF[_] = Any })#AnyF]]).asInstanceOf[AppLike[Any, HListLike]]
+                          )
+                        override def append(a: U[Any], b: HListLike): F[U] =
+                          toModel(AppenderSupport3Self.appSupport2.abcGen.append[Any, HListLike](a, b)).asInstanceOf[F[U]]
+                      }
+
+                        sAppender.append[
+                            Any
+                            @for(i2 <- 1 to i1){ , HListLike }
+                            @for(i2 <- 1 to i1){ , F[N@{i2}] }
+                        ](
+                            @for(i2 <- 1 to i1){ simpleFunc1[N@{i2}], }
+                            appendImpl1(autalLen - 1, ap2).current
+                      )
+                    }
+                  }
+            }
+        }
+    }
+
+}

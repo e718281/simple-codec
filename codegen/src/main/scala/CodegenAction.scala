@@ -11,5 +11,7 @@ object CodegenAction {
     val v5Root  = natRoot / "v5"
 
     os.write.over(target = v5Root / "NatAppender1Support.scala", data = net.scalax.txt.NatAppender1Support(22).body, createFolders = true)
+    os.write.over(target = v5Root / "NatAppender4Support.scala", data = net.scalax.txt.NatAppender4Support(22).body, createFolders = true)
+    os.write.over(target = v5Root / "NatAppender3Support.scala", data = net.scalax.txt.NatAppender3Support(22).body, createFolders = true)
   }
 }
