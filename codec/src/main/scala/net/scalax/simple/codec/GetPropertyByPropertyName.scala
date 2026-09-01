@@ -19,7 +19,7 @@ object GetPropertyByPropertyName {
     def derived(appender1: BasedInstalledSimpleProduct[F], labelled: BasedInstalledLabelled[F]): GetPropertyByPropertyName[F] =
       new GetPropertyByPropertyName[F] {
         override def getPropertyImpl[T[_]](proName: String): F[T] => Any = (ft: F[T]) => {
-          val s1 = appender1.basedInstalled.simpleProduct1
+          val s1 = appender1.simpleRunner.simpleRelease1
 
           val getP = GetPropertyByIndex[F].derived(s1)
           val inP  = IndexOfPropertyName[F].derived(s1)

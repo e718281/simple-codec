@@ -1,6 +1,7 @@
 package net.scalax.simple.codec
 
-import net.scalax.simple.adt.nat.support.{ABCFunc, SimpleProduct1, SimpleProductContextX}
+import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
+import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 
 trait IndexOfPropertyName[F[_[_]]] {
   def ofName(input1: String, model: F[({ type T1[_] = String })#T1]): Int
@@ -21,49 +22,40 @@ object IndexOfPropertyName {
   }
 
   trait ContainsString[T] {
-    def input(str: T): Either[ListLike, ListLike => ListLike]
+    def input(str: T): Either[ListLike, ListLike]
   }
 
-  val appendMonad: SimpleProduct1.SimpleAppender[ContainsString] = new SimpleProduct1.SimpleAppender[ContainsString] {
-    override def append[A1, B1, C1](c: ABCFunc[A1, B1, C1])(
-      ma: ContainsString[A1],
-      mb: ContainsString[B1]
-    ): ContainsString[C1] = new ContainsString[C1] {
-      override def input(pro: C1): Either[ListLike, ListLike => ListLike] = {
-        def head1: A1 = c.takeHead(pro)
-        def tail1: B1 = c.takeTail(pro)
-
-        ma.input(head1)
-          .fold(
-            leftZero => Left(leftZero),
-            rightAppender1 =>
-              mb.input(tail1)
-                .fold(
-                  leftZero => Left(rightAppender1(leftZero)),
-                  rightAppender2 => Right((l: ListLike) => rightAppender2(rightAppender1(l)))
-                )
+  def appendMonad(findName: String): AppenderSupport1.Simple1.Appender[ContainsString, ({ type T1[_] = String })#T1] =
+    new AppenderSupport1.Simple1.Appender[ContainsString, ({ type T1[_] = String })#T1] {
+      override def append[V, B1, C1](abc1: ABCFunc[String, B1, C1], ma: ContainsString[B1]): ContainsString[C1] = new ContainsString[C1] {
+        override def input(str: C1): Either[ListLike, ListLike] = {
+          val nameStr: String = abc1.takeHead(str)
+          val b1: B1          = abc1.takeTail(str)
+          val either1         = ma.input(b1)
+          either1.fold(
+            pos =>
+              if (findName == nameStr) Right(PositiveListLike(pos))
+              else Left(PositiveListLike(pos)),
+            rightIndex => Right(rightIndex)
           )
+        }
       }
     }
 
-    override def zero[N1](n1: N1): ContainsString[N1] = new ContainsString[N1] {
-      override def input(t: N1): Either[ListLike, ListLike => ListLike] = Right(identity)
-    }
-  }
-
-  def toNamed(proNameToFind: String): SimpleProduct1.TypeGen[ContainsString, ({ type T1[_] = String })#T1] =
-    new SimpleProduct1.TypeGen[ContainsString, ({ type T1[_] = String })#T1] {
-      override def gen[T]: ContainsString[String] = new ContainsString[String] {
-        override def input(str: String): Either[ListLike, ListLike => ListLike] = {
-          if (str == proNameToFind) Left(ZeroListLike) else Right(t => PositiveListLike(t))
+  def toNamed(proNameToFind: String): AppenderSupport1.Simple1.One[ContainsString, ({ type T1[_] = String })#T1] =
+    new AppenderSupport1.Simple1.One[ContainsString, ({ type T1[_] = String })#T1] {
+      override def one[V, B1](abc1: FromToFunc[String, B1]): ContainsString[B1] = new ContainsString[B1] {
+        override def input(str: B1): Either[ListLike, ListLike] = {
+          val nameStr: String = abc1.to(str)
+          if (nameStr == proNameToFind) Right(ZeroListLike) else Left(ZeroListLike)
         }
       }
     }
 
   class Builder[F[_[_]]] {
-    def derived(appender1: SimpleProduct1.ProductAdapter[F]): IndexOfPropertyName[F] = new IndexOfPropertyName[F] {
+    def derived(appender1: AppenderSupport1.Simple1.Release[F]): IndexOfPropertyName[F] = new IndexOfPropertyName[F] {
       override def ofName(input1: String, model: F[({ type T1[_] = String })#T1]): Int = {
-        val containFunc = appender1.append[ContainsString, ({ type T1[_] = String })#T1](toNamed(input1), appendMonad)
+        val containFunc = appender1.append[ContainsString, ({ type T1[_] = String })#T1](appendMonad(input1), toNamed(input1))
         containFunc.input(model).left.getOrElse(throw new Exception(s"Not confirm property name.(name: $input1)")).size
       }
     }

@@ -2,7 +2,7 @@ package net.scalax.simple.codec.circe
 
 import io.circe._
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
-import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc, SimpleProduct2 => SP2}
+import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 import net.scalax.simple.codec.GetFieldModel
 
 object EncodeHelperUtils {

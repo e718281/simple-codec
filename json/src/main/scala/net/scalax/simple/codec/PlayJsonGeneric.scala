@@ -1,7 +1,6 @@
 package net.scalax.simple
 package codec
 
-import net.scalax.simple.adt.nat.support.SimpleProductContextX
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport4
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance}
 import net.scalax.simple.codec.utils.ByNameImplicit
@@ -16,8 +15,7 @@ object PlayJsonGeneric {
       lb: BasedInstalledLabelled[F],
       sjn: SimpleJsonLabelled[F]
     ): Writes[F[({ type IDF[T] = T })#IDF]] = {
-      val bsInsatnall: SimpleProductContextX[F] = g1.basedInstalled
-      val simpleRunner: AppenderSupport4[F]     = g1.simpleRunner
+      val simpleRunner: AppenderSupport4[F] = g1.simpleRunner
 
       val labelledIns: F[({ type Str1[_] = String })#Str1] = sjn.labelledValueFunc(lb.labelled.stringLabelled)
 
@@ -30,8 +28,7 @@ object PlayJsonGeneric {
       lb: BasedInstalledLabelled[F],
       sg: SimpleJsonLabelled[F]
     ): Reads[F[({ type IDF[T] = T })#IDF]] = {
-      val bsInsatnall: SimpleProductContextX[F] = g1.basedInstalled
-      val simpleRunner: AppenderSupport4[F]     = g1.simpleRunner
+      val simpleRunner: AppenderSupport4[F] = g1.simpleRunner
 
       val labelledIns: F[({ type Str1[_] = String })#Str1] = sg.labelledValueFunc(lb.labelled.stringLabelled)
 

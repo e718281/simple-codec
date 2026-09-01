@@ -31,8 +31,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N1[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike]]
+          val ap2: ctx.SupportInstance[HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -111,8 +111,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N2[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[HListLike, HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike]]
+          val ap2: ctx.SupportInstance[HListLike, HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -195,8 +195,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N3[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike]]
+          val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -283,8 +283,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N4[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike]]
+          val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -384,8 +384,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                   AppenderSupport3Self.fromToFunc[N5[Any]]
                 )
             )
-            val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike]]
+          val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -489,8 +489,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                   AppenderSupport3Self.fromToFunc[N6[Any]]
                 )
             )
-            val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]]
+          val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -614,8 +614,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N7[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]]
+          val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -746,8 +746,8 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N8[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
-              ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]]
+          val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
+            ap1.asInstanceOf[ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -885,11 +885,10 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N9[Any]]
               )
             )
-            val ap2
-              : ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
-              ap1.asInstanceOf[
-                ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]
-              ]
+          val ap2: ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike] =
+            ap1.asInstanceOf[
+              ctx.SupportInstance[HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike, HListLike]
+            ]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -1034,7 +1033,19 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N10[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -1045,19 +1056,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -1244,7 +1243,20 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N11[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -1256,20 +1268,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -1466,7 +1465,21 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N12[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -1479,21 +1492,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -1700,7 +1699,22 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N13[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -1714,22 +1728,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -1946,7 +1945,23 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N14[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -1961,23 +1976,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -2204,7 +2203,24 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N15[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -2220,24 +2236,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -2474,7 +2473,25 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N16[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -2491,25 +2508,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -2758,7 +2757,26 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N17[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -2776,26 +2794,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -3054,7 +3053,27 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N18[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -3073,27 +3092,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -3383,7 +3382,28 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N19[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -3403,28 +3423,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -3725,7 +3724,29 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N20[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -3746,29 +3767,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -4103,7 +4102,30 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N21[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -4125,30 +4147,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(
@@ -4497,7 +4496,31 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                 AppenderSupport3Self.fromToFunc[N22[Any]]
               )
             )
-            val ap2: ctx.SupportInstance[
+          val ap2: ctx.SupportInstance[
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike,
+            HListLike
+          ] =
+            ap1.asInstanceOf[ctx.SupportInstance[
               HListLike,
               HListLike,
               HListLike,
@@ -4520,31 +4543,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
               HListLike,
               HListLike,
               HListLike
-            ] =
-              ap1.asInstanceOf[ctx.SupportInstance[
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike,
-                HListLike
-              ]]
+            ]]
 
           @scala.annotation.tailrec
           def appendImpl1(

@@ -60,7 +60,7 @@ object CatNameTest3TestCase {
   def getNames(model: PojoInstance[({ type M1[_] = String })#M1, CatNameTest3]): List[String] = {
     val ge = ToListByTheSameTypeGeneric[({ type U1[X[_]] = PojoInstance[X, CatNameTest3] })#U1].derived(
       Fold1FGenerc[({ type U1[X[_]] = PojoInstance[X, CatNameTest3] })#U1]
-        .derived(implicitly[ModelLinkPojo[CatNameTest3]].basedInstalled.simpleProduct1)
+        .derived(implicitly[ModelLinkPojo[CatNameTest3]].simpleRunner.simpleRelease1)
     )
 
     ge.toListByTheSameType[String, List[String]](List.empty, (t1, t2) => t2 :: t1)(model)

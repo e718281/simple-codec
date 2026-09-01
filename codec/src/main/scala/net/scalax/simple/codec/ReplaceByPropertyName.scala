@@ -25,7 +25,7 @@ object ReplaceByPropertyName {
     }
 
     def derived(basedInstalled: BasedInstalledSimpleProduct[F], labelled: BasedInstalledLabelled[F]): ReplaceByPropertyName[F] = {
-      val appender1 = basedInstalled.basedInstalled.simpleProduct1
+      val appender1 = basedInstalled.simpleRunner.simpleRelease1
       derivedImpl(IndexOfPropertyName[F].derived(appender1), ReplaceByIndex[F].derived(appender1), labelled.labelled)
     }
   }

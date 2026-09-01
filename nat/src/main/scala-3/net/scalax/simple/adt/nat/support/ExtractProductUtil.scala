@@ -4,7 +4,7 @@ package support
 
 import net.scalax.simple.adt.nat.support.v5.{AppenderSupport2, AppenderSupport3}
 
-object ExtractProductUtil extends NatNext5[Tuple, *:, EmptyTuple] {
+/*object ExtractProductUtil extends NatNext5[Tuple, *:, EmptyTuple] {
 
   override object extraAbstraction extends NatNext4[Tuple, *:, EmptyTuple] {
     extraAbstractionSelf =>
@@ -25,7 +25,7 @@ object ExtractProductUtil extends NatNext5[Tuple, *:, EmptyTuple] {
 
   }
 
-}
+}*/
 
 trait Append3Impl1 extends AppenderSupport3[Tuple, *:, EmptyTuple] {
   Append3Impl1Self =>

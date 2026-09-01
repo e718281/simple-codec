@@ -1,8 +1,6 @@
 package net.scalax.simple.codec
 package to_list_generic
 
-import net.scalax.simple.adt.nat.support.SimpleProductContextX
-
 trait ModelLink[F[_[_]], Model]
     extends BasedInstalledSimpleProduct[F]
     with BasedInstalledLabelled[F]
