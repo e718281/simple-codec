@@ -17,7 +17,7 @@ lazy val nat = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= libScalax.`simple-induction`.value,
     libraryDependencies ++= libScalax.`shapeless`.value,
     useKindProjector,
-      scalafmtOnCompile:=true
+    scalafmtOnCompile := true
   )
 
 lazy val codec = crossProject(JSPlatform, JVMPlatform)
@@ -35,7 +35,7 @@ lazy val codec = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= libScalax.`scala-compiler`.value,
     libraryDependencies ++= libScalax.`scala-collection-compat`.value,
     useKindProjector,
-      scalafmtOnCompile:=true
+    scalafmtOnCompile := true
   )
   .dependsOn(nat)
 
@@ -53,7 +53,7 @@ lazy val json = crossProject(JSPlatform, JVMPlatform)
     libraryDependencies ++= libScalax.`play-json`.value,
     libraryDependencies ++= libScalax.`circe-extras`.value,
     useKindProjector,
-      scalafmtOnCompile:=true
+    scalafmtOnCompile := true
   )
   .dependsOn(codec)
 
@@ -68,7 +68,7 @@ lazy val config = project
     libraryDependencies ++= libScalax.`scalatest`.value.map(_ % Test),
     libraryDependencies ++= libScalax.`pureconfig`.value,
     useKindProjector,
-      scalafmtOnCompile:=true
+    scalafmtOnCompile := true
   )
   .dependsOn(codec.jvm)
 
@@ -84,6 +84,6 @@ val slick = project
     libraryDependencies ++= libScalax.`slick`.value,
     libraryDependencies ++= libScalax.`h2`.value,
     useKindProjector,
-      scalafmtOnCompile:=true
+    scalafmtOnCompile := true
   )
   .dependsOn(codec.jvm)

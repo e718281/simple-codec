@@ -56,7 +56,7 @@ object IndexOfPropertyName {
     def derived(appender1: AppenderSupport1.Simple1.Release[F]): IndexOfPropertyName[F] = new IndexOfPropertyName[F] {
       override def ofName(input1: String, model: F[({ type T1[_] = String })#T1]): Int = {
         val containFunc = appender1.append[ContainsString, ({ type T1[_] = String })#T1](appendMonad(input1), toNamed(input1))
-        containFunc.input(model).left.getOrElse(throw new Exception(s"Not confirm property name.(name: $input1)")).size
+        containFunc.input(model).getOrElse(throw new Exception(s"Not confirm property name.(name: $input1)")).size
       }
     }
   }

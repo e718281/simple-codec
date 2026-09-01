@@ -21,11 +21,11 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
 
   val tb: Table[Model]
 
-  private val folderGeneric: Fold1FGenerc[F]                                = Fold1FGenerc[F].derived(bi.basedInstalled.simpleProduct1)
+  private val folderGeneric: Fold1FGenerc[F]                                = Fold1FGenerc[F].derived(bi.simpleRunner.simpleRelease1)
   private val toListGeneric: ToListByTheSameTypeGeneric[F]                  = ToListByTheSameTypeGeneric[F].derived(folderGeneric)
   private val fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[F] =
-    FromListByTheSameTypeGeneric[F].derived(bi.basedInstalled.simpleProduct1)
-  private val indexOfPropertyName: IndexOfPropertyName[F] = IndexOfPropertyName[F].derived(bi.basedInstalled.simpleProduct1)
+    FromListByTheSameTypeGeneric[F].derived(bi.simpleRunner.simpleRelease1)
+  private val indexOfPropertyName: IndexOfPropertyName[F] = IndexOfPropertyName[F].derived(bi.simpleRunner.simpleRelease1)
 
   type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 

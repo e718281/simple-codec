@@ -31,7 +31,7 @@ object GetPropertyByIndex {
     : AppenderSupport1.Simple1.One[({ type X[T0] = (Int, T0) => Either[Int, ProType] })#X, ({ type T1[_] = ProType })#T1] =
     new AppenderSupport1.Simple1.One[({ type X[T0] = (Int, T0) => Either[Int, ProType] })#X, ({ type T1[_] = ProType })#T1] {
       override def one[V, B1](abc1: FromToFunc[ProType, B1]): (Int, B1) => Either[Int, ProType] = (index, b1) =>
-        if (index == 0) Left(index - 1) else Right(abc1.to(b1))
+        if (index == 0) Right(abc1.to(b1)) else Left(index - 1)
     }
 
   class Builder[F[_[_]]] {

@@ -35,7 +35,7 @@ trait SlickUtils[V <: JdbcProfile] {
     type ColOpt  = F[ColumnOpt]
 
     private def colOpt: F[ColumnOpt] = SimpleFill[F]
-      .derived(basedInstalled.basedInstalled.simpleProduct1)
+      .derived(basedInstalled.simpleRunner.simpleRelease1)
       .fill[ColumnOpt](new SimpleFill.FillI[ColumnOpt] {
         override def fill[T]: ColumnOpt[T] = ColumnOpt.default[T]
       })
