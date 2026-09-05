@@ -1,0 +1,39 @@
+@(hlistSize: Int, parameterSize: Int)
+
+package net.scalax.simple.adt
+package nat
+package support
+
+import net.scalax.simple.append.support.collectioncount22.typeparameter22.SimpleAppender
+
+object NatNext1 {
+    @for(i1 <- 1 to hlistSize) {
+        trait Support@{i1}[
+            M[_ <: HLLike1 @for(i2 <- 2 to i1) { , _ <: HLLike@i2 }]
+            @for(i2 <- 1 to i1) { , HLLike@i2 }
+            @for(i2 <- 1 to i1) { , APRHLLike@{i2}[_, _ <: HLLike@{i2}] <: HLLike@{i2} }
+            @for(i2 <- 1 to i1) { , HCollection@{i2} <: HLLike@{i2} }
+        ] extends SimpleAppender[
+            ({type XM1[
+                H1 <:HLLike1 @for(i2 <- 2 to i1) { , X@{i2} <: HLLike@{i2} } @for(i2 <- i1+1 to hlistSize) { , X@{i2} <: Nothing }
+                ] = M[H1 @for(i2 <- 2 to i1) { , X@i2 }] })#XM1
+            @for(i2 <- 1 to i1) { , HLLike@i2 } @for(i2 <- i1+1 to hlistSize) { , Nothing }
+            @for(i2 <- 1 to i1) {
+                , ({
+                  type AppLike[T1 @for(i2 <- 2 to parameterSize) { , T@i2 } , H1 <: HLLike@{i2}] =
+                    APRHLLike@{i2}[T1, H1]
+                })#AppLike
+            }
+            @for(i2 <- i1+1 to hlistSize) { , net.scalax.simple.adt.nat.support.CodegenHelper.AppendNothing }
+            @for(i2 <- 1 to i1) { , HCollection@i2 }
+            @for(i2 <- i1+1 to hlistSize) { , Nothing }
+        ] {
+            override def next[T1 @for(i2 <- 2 to parameterSize) { , T@{i2} }]: NatNext1.Support@{i1}[
+                M
+                @for(i2 <- 1 to i1) { , HLLike@i2 }
+                @for(i2 <- 1 to i1) { , APRHLLike@{i2} }
+                @for(i2 <- 1 to i1) { , APRHLLike@{i2}[T1, HCollection@{i2}] }
+            ]
+        }
+    }
+}

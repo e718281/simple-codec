@@ -14,5 +14,10 @@ object CodegenAction {
     os.write.over(target = v5Root / "NatAppender4Support.scala", data = net.scalax.txt.NatAppender4Support(22).body, createFolders = true)
     os.write.over(target = v5Root / "NatAppender3Support.scala", data = net.scalax.txt.NatAppender3Support(22).body, createFolders = true)
     os.write.over(target = v5Root / "NatAppender5Support.scala", data = net.scalax.txt.NatAppender5Support(22).body, createFolders = true)
+    os.write.over(
+      target = v5Root / "NatAppender7Support.scala",
+      data = net.scalax.txt.NatAppender7Support(22, 22).body,
+      createFolders = true
+    )
   }
 }
