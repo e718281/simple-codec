@@ -19,5 +19,10 @@ object CodegenAction {
       data = net.scalax.txt.NatAppender7Support(22, 22).body,
       createFolders = true
     )
+    os.write.over(
+      target = v5Root / "NatAppender2Support.scala",
+      data = net.scalax.txt.NatAppender2Support(22, 22).body,
+      createFolders = true
+    )
   }
 }

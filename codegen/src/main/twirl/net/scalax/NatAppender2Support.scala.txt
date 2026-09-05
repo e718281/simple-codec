@@ -1,0 +1,46 @@
+@(hlistSize: Int, parameterSize: Int)
+
+package net.scalax.simple.adt
+package nat
+package support
+package v5
+
+trait AppenderSupport2[HListLike, AppendLike[_, _ <: HListLike] <: HListLike] { AppenderSupport2Self =>
+
+    def abcGen: net.scalax.simple.adt.nat.support.HListFunc[HListLike, AppendLike]
+
+    @for(i1 <- 1 to hlistSize) {
+      class Support@{i1}Context[
+        M[_ @for(i2 <- 2 to i1) { , _ }]
+        @for(i2 <- 1 to i1) { ,T@{i2}[_] }
+      ](
+        simpleAppender: AppenderSupport1.Simple@{i1}.Appender[M  @for(i2 <- 1 to i1) { ,T@{i2} }]
+      ) {
+        class SupportInstance[
+            HCollection1 <: HListLike
+            @for(i2 <- 2 to i1) { ,HCollection@i2 <: HListLike }
+        ](override val current: M[HCollection1 @for(i2 <- 2 to i1) { , HCollection@i2 }])
+            extends NatNext1.Support@{i1}[
+              M
+              @for(i2 <- 1 to i1) { , HListLike }
+              @for(i2 <- 1 to i1) { , ({ type XUAPPendEach[X12, Tail <: HListLike] = AppendLike[T@{i2}[X12], Tail] })#XUAPPendEach }
+              @for(i2 <- 1 to i1) { , HCollection@i2 }
+            ] {
+          SupportSelf =>
+          override def next[XPoint, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, X16, X17, X18, X19, X20, X21]
+            : SupportInstance[
+                AppendLike[T1[XPoint], HCollection1]
+                @for(i2 <- 2 to i1) { , AppendLike[T@{i2}[XPoint], HCollection@{i2}] }
+            ] = new SupportInstance[
+                AppendLike[T1[XPoint], HCollection1]
+                @for(i2 <- 2 to i1) { , AppendLike[T@{i2}[XPoint], HCollection@{i2}] }
+            ](current =
+                simpleAppender.append(
+                    @for(i2 <- 1 to i1) { AppenderSupport2Self.abcGen.toABCFunc[T@{i2}[XPoint], HCollection@{i2}], }
+                    SupportSelf.current
+                )
+            )
+        }
+      }
+    }
+}
