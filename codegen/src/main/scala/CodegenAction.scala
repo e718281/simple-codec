@@ -10,18 +10,18 @@ object CodegenAction {
     val natRoot = pathRoot / "nat" / "support"
     val v5Root  = natRoot / "v5"
 
-    os.write.over(target = v5Root / "NatAppender1Support.scala", data = net.scalax.txt.NatAppender1Support(22).body, createFolders = true)
-    os.write.over(target = v5Root / "NatAppender4Support.scala", data = net.scalax.txt.NatAppender4Support(22).body, createFolders = true)
-    os.write.over(target = v5Root / "NatAppender3Support.scala", data = net.scalax.txt.NatAppender3Support(22).body, createFolders = true)
-    os.write.over(target = v5Root / "NatAppender5Support.scala", data = net.scalax.txt.NatAppender5Support(22).body, createFolders = true)
+    os.write.over(target = v5Root / "NatAppender1Support.scala", data = net.scalax.txt.NatAppender1Support(7).body, createFolders = true)
+    os.write.over(target = v5Root / "NatAppender4Support.scala", data = net.scalax.txt.NatAppender4Support(7).body, createFolders = true)
+    os.write.over(target = v5Root / "NatAppender3Support.scala", data = net.scalax.txt.NatAppender3Support(7).body, createFolders = true)
+    os.write.over(target = v5Root / "NatAppender5Support.scala", data = net.scalax.txt.NatAppender5Support(7).body, createFolders = true)
     os.write.over(
       target = v5Root / "NatAppender7Support.scala",
-      data = net.scalax.txt.NatAppender7Support(22, 22).body,
+      data = net.scalax.txt.NatAppender7Support(7, 5).body,
       createFolders = true
     )
     os.write.over(
       target = v5Root / "NatAppender2Support.scala",
-      data = net.scalax.txt.NatAppender2Support(22, 22).body,
+      data = net.scalax.txt.NatAppender2Support(7).body,
       createFolders = true
     )
   }

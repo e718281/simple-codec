@@ -26,7 +26,7 @@ object ModelLink {
         override def labelled: CompatLabelled[FMM] = new CompatLabelledImplHelper.Impl[FMM] {
           override def symbolLabelled: FMM[({ type T1[_] = Symbol })#T1] =
             ModelLinkCommonFSelf.FFromHList[({ type T1[_] = Symbol })#T1](namedModel)
-          override def mapGenerc: MapGenerc[FMM] = MapGenerc[FMM].derived(ModelLinkCommonFSelf.simpleRunner.simpleRelease2)
+          override def mapGeneric: MapGeneric[FMM] = MapGeneric[FMM].derived(ModelLinkCommonFSelf.simpleRunner.simpleRelease2)
         }
         override def FToHList[T[_]](x: FMM[T]): Any   = g.to(x.asInstanceOf[FMM[({ type U1[_] = Any })#U1]])
         override def FFromHList[T[_]](x: Any): FMM[T] = g.from(x.asInstanceOf[g.Repr]).asInstanceOf[FMM[T]]
@@ -47,8 +47,8 @@ object ModelLink {
           new CompatLabelledImplHelper.Impl[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] {
             override def symbolLabelled: PojoInstance[({ type T1[_] = Symbol })#T1, Model] =
               ModelLinkPojoSelf.FFromHList[({ type T1[_] = Symbol })#T1](namedModel)
-            override def mapGenerc: MapGenerc[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
-              MapGenerc[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
+            override def mapGeneric: MapGeneric[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
+              MapGeneric[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
           }
         override def genericFrom(x: Any): Model                       = g.from(x.asInstanceOf[g.Repr])
         override def genericTo(x: Model): Any                         = g.to(x)

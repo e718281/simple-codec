@@ -25,17 +25,11 @@ object FromListByTheSameTypeGeneric {
     takeTail: SeqType => SeqType
   ): AppenderSupport1.Simple1.Appender[({ type T1[U] = SeqType => (SeqType, U) })#T1, ({ type T1[_] = T })#T1] =
     new AppenderSupport1.Simple1.Appender[({ type T1[U] = SeqType => (SeqType, U) })#T1, ({ type T1[_] = T })#T1] {
-      /*override def append[A1, B1, C1](c: ABCFunc[A1, B1, C1])(
-        ma: SeqType => (SeqType, A1),
-        mb: SeqType => (SeqType, B1)
-      ): SeqType => (SeqType, C1) = { l =>
-        val rb = ma(l)
-        val ra = mb(rb._1)
-        (ra._1, c.append(rb._2, ra._2))
-      }*/
       override def append[V, B1, C1](abc1: ABCFunc[T, B1, C1], ma: SeqType => (SeqType, B1)): SeqType => (SeqType, C1) = seq => {
-        val (newSeq, b1) = ma(seq)
-        (takeTail(newSeq), abc1.append(takeHead(seq), b1))
+        val t: T            = takeHead(seq)
+        val newSeq: SeqType = takeTail(seq)
+        val (newSeq2, b1)   = ma(newSeq)
+        (newSeq2, abc1.append(t, b1))
       }
     }
 

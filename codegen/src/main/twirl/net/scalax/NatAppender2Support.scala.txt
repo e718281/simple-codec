@@ -1,4 +1,4 @@
-@(hlistSize: Int, parameterSize: Int)
+@(hlistSize: Int)
 
 package net.scalax.simple.adt
 package nat
@@ -27,7 +27,7 @@ trait AppenderSupport2[HListLike, AppendLike[_, _ <: HListLike] <: HListLike] { 
               @for(i2 <- 1 to i1) { , HCollection@i2 }
             ] {
           SupportSelf =>
-          override def next[XPoint, X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, X16, X17, X18, X19, X20, X21]
+          override def next[XPoint, X1, X2, X3, X4]
             : SupportInstance[
                 AppendLike[T1[XPoint], HCollection1]
                 @for(i2 <- 2 to i1) { , AppendLike[T@{i2}[XPoint], HCollection@{i2}] }

@@ -1,7 +1,6 @@
 package net.scalax.simple.codec.pureconfig
 
 import com.typesafe.config.ConfigValue
-import net.scalax.simple.adt.nat.support.SimpleProductContextX
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport4
 import net.scalax.simple.codec.{ModelGet, ModelSet}
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance}

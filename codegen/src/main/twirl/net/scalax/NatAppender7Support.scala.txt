@@ -4,7 +4,7 @@ package net.scalax.simple.adt
 package nat
 package support
 
-import net.scalax.simple.append.support.collectioncount22.typeparameter22.SimpleAppender
+import net.scalax.simple.append.support.collectioncount7.typeparameter5.SimpleAppender
 
 object NatNext1 {
     @for(i1 <- 1 to hlistSize) {

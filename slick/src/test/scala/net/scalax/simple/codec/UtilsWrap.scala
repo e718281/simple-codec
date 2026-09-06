@@ -6,6 +6,8 @@ import net.scalax.simple.codec.to_list_generic.{
   BasedInstalledLabelled,
   BasedInstalledSimpleProduct,
   Fold1FGenerc,
+  ModelLinkPojo,
+  PojoInstance,
   ToListByTheSameTypeGeneric
 }
 import slick.ast.TypedType
@@ -47,8 +49,7 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
     modelSet: ModelSet[F, Model]
   ): slick.lifted.MappedProjection[Model] = {
     import slick.collection.heterogeneous.{HList => SlickHList}
-    val shapedValue: ShapedValue[SlickHList, SlickHList] =
-      anyToShapedValue(helperUtil.toRep(repModel))(helperUtil.toShape(shapeModel))
+    val shapedValue: ShapedValue[SlickHList, SlickHList] = anyToShapedValue(helperUtil.toRep(repModel))(helperUtil.toShape(shapeModel))
 
     val from1: F[({ type IDF[T] = T })#IDF] => SlickHList = helperUtil.fromModel
     val to1: SlickHList => F[({ type IDF[T] = T })#IDF]   = helperUtil.toModel
@@ -190,7 +191,6 @@ private class helperUtils[V <: JdbcProfile, ModelF[_[_]]](val slickProfile: V)(
       t => t.asInstanceOf[SlickHCons[Any, SlickHList]].head,
       t => t.asInstanceOf[SlickHCons[Any, SlickHList]].tail
     )
-
     fromListFunc(m).asInstanceOf[ModelF[({ type IdImpl[T] = T })#IdImpl]]
   }
 }

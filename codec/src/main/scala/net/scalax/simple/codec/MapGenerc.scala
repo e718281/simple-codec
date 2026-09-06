@@ -3,18 +3,18 @@ package net.scalax.simple.codec
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 
-trait MapGenerc[F[_[_]]] {
-  def map[S[_], T[_]](input: MapGenerc.MapFunction[S, T]): F[S] => F[T]
+trait MapGeneric[F[_[_]]] {
+  def map[S[_], T[_]](input: MapGeneric.MapFunction[S, T]): F[S] => F[T]
 }
 
-object MapGenerc {
+object MapGeneric {
 
   trait MapFunction[S[_], T[_]] {
     def map[X1](in: S[X1]): T[X1]
   }
 
   class Builder[F[_[_]]] {
-    def derived(generic3: AppenderSupport1.Simple2.Release[F]): MapGenerc[F] = new MapGenerc[F] {
+    def derived(generic3: AppenderSupport1.Simple2.Release[F]): MapGeneric[F] = new MapGeneric[F] {
       override def map[S[_], T[_]](input: MapFunction[S, T]): F[S] => F[T] = {
         type MA[H, HH] = H => HH
         val appender: AppenderSupport1.Simple2.Appender[MA, S, T] = new AppenderSupport1.Simple2.Appender[MA, S, T] {

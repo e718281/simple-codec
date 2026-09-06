@@ -44,7 +44,7 @@ trait AppenderSupport3[HListLike, AppLike[_, _ <: HListLike] <: HListLike, HZero
                       ): ctx.SupportInstance[HListLike @for(i2 <- 2 to i1){ , HListLike }] = {
                         if (len > 0) {
                           val nextModel = model
-                            .next[Any, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing]
+                            .next[Any, Nothing, Nothing, Nothing, Nothing]
                             .asInstanceOf[
                               ctx.SupportInstance[HListLike @for(i2 <- 2 to i1){ , HListLike }]
                             ]

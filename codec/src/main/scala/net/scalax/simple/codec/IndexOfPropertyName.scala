@@ -1,7 +1,8 @@
 package net.scalax.simple.codec
 
-import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
+import net.scalax.simple.adt.nat.support.v5.{AppenderSupport1, AppenderSupport4}
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
+import net.scalax.simple.codec.to_list_generic.{Fold1FGenerc, ToListByTheSameTypeGeneric}
 
 trait IndexOfPropertyName[F[_[_]]] {
   def ofName(input1: String, model: F[({ type T1[_] = String })#T1]): Int
@@ -53,10 +54,13 @@ object IndexOfPropertyName {
     }
 
   class Builder[F[_[_]]] {
-    def derived(appender1: AppenderSupport1.Simple1.Release[F]): IndexOfPropertyName[F] = new IndexOfPropertyName[F] {
+    def derived(sp1: AppenderSupport1.Simple1.Release[F]): IndexOfPropertyName[F] = new IndexOfPropertyName[F] {
       override def ofName(input1: String, model: F[({ type T1[_] = String })#T1]): Int = {
-        val containFunc = appender1.append[ContainsString, ({ type T1[_] = String })#T1](appendMonad(input1), toNamed(input1))
-        containFunc.input(model).getOrElse(throw new Exception(s"Not confirm property name.(name: $input1)")).size
+        val fold1FGenerc: Fold1FGenerc[F]                             = Fold1FGenerc[F].derived(sp1)
+        val toListByTheSameTypeGeneric: ToListByTheSameTypeGeneric[F] = ToListByTheSameTypeGeneric[F].derived(fold1FGenerc)
+        def nameList: List[String]                                    =
+          toListByTheSameTypeGeneric.toListByTheSameType[String, List[String]](List.empty, (l, h) => h :: l)(model)
+        nameList.indexOf(input1)
       }
     }
   }

@@ -56,6 +56,10 @@ object Runner3 {
 
     import scala.concurrent.ExecutionContext.Implicits.global
 
+    println(newTB.CommonTq.result.statements)
+    println(action2.statements)
+    println(action3.statements)
+
     val futureAction = for {
       _     <- action1
       list1 <- action2
@@ -70,9 +74,6 @@ object Runner3 {
 
     scala.concurrent.Await.result(db.run(futureAction), scala.concurrent.duration.Duration.Inf)
 
-    println(newTB.CommonTq.result.statements)
-    println(action2.statements)
-    println(action3.statements)
   }
 
 }

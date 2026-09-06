@@ -16,8 +16,8 @@ class MapGenericTest extends AnyFlatSpec with should.Matchers {
     val nameLabelled: CatName[CatName.Named] = modelLike.labelled.stringLabelled
     nameLabelled should be(CatName[CatName.Named]("id1", "str1", "uClass1", "name1", "namexu1"))
 
-    val mapGeneric: MapGenerc[CatName] = MapGenerc[CatName].derived(modelLike.simpleRunner.simpleRelease2)
-    val mapper                         = new MapGenerc.MapFunction[CatName.Named, Len] {
+    val mapGeneric: MapGeneric[CatName] = MapGeneric[CatName].derived(modelLike.simpleRunner.simpleRelease2)
+    val mapper                          = new MapGeneric.MapFunction[CatName.Named, Len] {
       override def map[X1](in: String): Int = in.length
     }
     val nameSize: CatName[Len] = mapGeneric.map[CatName.Named, Len](mapper)(nameLabelled)
