@@ -1,6 +1,6 @@
 package net.scalax.simple.codec
 
-import slick.ast.{ColumnOption, TypedType}
+import slick.ast.ColumnOption
 
 trait ColumnOpt[T] extends (ColumnOpt.Opt[T] => ColumnOpt.ColumnOptAbs[T]) with ColumnOpt.ColumnOptAbs[T] {
   ColumnOptSelf =>
