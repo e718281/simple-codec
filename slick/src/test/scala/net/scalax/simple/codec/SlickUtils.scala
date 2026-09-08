@@ -44,13 +44,14 @@ trait SlickUtils[V <: JdbcProfile] {
     def columnOption: ColOpt => ColOpt
 
     private val utilsWrap: UtilsWrap[F, Model, slickProfile.type] =
-      new UtilsWrap[F, Model, slickProfile.type](slickProfile, basedInstalled, basedInstalledlabelled) {
+      new UtilsWrap[F, Model, slickProfile.type](slickProfile) {
         override val tb: Table[Model] = CommonTableSelf
       }
 
-    val repModel: Columns = utilsWrap.userRep(basedInstalled, columnOption(colOpt), typedType)
+    val repModel: Columns = utilsWrap.userRep(basedInstalled, columnOption(colOpt), typedType, basedInstalledlabelled)
 
-    override def * : slick.lifted.ProvenShape[Model] = utilsWrap.mapShape(userShapeGeneric, repModel, classTag, modelGet, modelSet)
+    override def * : slick.lifted.ProvenShape[Model] =
+      utilsWrap.mapShape(basedInstalled, userShapeGeneric, repModel, classTag, modelGet, modelSet)
   }
 
   abstract class CommonTableF[F[_[_]]](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit

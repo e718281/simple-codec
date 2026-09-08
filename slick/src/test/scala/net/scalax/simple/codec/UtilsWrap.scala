@@ -6,6 +6,7 @@ import net.scalax.simple.codec.to_list_generic.{
   BasedInstalledLabelled,
   BasedInstalledSimpleProduct,
   Fold1FGenerc,
+  PojoInstance,
   ToListByTheSameTypeGeneric
 }
 import slick.ast.TypedType
@@ -13,37 +14,34 @@ import slick.jdbc.JdbcProfile
 import slick.lifted.ShapedValue
 
 abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
-  val slickProfile: V,
-  bi: BasedInstalledSimpleProduct[F],
-  named: BasedInstalledLabelled[F]
+  val slickProfile: V
 ) {
   import slickProfile.api._
 
   val tb: Table[Model]
 
-  private val folderGeneric: Fold1FGenerc[F]                                = Fold1FGenerc[F].derived(bi.simpleRunner.simpleRelease1)
-  private val toListGeneric: ToListByTheSameTypeGeneric[F]                  = ToListByTheSameTypeGeneric[F].derived(folderGeneric)
-  private val fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[F] =
-    FromListByTheSameTypeGeneric[F].derived(bi.simpleRunner.simpleRelease1)
-
   type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
   type Id[T]     = T
 
-  private def helperUtil: helperUtils[F] =
-    new helperUtils[F](toListGeneric = toListGeneric, fromListByTheSameTypeGeneric = fromListByTheSameTypeGeneric)
-
   def mapShape(
+    bi: BasedInstalledSimpleProduct[F],
     shapeModel: F[ShapeF],
     repModel: F[Rep],
     cst: scala.reflect.ClassTag[Model],
     modelGet: ModelGet[F, Model],
     modelSet: ModelSet[F, Model]
   ): slick.lifted.MappedProjection[Model] = {
-    import slick.collection.heterogeneous.{HList => SlickHList}
-    val shapedValue: ShapedValue[SlickHList, SlickHList] = anyToShapedValue(helperUtil.toRep(repModel))(helperUtil.toShape(shapeModel))
+    val folderGeneric: Fold1FGenerc[F]                                = Fold1FGenerc[F].derived(bi.simpleRunner.simpleRelease1)
+    val toListGeneric: ToListByTheSameTypeGeneric[F]                  = ToListByTheSameTypeGeneric[F].derived(folderGeneric)
+    val fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[F] =
+      FromListByTheSameTypeGeneric[F].derived(bi.simpleRunner.simpleRelease1)
 
-    val from1: F[Id] => SlickHList = helperUtil.fromModel
-    val to1: SlickHList => F[Id]   = helperUtil.toModel
+    import slick.collection.heterogeneous.{HList => SlickHList}
+    val shapedValue: ShapedValue[SlickHList, SlickHList] =
+      anyToShapedValue(helperUtils.toRep[F](repModel, toListGeneric))(helperUtils.toShape(shapeModel, toListGeneric))
+
+    val from1: F[Id] => SlickHList = fId => helperUtils.fromModel[F](fId, toListGeneric)
+    val to1: SlickHList => F[Id]   = hlist => helperUtils.toModel[F](hlist, fromListByTheSameTypeGeneric)
 
     ShapedValueCompat.mapToPro[SlickHList, SlickHList, Model](
       shapedValue,
@@ -61,7 +59,8 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
   def userRep(
     labelled: BasedInstalledSimpleProduct[F],
     opt: F[ColumnOpt],
-    typedType: F[TypedType]
+    typedType: F[TypedType],
+    named: BasedInstalledLabelled[F]
   ): F[Rep] = {
     val l1 = named.labelled.stringLabelled
 
@@ -118,14 +117,14 @@ import slick.collection.heterogeneous.HList.{HListShape => SlickHListShape}
 import slick.collection.heterogeneous.{HCons => SlickHCons, HList => SlickHList, HNil => SlickHNil}
 import slick.lifted.{FlatShapeLevel, Rep, Shape}
 
-private class helperUtils[ModelF[_[_]]](
-  toListGeneric: ToListByTheSameTypeGeneric[ModelF],
-  fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[ModelF]
-) {
+private object helperUtils {
 
   type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 
-  def toShape(t1: ModelF[ShapeF]): SlickHListShape[FlatShapeLevel, SlickHList, SlickHList, SlickHList] = {
+  def toShape[ModelF[_[_]]](
+    t1: ModelF[ShapeF],
+    toListGeneric: ToListByTheSameTypeGeneric[ModelF]
+  ): SlickHListShape[FlatShapeLevel, SlickHList, SlickHList, SlickHList] = {
     val toListFunc = toListGeneric.toListByTheSameType[ShapeF[Any], SlickHListShape[
       FlatShapeLevel,
       SlickHList,
@@ -155,7 +154,7 @@ private class helperUtils[ModelF[_[_]]](
     toListFunc(model2)
   }
 
-  def toRep(t1: ModelF[Rep]): SlickHList = {
+  def toRep[ModelF[_[_]]](t1: ModelF[Rep], toListGeneric: ToListByTheSameTypeGeneric[ModelF]): SlickHList = {
     val toListFunc = toListGeneric.toListByTheSameType[Rep[Any], SlickHList](
       SlickHNil,
       (sum, each) => each :: sum
@@ -166,7 +165,7 @@ private class helperUtils[ModelF[_[_]]](
     toListFunc(model2)
   }
 
-  def fromModel(m: ModelF[({ type IdImpl[T] = T })#IdImpl]): SlickHList = {
+  def fromModel[ModelF[_[_]]](m: ModelF[({ type IdImpl[T] = T })#IdImpl], toListGeneric: ToListByTheSameTypeGeneric[ModelF]): SlickHList = {
     val toListFunc = toListGeneric.toListByTheSameType[Any, SlickHList](
       SlickHNil,
       (sum, each) => each :: sum
@@ -176,7 +175,10 @@ private class helperUtils[ModelF[_[_]]](
     toListFunc(model2)
   }
 
-  def toModel(m: SlickHList): ModelF[({ type IdImpl[T] = T })#IdImpl] = {
+  def toModel[ModelF[_[_]]](
+    m: SlickHList,
+    fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[ModelF]
+  ): ModelF[({ type IdImpl[T] = T })#IdImpl] = {
     val fromListFunc = fromListByTheSameTypeGeneric.fromListByTheSameType[Any, SlickHList](
       t => t.asInstanceOf[SlickHCons[Any, SlickHList]].head,
       t => t.asInstanceOf[SlickHCons[Any, SlickHList]].tail
