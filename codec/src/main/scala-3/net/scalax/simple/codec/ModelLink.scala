@@ -21,7 +21,7 @@ object ModelLink {
     override def size: ModelSize[FMM]             = ModelSize[FMM].derived(cNamed)
     override def labelled: CompatLabelled[FMM]    = new CompatLabelledImplHelper.Impl[FMM] {
       override def stringLabelled: FMM[({ type T1[_] = String })#T1] = ModelLinkCommonFSelf.FFromHList[({ type T1[_] = String })#T1](cNamed)
-      override def mapGenerc: MapGenerc[FMM] = MapGenerc[FMM].derived(ModelLinkCommonFSelf.simpleRunner.simpleRelease2)
+      override def mapGeneric: MapGeneric[FMM] = MapGeneric[FMM].derived(ModelLinkCommonFSelf.simpleRunner.simpleRelease2)
     }
   }
 
@@ -50,8 +50,8 @@ object ModelLink {
         new CompatLabelledImplHelper.Impl[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] {
           override def stringLabelled: PojoInstance[({ type T1[_] = String })#T1, Model] =
             ModelLinkPojoSelf.FFromHList[({ type T1[_] = String })#T1](cNamed)
-          override def mapGenerc: MapGenerc[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
-            MapGenerc[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
+          override def mapGeneric: MapGeneric[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
+            MapGeneric[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
         }
     }
 

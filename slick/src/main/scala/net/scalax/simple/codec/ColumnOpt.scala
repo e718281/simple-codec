@@ -20,12 +20,6 @@ object ColumnOpt {
     ColumnOptAbsSelf =>
     def name: Option[String]
     def opts: Seq[ColumnOption[TR]]
-    def typedType: Option[TypedType[TR]]                            = Option.empty
-    def withTypedType(implicit tt: TypedType[TR]): ColumnOptAbs[TR] = new ColumnOptAbs[TR] {
-      override def name: Option[String]             = ColumnOptAbsSelf.name
-      override def opts: Seq[ColumnOption[TR]]      = ColumnOptAbsSelf.opts
-      override def typedType: Option[TypedType[TR]] = Option(tt)
-    }
   }
 
   trait Opt[T] {

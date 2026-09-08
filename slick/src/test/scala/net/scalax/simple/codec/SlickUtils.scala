@@ -1,12 +1,13 @@
 package net.scalax.simple.codec
 package aa
 
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, ModelLink, PojoInstance}
 import slick.ast.TypedType
 import slick.jdbc.JdbcProfile
 
 trait SlickUtils[V <: JdbcProfile] {
   val slickProfile: V
+  type Id[T] = T
 
   import slickProfile.api._
 
@@ -55,26 +56,16 @@ trait SlickUtils[V <: JdbcProfile] {
   abstract class CommonTableF[F[_[_]]](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
     typedType: F[TypedType],
     userShapeGeneric: F[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF],
-    classTag: scala.reflect.ClassTag[F[({ type IDF[XU] = XU })#IDF]],
-    basedInstalled: BasedInstalledSimpleProduct[F],
-    basedInstalledlabelled: BasedInstalledLabelled[F]
-  ) extends CommonTable[F, F[({ type IDF[XU] = XU })#IDF]](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName)(
-        typedType = typedType,
-        userShapeGeneric = userShapeGeneric,
-        classTag = classTag,
-        basedInstalled = basedInstalled,
-        basedInstalledlabelled = basedInstalledlabelled,
-        modelGet = identity[F[({ type IDF[XU] = XU })#IDF]],
-        modelSet = identity[F[({ type IDF[XU] = XU })#IDF]]
-      ) {
+    classTag: scala.reflect.ClassTag[F[Id]],
+    modelLink: ModelLink.F[F]
+  ) extends CommonTable[F, F[({ type IDF[XU] = XU })#IDF]](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName) {
     CommonTableSelf =>
 
     def this(_tableTag: Tag, _tableName: String)(implicit
       typedType: F[TypedType],
       userShapeGeneric: F[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF],
       classTag: scala.reflect.ClassTag[F[({ type IDF[XU] = XU })#IDF]],
-      basedInstalled: BasedInstalledSimpleProduct[F],
-      basedInstalledlabelled: BasedInstalledLabelled[F]
+      modelLink: ModelLink.F[F]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
   }
@@ -83,30 +74,25 @@ trait SlickUtils[V <: JdbcProfile] {
     typedType: PojoInstance[TypedType, Model],
     userShapeGeneric: PojoInstance[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF, Model],
     classTag: scala.reflect.ClassTag[Model],
-    modelGet: ModelGet[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model],
-    modelSet: ModelSet[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model],
-    basedInstalled: BasedInstalledSimpleProduct[({ type TypeF[UX[_]] = PojoInstance[UX, Model] })#TypeF],
-    basedInstalledlabelled: BasedInstalledLabelled[({ type TypeF[UX[_]] = PojoInstance[UX, Model] })#TypeF]
+    modelLink: ModelLink.Pojo[Model]
   ) extends CommonTable[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model](
         _tableTag = _tableTag,
         _schemaName = _schemaName,
         _tableName = _tableName
-      )
-      with PojoInstance[Rep, Model] {
+      ) {
     CommonTableSelf =>
 
     def this(_tableTag: Tag, _tableName: String)(implicit
       typedType: PojoInstance[TypedType, Model],
       userShapeGeneric: PojoInstance[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF, Model],
       classTag: scala.reflect.ClassTag[Model],
-      modelGet: ModelGet[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model],
-      modelSet: ModelSet[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model],
-      basedInstalled: BasedInstalledSimpleProduct[({ type TypeF[UX[_]] = PojoInstance[UX, Model] })#TypeF],
-      basedInstalledlabelled: BasedInstalledLabelled[({ type TypeF[UX[_]] = PojoInstance[UX, Model] })#TypeF]
+      modelLink: ModelLink.Pojo[Model]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
-    override def instance: Any = CommonTableSelf.repModel.instance
+  }
 
+  object CommonTablePojo {
+    implicit def conv[Model](com: CommonTablePojo[Model]): PojoInstance[Rep, Model] = com.repModel
   }
 
 }

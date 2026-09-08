@@ -2,7 +2,6 @@ package net.scalax.simple
 package codec
 
 import io.circe.generic.extras.JsonKey
-import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.codec.to_list_generic.BasedInstalledSimpleProduct
 

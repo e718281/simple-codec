@@ -6,8 +6,6 @@ import net.scalax.simple.codec.to_list_generic.{
   BasedInstalledLabelled,
   BasedInstalledSimpleProduct,
   Fold1FGenerc,
-  ModelLinkPojo,
-  PojoInstance,
   ToListByTheSameTypeGeneric
 }
 import slick.ast.TypedType
@@ -27,22 +25,15 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
   private val toListGeneric: ToListByTheSameTypeGeneric[F]                  = ToListByTheSameTypeGeneric[F].derived(folderGeneric)
   private val fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[F] =
     FromListByTheSameTypeGeneric[F].derived(bi.simpleRunner.simpleRelease1)
-  private val indexOfPropertyName: IndexOfPropertyName[F] = IndexOfPropertyName[F].derived(bi.simpleRunner.simpleRelease1)
 
   type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
+  type Id[T]     = T
 
-  def getIndexByName1(n: String)(implicit bi: BasedInstalledSimpleProduct[F]): Int =
-    indexOfPropertyName.ofName(n, named.labelled.stringLabelled)
-
-  private def helperUtil: helperUtils[slickProfile.type, F] = new helperUtils[slickProfile.type, F](
-    slickProfile = slickProfile
-  )(
-    toListGeneric = toListGeneric,
-    fromListByTheSameTypeGeneric = fromListByTheSameTypeGeneric
-  )
+  private def helperUtil: helperUtils[F] =
+    new helperUtils[F](toListGeneric = toListGeneric, fromListByTheSameTypeGeneric = fromListByTheSameTypeGeneric)
 
   def mapShape(
-    shapeModel: F[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF],
+    shapeModel: F[ShapeF],
     repModel: F[Rep],
     cst: scala.reflect.ClassTag[Model],
     modelGet: ModelGet[F, Model],
@@ -51,8 +42,8 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
     import slick.collection.heterogeneous.{HList => SlickHList}
     val shapedValue: ShapedValue[SlickHList, SlickHList] = anyToShapedValue(helperUtil.toRep(repModel))(helperUtil.toShape(shapeModel))
 
-    val from1: F[({ type IDF[T] = T })#IDF] => SlickHList = helperUtil.fromModel
-    val to1: SlickHList => F[({ type IDF[T] = T })#IDF]   = helperUtil.toModel
+    val from1: F[Id] => SlickHList = helperUtil.fromModel
+    val to1: SlickHList => F[Id]   = helperUtil.toModel
 
     ShapedValueCompat.mapToPro[SlickHList, SlickHList, Model](
       shapedValue,
@@ -64,8 +55,7 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
 
   private def colN[T](name: String, func: ColumnOpt[T], tt: TypedType[T]): Rep[T] = {
     val columnName = func.name.getOrElse(name)
-    val tpToUse    = func.typedType.getOrElse(tt)
-    tb.column(columnName, func.opts: _*)(tpToUse)
+    tb.column(columnName, func.opts: _*)(tt)
   }
 
   def userRep(
@@ -126,12 +116,12 @@ abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
 
 import slick.collection.heterogeneous.HList.{HListShape => SlickHListShape}
 import slick.collection.heterogeneous.{HCons => SlickHCons, HList => SlickHList, HNil => SlickHNil}
+import slick.lifted.{FlatShapeLevel, Rep, Shape}
 
-private class helperUtils[V <: JdbcProfile, ModelF[_[_]]](val slickProfile: V)(
+private class helperUtils[ModelF[_[_]]](
   toListGeneric: ToListByTheSameTypeGeneric[ModelF],
   fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[ModelF]
 ) {
-  import slickProfile.api._
 
   type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 
