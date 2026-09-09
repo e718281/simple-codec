@@ -1,7 +1,7 @@
 package net.scalax.simple.codec
 package aa
 
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, ModelLink, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, FillIdentity, ModelLink, PojoInstance}
 import slick.ast.TypedType
 import slick.jdbc.JdbcProfile
 
@@ -11,8 +11,6 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
   import slickProfile.api._
 
   abstract class CommonTable[F[_[_]], Model](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
-    typedType: F[TypedType],
-    userShapeGeneric: F[CodecUtils.ShapeF],
     classTag: scala.reflect.ClassTag[Model],
     modelGet: ModelGet[F, Model],
     modelSet: ModelSet[F, Model],
@@ -22,8 +20,6 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     CommonTableSelf =>
 
     def this(_tableTag: Tag, _tableName: String)(implicit
-      typedType: F[TypedType],
-      userShapeGeneric: F[CodecUtils.ShapeF],
       classTag: scala.reflect.ClassTag[Model],
       modelGet: ModelGet[F, Model],
       modelSet: ModelSet[F, Model],
@@ -42,32 +38,32 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
 
     def columnOption: ColOpt => ColOpt
 
-    val repModel: Columns = CodecUtils.userRep(basedInstalled, CommonTableSelf, columnOption(colOpt), typedType, basedInstalledlabelled)
+    def typedType: F[TypedType]
+    def shapeCol: F[CodecUtils.ShapeF]
+
+    val rep: Columns = CodecUtils.userRep(basedInstalled, CommonTableSelf, columnOption(colOpt), typedType, basedInstalledlabelled)
 
     override def * : slick.lifted.ProvenShape[Model] =
-      CodecUtils.mapShape(basedInstalled, userShapeGeneric, repModel, classTag, modelGet, modelSet)
+      CodecUtils.mapShape(basedInstalled, shapeCol, rep, classTag, modelGet, modelSet)
   }
 
   abstract class CommonTableF[F[_[_]]](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
-    typedType: F[TypedType],
-    userShapeGeneric: F[CodecUtils.ShapeF],
     classTag: scala.reflect.ClassTag[F[CodecUtils.Id]],
     modelLink: ModelLink.F[F]
   ) extends CommonTable[F, F[CodecUtils.Id]](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName) {
     CommonTableSelf =>
 
     def this(_tableTag: Tag, _tableName: String)(implicit
-      typedType: F[TypedType],
-      userShapeGeneric: F[CodecUtils.ShapeF],
       classTag: scala.reflect.ClassTag[F[CodecUtils.Id]],
       modelLink: ModelLink.F[F]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
+    def typedTypeBuilder: FillIdentity.ModelFBuilder[F[TypedType]]     = FillIdentity.F[TypedType, F]
+    def shapeBuilder: FillIdentity.ModelFBuilder[F[CodecUtils.ShapeF]] = FillIdentity.F[CodecUtils.ShapeF, F]
+
   }
 
   abstract class CommonTablePojo[Model](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
-    typedType: PojoInstance[TypedType, Model],
-    userShapeGeneric: PojoInstance[CodecUtils.ShapeF, Model],
     classTag: scala.reflect.ClassTag[Model],
     modelLink: ModelLink.Pojo[Model]
   ) extends CommonTable[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model](
@@ -78,16 +74,13 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     CommonTableSelf =>
 
     def this(_tableTag: Tag, _tableName: String)(implicit
-      typedType: PojoInstance[TypedType, Model],
-      userShapeGeneric: PojoInstance[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF, Model],
       classTag: scala.reflect.ClassTag[Model],
       modelLink: ModelLink.Pojo[Model]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
-  }
+    def typedTypeBuilder: FillIdentity.ModelPojoBuilder[TypedType, Model]     = FillIdentity.Pojo[TypedType, Model]
+    def shapeBuilder: FillIdentity.ModelPojoBuilder[CodecUtils.ShapeF, Model] = FillIdentity.Pojo[CodecUtils.ShapeF, Model]
 
-  object CommonTablePojo {
-    implicit def conv[Model](com: CommonTablePojo[Model]): PojoInstance[Rep, Model] = com.repModel
   }
 
 }

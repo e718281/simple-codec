@@ -1,24 +1,19 @@
 package net.scalax.simple.codec
 
 import net.scalax.simple.codec.aa.SlickUtils
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo}
-import slick.ast.TypedType
+import net.scalax.simple.codec.to_list_generic.{ModelLink, PojoInstance}
 import slick.jdbc.JdbcProfile
-import slick.lifted.{FlatShapeLevel, Rep, Shape}
 
 case class User3Cat(id: Option[Int], first: String, last: String, nickName: String, age: Long)
 object User3Cat {
   implicit def appender: ModelLink.Pojo[User3Cat] = ModelLink.Pojo[User3Cat].derived
-
-  type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 
   abstract class User3CatTable[V <: JdbcProfile] extends SlickUtils[V] {
     override val slickProfile: V
 
     import slickProfile.api._
 
-    implicit def userTypedTypeGeneric: FillIdentity.Pojo[TypedType, User3Cat] = FillIdentity.Pojo[TypedType, User3Cat].derived
-    implicit def userShapeGeneric: FillIdentity.Pojo[ShapeF, User3Cat]        = FillIdentity.Pojo[ShapeF, User3Cat].derived
+    type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 
     class CommonT(tag: Tag) extends CommonTablePojo[User3Cat](tag, "person") {
       override def columnOption: ColOpt => ColOpt =
@@ -26,6 +21,12 @@ object User3Cat {
           .copy(_.first)(_.column("first_name"))
           .copy(_.last)(_.column("last_name"))
           .copy(_.nickName)(_.column("nick_name"))
+
+      override def typedType = typedTypeBuilder.derived
+      override def shapeCol  = shapeBuilder.derived
+    }
+    object CommonT {
+      implicit def cv(table: CommonT): PojoInstance[Rep, User3Cat] = table.rep
     }
 
     def CommonTq: TableQuery[CommonT] = TableQuery(cons => new CommonT(cons))
@@ -52,7 +53,7 @@ object Runner3 {
 
     val action1 = DBIO.seq(sql1, sql2, sql3, sql4)
     val action2 = newTB.CommonTq.result
-    val action3 = newTB.CommonTq.filter(_.get(_.first) endsWith "3").filter(_.get(_.last) startsWith "3").result
+    val action3 = newTB.CommonTq.filter(_.rep.get(_.first) endsWith "3").filter(_.rep.get(_.last) startsWith "3").result
 
     import scala.concurrent.ExecutionContext.Implicits.global
 
