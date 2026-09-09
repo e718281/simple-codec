@@ -13,176 +13,179 @@ import slick.ast.TypedType
 import slick.jdbc.JdbcProfile
 import slick.lifted.ShapedValue
 
-abstract class UtilsWrap[F[_[_]], Model, V <: JdbcProfile](
+trait UtilsWrap[V <: JdbcProfile] {
   val slickProfile: V
-) {
   import slickProfile.api._
 
-  val tb: Table[Model]
+  object CodecUtils {
+    type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
+    type Id[T]     = T
 
-  type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
-  type Id[T]     = T
+    def mapShape[F[_[_]], Model](
+      bi: BasedInstalledSimpleProduct[F],
+      shapeModel: F[ShapeF],
+      repModel: F[Rep],
+      cst: scala.reflect.ClassTag[Model],
+      modelGet: ModelGet[F, Model],
+      modelSet: ModelSet[F, Model]
+    ): slick.lifted.MappedProjection[Model] = {
+      val folderGeneric: Fold1FGenerc[F]                                = Fold1FGenerc[F].derived(bi.simpleRunner.simpleRelease1)
+      val toListGeneric: ToListByTheSameTypeGeneric[F]                  = ToListByTheSameTypeGeneric[F].derived(folderGeneric)
+      val fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[F] =
+        FromListByTheSameTypeGeneric[F].derived(bi.simpleRunner.simpleRelease1)
 
-  def mapShape(
-    bi: BasedInstalledSimpleProduct[F],
-    shapeModel: F[ShapeF],
-    repModel: F[Rep],
-    cst: scala.reflect.ClassTag[Model],
-    modelGet: ModelGet[F, Model],
-    modelSet: ModelSet[F, Model]
-  ): slick.lifted.MappedProjection[Model] = {
-    val folderGeneric: Fold1FGenerc[F]                                = Fold1FGenerc[F].derived(bi.simpleRunner.simpleRelease1)
-    val toListGeneric: ToListByTheSameTypeGeneric[F]                  = ToListByTheSameTypeGeneric[F].derived(folderGeneric)
-    val fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[F] =
-      FromListByTheSameTypeGeneric[F].derived(bi.simpleRunner.simpleRelease1)
+      import slick.collection.heterogeneous.{HList => SlickHList}
+      val shapedValue: ShapedValue[SlickHList, SlickHList] =
+        anyToShapedValue(helperUtils.toRep[F](repModel, toListGeneric))(helperUtils.toShape(shapeModel, toListGeneric))
 
-    import slick.collection.heterogeneous.{HList => SlickHList}
-    val shapedValue: ShapedValue[SlickHList, SlickHList] =
-      anyToShapedValue(helperUtils.toRep[F](repModel, toListGeneric))(helperUtils.toShape(shapeModel, toListGeneric))
+      val from1: F[Id] => SlickHList = fId => helperUtils.fromModel[F](fId, toListGeneric)
+      val to1: SlickHList => F[Id]   = hlist => helperUtils.toModel[F](hlist, fromListByTheSameTypeGeneric)
 
-    val from1: F[Id] => SlickHList = fId => helperUtils.fromModel[F](fId, toListGeneric)
-    val to1: SlickHList => F[Id]   = hlist => helperUtils.toModel[F](hlist, fromListByTheSameTypeGeneric)
-
-    ShapedValueCompat.mapToPro[SlickHList, SlickHList, Model](
-      shapedValue,
-      from1.compose(modelGet.toIdentity),
-      to1.andThen(modelSet.fromIdentity),
-      modelClassTag = cst
-    )
-  }
-
-  private def colN[T](name: String, func: ColumnOpt[T], tt: TypedType[T]): Rep[T] = {
-    val columnName = func.name.getOrElse(name)
-    tb.column(columnName, func.opts: _*)(tt)
-  }
-
-  def userRep(
-    labelled: BasedInstalledSimpleProduct[F],
-    opt: F[ColumnOpt],
-    typedType: F[TypedType],
-    named: BasedInstalledLabelled[F]
-  ): F[Rep] = {
-    val l1 = named.labelled.stringLabelled
-
-    type Type1[T1]             = String
-    type TypeFunc4[A, B, C, D] = (A, B, C) => D
-
-    val appender = new AppenderSupport1.Simple4.Appender[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] {
-      override def append[T, B1, B2, B3, B4, C1, C2, C3, C4](
-        abc1: ABCFunc[String, B1, C1],
-        abc2: ABCFunc[ColumnOpt[T], B2, C2],
-        abc3: ABCFunc[TypedType[T], B3, C3],
-        abc4: ABCFunc[Rep[T], B4, C4],
-        ma: (B1, B2, B3) => B4
-      ): (C1, C2, C3) => C4 = (c1: C1, c2: C2, c3: C3) => {
-        val str1: String            = abc1.takeHead(c1)
-        val b1: B1                  = abc1.takeTail(c1)
-        val colOpt: ColumnOpt[T]    = abc2.takeHead(c2)
-        val b2: B2                  = abc2.takeTail(c2)
-        val typedType: TypedType[T] = abc3.takeHead(c3)
-        val b3: B3                  = abc3.takeTail(c3)
-        val b4: B4                  = ma(b1, b2, b3)
-        val repT: Rep[T]            = colN[T](str1, colOpt, typedType)
-
-        abc4.append(repT, b4)
-      }
+      ShapedValueCompat.mapToPro[SlickHList, SlickHList, Model](
+        shapedValue,
+        from1.compose(modelGet.toIdentity),
+        to1.andThen(modelSet.fromIdentity),
+        modelClassTag = cst
+      )
     }
 
-    val one: AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] =
-      new AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] {
-        override def one[T, B1, B2, B3, B4](
-          func1: FromToFunc[String, B1],
-          func2: FromToFunc[ColumnOpt[T], B2],
-          func3: FromToFunc[TypedType[T], B3],
-          func4: FromToFunc[Rep[T], B4]
-        ): (B1, B2, B3) => B4 = (b1: B1, b2: B2, b3: B3) => {
-          val str1: String            = func1.to(b1)
-          val colOpt: ColumnOpt[T]    = func2.to(b2)
-          val typedType: TypedType[T] = func3.to(b3)
-          val repT: Rep[T]            = colN[T](str1, colOpt, typedType)
+    private def colN[Model, T](tb: Table[Model], name: String, func: ColumnOpt[T], tt: TypedType[T]): Rep[T] = {
+      val columnName = func.name.getOrElse(name)
+      tb.column(columnName, func.opts: _*)(tt)
+    }
 
-          func4.from(repT)
+    def userRep[F[_[_]], Model](
+      labelled: BasedInstalledSimpleProduct[F],
+      tb: Table[Model],
+      opt: F[ColumnOpt],
+      typedType: F[TypedType],
+      named: BasedInstalledLabelled[F]
+    ): F[Rep] = {
+      val l1 = named.labelled.stringLabelled
+
+      type Type1[T1]             = String
+      type TypeFunc4[A, B, C, D] = (A, B, C) => D
+
+      val appender = new AppenderSupport1.Simple4.Appender[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] {
+        override def append[T, B1, B2, B3, B4, C1, C2, C3, C4](
+          abc1: ABCFunc[String, B1, C1],
+          abc2: ABCFunc[ColumnOpt[T], B2, C2],
+          abc3: ABCFunc[TypedType[T], B3, C3],
+          abc4: ABCFunc[Rep[T], B4, C4],
+          ma: (B1, B2, B3) => B4
+        ): (C1, C2, C3) => C4 = (c1: C1, c2: C2, c3: C3) => {
+          val str1: String            = abc1.takeHead(c1)
+          val b1: B1                  = abc1.takeTail(c1)
+          val colOpt: ColumnOpt[T]    = abc2.takeHead(c2)
+          val b2: B2                  = abc2.takeTail(c2)
+          val typedType: TypedType[T] = abc3.takeHead(c3)
+          val b3: B3                  = abc3.takeTail(c3)
+          val b4: B4                  = ma(b1, b2, b3)
+          val repT: Rep[T]            = colN[Model, T](tb, str1, colOpt, typedType)
+
+          abc4.append(repT, b4)
         }
       }
 
-    val func: (F[Type1], F[ColumnOpt], F[TypedType]) => F[Rep] =
-      labelled.simpleRunner.simpleRelease4.append[TypeFunc4, Type1, ColumnOpt, TypedType, Rep](appender = appender, zero = one)
+      val one: AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] =
+        new AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] {
+          override def one[T, B1, B2, B3, B4](
+            func1: FromToFunc[String, B1],
+            func2: FromToFunc[ColumnOpt[T], B2],
+            func3: FromToFunc[TypedType[T], B3],
+            func4: FromToFunc[Rep[T], B4]
+          ): (B1, B2, B3) => B4 = (b1: B1, b2: B2, b3: B3) => {
+            val str1: String            = func1.to(b1)
+            val colOpt: ColumnOpt[T]    = func2.to(b2)
+            val typedType: TypedType[T] = func3.to(b3)
+            val repT: Rep[T]            = colN[Model, T](tb, str1, colOpt, typedType)
 
-    func(l1, opt, typedType)
+            func4.from(repT)
+          }
+        }
+
+      val func: (F[Type1], F[ColumnOpt], F[TypedType]) => F[Rep] =
+        labelled.simpleRunner.simpleRelease4.append[TypeFunc4, Type1, ColumnOpt, TypedType, Rep](appender = appender, zero = one)
+
+      func(l1, opt, typedType)
+    }
+
   }
 
-}
+  import slick.collection.heterogeneous.HList.{HListShape => SlickHListShape}
+  import slick.collection.heterogeneous.{HCons => SlickHCons, HList => SlickHList, HNil => SlickHNil}
+  import slick.lifted.{FlatShapeLevel, Rep, Shape}
 
-import slick.collection.heterogeneous.HList.{HListShape => SlickHListShape}
-import slick.collection.heterogeneous.{HCons => SlickHCons, HList => SlickHList, HNil => SlickHNil}
-import slick.lifted.{FlatShapeLevel, Rep, Shape}
+  private object helperUtils {
 
-private object helperUtils {
+    type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 
-  type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
-
-  def toShape[ModelF[_[_]]](
-    t1: ModelF[ShapeF],
-    toListGeneric: ToListByTheSameTypeGeneric[ModelF]
-  ): SlickHListShape[FlatShapeLevel, SlickHList, SlickHList, SlickHList] = {
-    val toListFunc = toListGeneric.toListByTheSameType[ShapeF[Any], SlickHListShape[
-      FlatShapeLevel,
-      SlickHList,
-      SlickHList,
-      SlickHList
-    ]](
-      SlickHList.hnilShape.asInstanceOf[SlickHListShape[
+    def toShape[ModelF[_[_]]](
+      t1: ModelF[ShapeF],
+      toListGeneric: ToListByTheSameTypeGeneric[ModelF]
+    ): SlickHListShape[FlatShapeLevel, SlickHList, SlickHList, SlickHList] = {
+      val toListFunc = toListGeneric.toListByTheSameType[ShapeF[Any], SlickHListShape[
         FlatShapeLevel,
         SlickHList,
         SlickHList,
         SlickHList
-      ]],
-      (sum, each) =>
-        SlickHList
-          .hconsShape(each, sum)
-          .asInstanceOf[SlickHListShape[
-            FlatShapeLevel,
-            SlickHList,
-            SlickHList,
-            SlickHList
-          ]]
-    )
+      ]](
+        SlickHList.hnilShape.asInstanceOf[SlickHListShape[
+          FlatShapeLevel,
+          SlickHList,
+          SlickHList,
+          SlickHList
+        ]],
+        (sum, each) =>
+          SlickHList
+            .hconsShape(each, sum)
+            .asInstanceOf[SlickHListShape[
+              FlatShapeLevel,
+              SlickHList,
+              SlickHList,
+              SlickHList
+            ]]
+      )
 
-    val model2: ModelF[({ type X1[_] = Shape[_ <: FlatShapeLevel, Rep[Any], Any, Rep[Any]] })#X1] =
-      t1.asInstanceOf[ModelF[({ type X1[_] = Shape[_ <: FlatShapeLevel, Rep[Any], Any, Rep[Any]] })#X1]]
+      val model2: ModelF[({ type X1[_] = Shape[_ <: FlatShapeLevel, Rep[Any], Any, Rep[Any]] })#X1] =
+        t1.asInstanceOf[ModelF[({ type X1[_] = Shape[_ <: FlatShapeLevel, Rep[Any], Any, Rep[Any]] })#X1]]
 
-    toListFunc(model2)
-  }
+      toListFunc(model2)
+    }
 
-  def toRep[ModelF[_[_]]](t1: ModelF[Rep], toListGeneric: ToListByTheSameTypeGeneric[ModelF]): SlickHList = {
-    val toListFunc = toListGeneric.toListByTheSameType[Rep[Any], SlickHList](
-      SlickHNil,
-      (sum, each) => each :: sum
-    )
+    def toRep[ModelF[_[_]]](t1: ModelF[Rep], toListGeneric: ToListByTheSameTypeGeneric[ModelF]): SlickHList = {
+      val toListFunc = toListGeneric.toListByTheSameType[Rep[Any], SlickHList](
+        SlickHNil,
+        (sum, each) => each :: sum
+      )
 
-    val model2: ModelF[({ type X1[_] = Rep[Any] })#X1] = t1.asInstanceOf[ModelF[({ type X1[_] = Rep[Any] })#X1]]
+      val model2: ModelF[({ type X1[_] = Rep[Any] })#X1] = t1.asInstanceOf[ModelF[({ type X1[_] = Rep[Any] })#X1]]
 
-    toListFunc(model2)
-  }
+      toListFunc(model2)
+    }
 
-  def fromModel[ModelF[_[_]]](m: ModelF[({ type IdImpl[T] = T })#IdImpl], toListGeneric: ToListByTheSameTypeGeneric[ModelF]): SlickHList = {
-    val toListFunc = toListGeneric.toListByTheSameType[Any, SlickHList](
-      SlickHNil,
-      (sum, each) => each :: sum
-    )
+    def fromModel[ModelF[_[_]]](
+      m: ModelF[({ type IdImpl[T] = T })#IdImpl],
+      toListGeneric: ToListByTheSameTypeGeneric[ModelF]
+    ): SlickHList = {
+      val toListFunc = toListGeneric.toListByTheSameType[Any, SlickHList](
+        SlickHNil,
+        (sum, each) => each :: sum
+      )
 
-    val model2: ModelF[({ type X1[_] = Any })#X1] = m.asInstanceOf[ModelF[({ type X1[_] = Any })#X1]]
-    toListFunc(model2)
-  }
+      val model2: ModelF[({ type X1[_] = Any })#X1] = m.asInstanceOf[ModelF[({ type X1[_] = Any })#X1]]
+      toListFunc(model2)
+    }
 
-  def toModel[ModelF[_[_]]](
-    m: SlickHList,
-    fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[ModelF]
-  ): ModelF[({ type IdImpl[T] = T })#IdImpl] = {
-    val fromListFunc = fromListByTheSameTypeGeneric.fromListByTheSameType[Any, SlickHList](
-      t => t.asInstanceOf[SlickHCons[Any, SlickHList]].head,
-      t => t.asInstanceOf[SlickHCons[Any, SlickHList]].tail
-    )
-    fromListFunc(m).asInstanceOf[ModelF[({ type IdImpl[T] = T })#IdImpl]]
+    def toModel[ModelF[_[_]]](
+      m: SlickHList,
+      fromListByTheSameTypeGeneric: FromListByTheSameTypeGeneric[ModelF]
+    ): ModelF[({ type IdImpl[T] = T })#IdImpl] = {
+      val fromListFunc = fromListByTheSameTypeGeneric.fromListByTheSameType[Any, SlickHList](
+        t => t.asInstanceOf[SlickHCons[Any, SlickHList]].head,
+        t => t.asInstanceOf[SlickHCons[Any, SlickHList]].tail
+      )
+      fromListFunc(m).asInstanceOf[ModelF[({ type IdImpl[T] = T })#IdImpl]]
+    }
   }
 }

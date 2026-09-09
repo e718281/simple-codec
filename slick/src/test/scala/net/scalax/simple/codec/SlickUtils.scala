@@ -5,15 +5,14 @@ import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedIns
 import slick.ast.TypedType
 import slick.jdbc.JdbcProfile
 
-trait SlickUtils[V <: JdbcProfile] {
+trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
   val slickProfile: V
-  type Id[T] = T
 
   import slickProfile.api._
 
   abstract class CommonTable[F[_[_]], Model](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
     typedType: F[TypedType],
-    userShapeGeneric: F[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF],
+    userShapeGeneric: F[CodecUtils.ShapeF],
     classTag: scala.reflect.ClassTag[Model],
     modelGet: ModelGet[F, Model],
     modelSet: ModelSet[F, Model],
@@ -24,7 +23,7 @@ trait SlickUtils[V <: JdbcProfile] {
 
     def this(_tableTag: Tag, _tableName: String)(implicit
       typedType: F[TypedType],
-      userShapeGeneric: F[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF],
+      userShapeGeneric: F[CodecUtils.ShapeF],
       classTag: scala.reflect.ClassTag[Model],
       modelGet: ModelGet[F, Model],
       modelSet: ModelSet[F, Model],
@@ -43,29 +42,24 @@ trait SlickUtils[V <: JdbcProfile] {
 
     def columnOption: ColOpt => ColOpt
 
-    private val utilsWrap: UtilsWrap[F, Model, slickProfile.type] =
-      new UtilsWrap[F, Model, slickProfile.type](slickProfile) {
-        override val tb: Table[Model] = CommonTableSelf
-      }
-
-    val repModel: Columns = utilsWrap.userRep(basedInstalled, columnOption(colOpt), typedType, basedInstalledlabelled)
+    val repModel: Columns = CodecUtils.userRep(basedInstalled, CommonTableSelf, columnOption(colOpt), typedType, basedInstalledlabelled)
 
     override def * : slick.lifted.ProvenShape[Model] =
-      utilsWrap.mapShape(basedInstalled, userShapeGeneric, repModel, classTag, modelGet, modelSet)
+      CodecUtils.mapShape(basedInstalled, userShapeGeneric, repModel, classTag, modelGet, modelSet)
   }
 
   abstract class CommonTableF[F[_[_]]](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
     typedType: F[TypedType],
-    userShapeGeneric: F[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF],
-    classTag: scala.reflect.ClassTag[F[Id]],
+    userShapeGeneric: F[CodecUtils.ShapeF],
+    classTag: scala.reflect.ClassTag[F[CodecUtils.Id]],
     modelLink: ModelLink.F[F]
-  ) extends CommonTable[F, F[({ type IDF[XU] = XU })#IDF]](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName) {
+  ) extends CommonTable[F, F[CodecUtils.Id]](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName) {
     CommonTableSelf =>
 
     def this(_tableTag: Tag, _tableName: String)(implicit
       typedType: F[TypedType],
-      userShapeGeneric: F[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF],
-      classTag: scala.reflect.ClassTag[F[({ type IDF[XU] = XU })#IDF]],
+      userShapeGeneric: F[CodecUtils.ShapeF],
+      classTag: scala.reflect.ClassTag[F[CodecUtils.Id]],
       modelLink: ModelLink.F[F]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
@@ -73,7 +67,7 @@ trait SlickUtils[V <: JdbcProfile] {
 
   abstract class CommonTablePojo[Model](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
     typedType: PojoInstance[TypedType, Model],
-    userShapeGeneric: PojoInstance[({ type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]] })#ShapeF, Model],
+    userShapeGeneric: PojoInstance[CodecUtils.ShapeF, Model],
     classTag: scala.reflect.ClassTag[Model],
     modelLink: ModelLink.Pojo[Model]
   ) extends CommonTable[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model](
