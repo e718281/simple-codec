@@ -2,7 +2,7 @@ package net.scalax.simple.codec
 package aa
 
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, FillIdentity, ModelLink, PojoInstance}
-import slick.ast.TypedType
+import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
 
 trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
@@ -36,12 +36,17 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
         override def fill[T]: ColumnOpt[T] = ColumnOpt.default[T]
       })
 
-    def columnOption: ColOpt => ColOpt
+    def columnName: F[CodecUtils.Labelled] = basedInstalledlabelled.labelled.stringLabelled
+    def columnOption: F[CodecUtils.ColOpt] = SimpleFill[F]
+      .derived(basedInstalled.simpleRunner.simpleRelease1)
+      .fill[CodecUtils.ColOpt](new SimpleFill.FillI[CodecUtils.ColOpt] {
+        override def fill[T]: Seq[ColumnOption[T]] = Seq.empty
+      })
 
     def typedType: F[TypedType]
     def shapeCol: F[CodecUtils.ShapeF]
 
-    val rep: Columns = CodecUtils.userRep(basedInstalled, CommonTableSelf, columnOption(colOpt), typedType, basedInstalledlabelled)
+    def rep: Columns = CodecUtils.userRep(basedInstalled.simpleRunner.simpleRelease4, columnName, columnOption, typedType, CommonTableSelf)
 
     override def * : slick.lifted.ProvenShape[Model] =
       CodecUtils.mapShape(basedInstalled, shapeCol, rep, classTag, modelGet, modelSet)

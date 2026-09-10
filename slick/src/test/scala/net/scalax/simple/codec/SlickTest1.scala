@@ -15,13 +15,12 @@ object UserAbs {
     override val slickProfile: V
 
     import slickProfile.api._
-    type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 
     class CommonT(tag: Tag) extends CommonTableF[UserAbs](tag, "user") {
-      override def columnOption: ColOpt => ColOpt =
-        _.copy[ColumnOpt](id = _.column(O.AutoInc, O.PrimaryKey), first = _.column("first_name"), last = _.column("last_name"))
-      override def typedType = typedTypeBuilder.derived
-      override def shapeCol  = shapeBuilder.derived
+      override def columnOption = super.columnOption.copy[CodecUtils.ColOpt](id = List(O.AutoInc, O.PrimaryKey))
+      override def columnName   = super.columnName.copy[CodecUtils.Labelled](first = "first_name", last = "last_name")
+      override def typedType    = typedTypeBuilder.derived
+      override def shapeCol     = shapeBuilder.derived
     }
 
     object CommonT {

@@ -9,7 +9,7 @@ import net.scalax.simple.codec.to_list_generic.{
   PojoInstance,
   ToListByTheSameTypeGeneric
 }
-import slick.ast.TypedType
+import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
 import slick.lifted.ShapedValue
 
@@ -18,8 +18,10 @@ trait UtilsWrap[V <: JdbcProfile] {
   import slickProfile.api._
 
   object CodecUtils {
-    type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
-    type Id[T]     = T
+    type ShapeF[T]   = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
+    type Id[T]       = T
+    type Labelled[T] = String
+    type ColOpt[T]   = Seq[ColumnOption[T]]
 
     def mapShape[F[_[_]], Model](
       bi: BasedInstalledSimpleProduct[F],
@@ -49,65 +51,61 @@ trait UtilsWrap[V <: JdbcProfile] {
       )
     }
 
-    private def colN[Model, T](tb: Table[Model], name: String, func: ColumnOpt[T], tt: TypedType[T]): Rep[T] = {
-      val columnName = func.name.getOrElse(name)
-      tb.column(columnName, func.opts: _*)(tt)
+    private def colN[Model, T](tb: Table[Model], name: String, func: Seq[ColumnOption[T]], tt: TypedType[T]): Rep[T] = {
+      tb.column(name, func: _*)(tt)
     }
 
     def userRep[F[_[_]], Model](
-      labelled: BasedInstalledSimpleProduct[F],
-      tb: Table[Model],
-      opt: F[ColumnOpt],
+      bs: AppenderSupport1.Simple4.Release[F],
+      labelled: F[Labelled],
+      colOpt: F[ColOpt],
       typedType: F[TypedType],
-      named: BasedInstalledLabelled[F]
+      tb: Table[Model]
     ): F[Rep] = {
-      val l1 = named.labelled.stringLabelled
-
-      type Type1[T1]             = String
       type TypeFunc4[A, B, C, D] = (A, B, C) => D
 
-      val appender = new AppenderSupport1.Simple4.Appender[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] {
+      val appender = new AppenderSupport1.Simple4.Appender[TypeFunc4, Labelled, ColOpt, TypedType, Rep] {
         override def append[T, B1, B2, B3, B4, C1, C2, C3, C4](
           abc1: ABCFunc[String, B1, C1],
-          abc2: ABCFunc[ColumnOpt[T], B2, C2],
+          abc2: ABCFunc[Seq[ColumnOption[T]], B2, C2],
           abc3: ABCFunc[TypedType[T], B3, C3],
           abc4: ABCFunc[Rep[T], B4, C4],
           ma: (B1, B2, B3) => B4
         ): (C1, C2, C3) => C4 = (c1: C1, c2: C2, c3: C3) => {
-          val str1: String            = abc1.takeHead(c1)
-          val b1: B1                  = abc1.takeTail(c1)
-          val colOpt: ColumnOpt[T]    = abc2.takeHead(c2)
-          val b2: B2                  = abc2.takeTail(c2)
-          val typedType: TypedType[T] = abc3.takeHead(c3)
-          val b3: B3                  = abc3.takeTail(c3)
-          val b4: B4                  = ma(b1, b2, b3)
-          val repT: Rep[T]            = colN[Model, T](tb, str1, colOpt, typedType)
+          val str1: String                 = abc1.takeHead(c1)
+          val b1: B1                       = abc1.takeTail(c1)
+          val colOpt: Seq[ColumnOption[T]] = abc2.takeHead(c2)
+          val b2: B2                       = abc2.takeTail(c2)
+          val typedType: TypedType[T]      = abc3.takeHead(c3)
+          val b3: B3                       = abc3.takeTail(c3)
+          val b4: B4                       = ma(b1, b2, b3)
+          val repT: Rep[T]                 = tb.column[T](str1, colOpt: _*)(typedType)
 
           abc4.append(repT, b4)
         }
       }
 
-      val one: AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] =
-        new AppenderSupport1.Simple4.One[TypeFunc4, Type1, ColumnOpt, TypedType, Rep] {
+      val one: AppenderSupport1.Simple4.One[TypeFunc4, Labelled, ColOpt, TypedType, Rep] =
+        new AppenderSupport1.Simple4.One[TypeFunc4, Labelled, ColOpt, TypedType, Rep] {
           override def one[T, B1, B2, B3, B4](
             func1: FromToFunc[String, B1],
-            func2: FromToFunc[ColumnOpt[T], B2],
+            func2: FromToFunc[Seq[ColumnOption[T]], B2],
             func3: FromToFunc[TypedType[T], B3],
             func4: FromToFunc[Rep[T], B4]
           ): (B1, B2, B3) => B4 = (b1: B1, b2: B2, b3: B3) => {
-            val str1: String            = func1.to(b1)
-            val colOpt: ColumnOpt[T]    = func2.to(b2)
-            val typedType: TypedType[T] = func3.to(b3)
-            val repT: Rep[T]            = colN[Model, T](tb, str1, colOpt, typedType)
+            val str1: String                 = func1.to(b1)
+            val colOpt: Seq[ColumnOption[T]] = func2.to(b2)
+            val typedType: TypedType[T]      = func3.to(b3)
+            val repT: Rep[T]                 = tb.column[T](str1, colOpt: _*)(typedType)
 
             func4.from(repT)
           }
         }
 
-      val func: (F[Type1], F[ColumnOpt], F[TypedType]) => F[Rep] =
-        labelled.simpleRunner.simpleRelease4.append[TypeFunc4, Type1, ColumnOpt, TypedType, Rep](appender = appender, zero = one)
+      val func: (F[Labelled], F[ColOpt], F[TypedType]) => F[Rep] =
+        bs.append[TypeFunc4, Labelled, ColOpt, TypedType, Rep](appender = appender, zero = one)
 
-      func(l1, opt, typedType)
+      func(labelled, colOpt, typedType)
     }
 
   }

@@ -16,11 +16,10 @@ object User2Cat {
     type ShapeF[T] = Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]]
 
     class CommonT(tag: Tag) extends CommonTablePojo[User2Cat](tag, "user") {
-      override def columnOption: ColOpt => ColOpt = {
-        _.copy(_.id)(_.column(O.AutoInc, O.PrimaryKey)).copy(_.first)(_.column("first_name")).copy(_.last)(_.column("last_name"))
-      }
-      override def typedType = typedTypeBuilder.derived
-      override def shapeCol  = shapeBuilder.derived
+      override def columnOption = super.columnOption.copy(_.id)(List(O.AutoInc, O.PrimaryKey))
+      override def columnName   = super.columnName.copy(_.first)("first_name").copy(_.last)("last_name")
+      override def typedType    = typedTypeBuilder.derived
+      override def shapeCol     = shapeBuilder.derived
     }
 
     object CommonT {
@@ -61,7 +60,7 @@ object Runner2 {
 
     val action1 = DBIO.seq(sql1, sql2, sql3, sql4)
     val action2 = newTB.CommonTq.result
-    val action3 = newTB.CommonTq.filter(_.get(_.first) endsWith "3").filter(_.get(_.last) startsWith "3").result
+    val action3 = newTB.CommonTq.filter(_.apply(_.first) endsWith "3").filter(_.apply(_.last) startsWith "3").result
 
     import scala.concurrent.ExecutionContext.Implicits.global
 

@@ -36,10 +36,6 @@ trait PojoInstance[U[_], Model] {
     bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
     lInstall: BasedInstalledLabelled[({ type F1[X[_]] = PojoInstance[X, Model] })#F1]
   ): U[MP] = macro macrosImpl.NameOfImpl.nameOf2222[Model, MP, U]
-  def get[MP](expr: Model => MP)(implicit
-    bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
-    lInstall: BasedInstalledLabelled[({ type F1[X[_]] = PojoInstance[X, Model] })#F1]
-  ): U[MP] = macro macrosImpl.NameOfImpl.nameOf2222[Model, MP, U]
 
   override def toString: String = s"PojoInstance(instance=$instance)"
 
