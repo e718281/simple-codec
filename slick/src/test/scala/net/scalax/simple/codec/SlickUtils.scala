@@ -29,13 +29,6 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
     type Columns = F[Rep]
-    type ColOpt  = F[ColumnOpt]
-
-    private def colOpt: F[ColumnOpt] = Map0Generic[F]
-      .derived(basedInstalled.simpleRunner.simpleRelease1)
-      .map[ColumnOpt](new Map0Generic.MapFunction[ColumnOpt] {
-        override def func[T]: ColumnOpt[T] = ColumnOpt.default[T]
-      })
 
     def columnName: F[CodecUtils.Labelled] = basedInstalledlabelled.labelled.stringLabelled
     def columnOption: F[CodecUtils.ColOpt] = Map0Generic[F]

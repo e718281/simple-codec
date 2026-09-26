@@ -51,10 +51,6 @@ trait UtilsWrap[V <: JdbcProfile] {
       )
     }
 
-    private def colN[Model, T](tb: Table[Model], name: String, func: Seq[ColumnOption[T]], tt: TypedType[T]): Rep[T] = {
-      tb.column(name, func: _*)(tt)
-    }
-
     def userRep[F[_[_]], Model](
       bs: AppenderSupport1.Simple4.Release[F],
       labelled: F[Labelled],

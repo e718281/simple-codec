@@ -6,8 +6,8 @@ import net.scalax.simple.adt.nat.support.FromToFunc
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 
 trait Fold1FGenerc[F[_[_]]] {
-  def foldLeft[N[_], SeqType](folder: Fold1FGenerc.FoldF[N, SeqType], model: F[N], zero: SeqType): SeqType
-  def foldRight[N[_], SeqType](folder: Fold1FGenerc.FoldF[N, SeqType], model: F[N], zero: SeqType): SeqType
+  def foldLeft[N[_], SeqType](folder: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType
+  def foldRight[N[_], SeqType](folder: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType
 }
 
 object Fold1FGenerc {
@@ -26,7 +26,7 @@ object Fold1FGenerc {
         }
     }
 
-  private def monadAddLeft[N[_], SeqType](
+  private def monadAddRight[N[_], SeqType](
     folderF: FoldF[N, SeqType]
   ): AppenderSupport1.Simple1.Appender[({ type T1[U] = (U, SeqType) => SeqType })#T1, N] =
     new AppenderSupport1.Simple1.Appender[({ type T1[U] = (U, SeqType) => SeqType })#T1, N] {
@@ -38,7 +38,7 @@ object Fold1FGenerc {
       }
     }
 
-  private def monadAddRight[N[_], SeqType](
+  private def monadAddLeft[N[_], SeqType](
     folderF: FoldF[N, SeqType]
   ): AppenderSupport1.Simple1.Appender[({ type T1[U] = (U, SeqType) => SeqType })#T1, N] =
     new AppenderSupport1.Simple1.Appender[({ type T1[U] = (U, SeqType) => SeqType })#T1, N] {
@@ -52,25 +52,11 @@ object Fold1FGenerc {
 
   class Builder[F[_[_]]] {
     def derived(o1: AppenderSupport1.Simple1.Release[F]): Fold1FGenerc[F] = new Fold1FGenerc[F] {
-      override def foldLeft[N[_], SeqType](
-        folderF: Fold1FGenerc.FoldF[N, SeqType],
-        model: F[N],
-        zero: SeqType
-      ): SeqType = {
-        val u: (F[N], SeqType) => SeqType =
-          o1.append[({ type T1[U] = (U, SeqType) => SeqType })#T1, N](monadAddLeft[N, SeqType](folderF), toNamed[N, SeqType](folderF))
-        u(model, zero)
-      }
+      override def foldLeft[N[_], SeqType](folderF: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType =
+        o1.append[({ type T1[U] = (U, SeqType) => SeqType })#T1, N](monadAddLeft[N, SeqType](folderF), toNamed[N, SeqType](folderF))
 
-      override def foldRight[N[_], SeqType](
-        folderF: Fold1FGenerc.FoldF[N, SeqType],
-        model: F[N],
-        zero: SeqType
-      ): SeqType = {
-        val u: (F[N], SeqType) => SeqType =
-          o1.append[({ type T1[U] = (U, SeqType) => SeqType })#T1, N](monadAddRight[N, SeqType](folderF), toNamed[N, SeqType](folderF))
-        u(model, zero)
-      }
+      override def foldRight[N[_], SeqType](folderF: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType =
+        o1.append[({ type T1[U] = (U, SeqType) => SeqType })#T1, N](monadAddRight[N, SeqType](folderF), toNamed[N, SeqType](folderF))
     }
   }
 
