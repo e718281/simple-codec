@@ -1,6 +1,8 @@
 package net.scalax.simple.codec
 package to_list_generic
 
+import net.scalax.simple.codec.product.core.Map1Generic
+
 trait ModelLink[F[_[_]], Model]
     extends BasedInstalledSimpleProduct[F]
     with BasedInstalledLabelled[F]
@@ -21,7 +23,7 @@ object ModelLink {
     override def size: ModelSize[FMM]             = ModelSize[FMM].derived(cNamed)
     override def labelled: CompatLabelled[FMM]    = new CompatLabelledImplHelper.Impl[FMM] {
       override def stringLabelled: FMM[({ type T1[_] = String })#T1] = ModelLinkCommonFSelf.FFromHList[({ type T1[_] = String })#T1](cNamed)
-      override def mapGeneric: MapGeneric[FMM] = MapGeneric[FMM].derived(ModelLinkCommonFSelf.simpleRunner.simpleRelease2)
+      override def mapGeneric: Map1Generic[FMM] = Map1Generic[FMM].derived(ModelLinkCommonFSelf.simpleRunner.simpleRelease2)
     }
   }
 
@@ -50,8 +52,8 @@ object ModelLink {
         new CompatLabelledImplHelper.Impl[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] {
           override def stringLabelled: PojoInstance[({ type T1[_] = String })#T1, Model] =
             ModelLinkPojoSelf.FFromHList[({ type T1[_] = String })#T1](cNamed)
-          override def mapGeneric: MapGeneric[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
-            MapGeneric[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
+          override def mapGeneric: Map1Generic[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
+            Map1Generic[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
         }
     }
 

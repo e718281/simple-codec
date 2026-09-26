@@ -1,6 +1,7 @@
 package net.scalax.simple.codec
 package aa
 
+import net.scalax.simple.codec.product.core.Map0Generic
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, FillIdentity, ModelLink, PojoInstance}
 import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
@@ -30,17 +31,17 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     type Columns = F[Rep]
     type ColOpt  = F[ColumnOpt]
 
-    private def colOpt: F[ColumnOpt] = SimpleFill[F]
+    private def colOpt: F[ColumnOpt] = Map0Generic[F]
       .derived(basedInstalled.simpleRunner.simpleRelease1)
-      .fill[ColumnOpt](new SimpleFill.FillI[ColumnOpt] {
-        override def fill[T]: ColumnOpt[T] = ColumnOpt.default[T]
+      .map[ColumnOpt](new Map0Generic.MapFunction[ColumnOpt] {
+        override def func[T]: ColumnOpt[T] = ColumnOpt.default[T]
       })
 
     def columnName: F[CodecUtils.Labelled] = basedInstalledlabelled.labelled.stringLabelled
-    def columnOption: F[CodecUtils.ColOpt] = SimpleFill[F]
+    def columnOption: F[CodecUtils.ColOpt] = Map0Generic[F]
       .derived(basedInstalled.simpleRunner.simpleRelease1)
-      .fill[CodecUtils.ColOpt](new SimpleFill.FillI[CodecUtils.ColOpt] {
-        override def fill[T]: Seq[ColumnOption[T]] = Seq.empty
+      .map[CodecUtils.ColOpt](new Map0Generic.MapFunction[CodecUtils.ColOpt] {
+        override def func[T]: Seq[ColumnOption[T]] = Seq.empty
       })
 
     def typedType: F[TypedType]

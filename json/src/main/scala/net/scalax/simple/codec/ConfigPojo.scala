@@ -3,6 +3,7 @@ package codec
 
 import io.circe.generic.extras.JsonKey
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
+import net.scalax.simple.codec.product.core.Map2Generic
 import net.scalax.simple.codec.to_list_generic.BasedInstalledSimpleProduct
 
 trait ConfigPojo[F[_[_]]] { Self =>
@@ -34,9 +35,9 @@ object ConfigPojo {
   type Type2[T] = Option[JsonKey]
 
   def fromAnnotationImpl[F[_[_]]](ann: ModelAnnotations[F, JsonKey], sp3: AppenderSupport1.Simple3.Release[F]): F[StrF] => F[StrF] = {
-    val map2Generc = Map2Generc[F].derived(sp3)
-    val mapper2    = new Map2Generc.Map2Function[StrF, Type2, StrF] {
-      override def map[X1](in: String, in2: Option[JsonKey]): String = in2.fold(in)(ann => ann.value)
+    val map2Generc = Map2Generic[F].derived(sp3)
+    val mapper2    = new Map2Generic.MapFunction[StrF, Type2, StrF] {
+      override def func[X1](in: String, in2: Option[JsonKey]): String = in2.fold(in)(ann => ann.value)
     }
 
     val func: (F[StrF], F[Type2]) => F[StrF] = map2Generc.map[StrF, Type2, StrF](mapper2)

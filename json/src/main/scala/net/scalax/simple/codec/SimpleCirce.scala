@@ -4,6 +4,7 @@ package codec
 import io.circe.generic.extras.JsonKey
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
+import net.scalax.simple.codec.product.core.Map2Generic
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, PojoInstance}
 
 trait SimpleJsonLabelled[F[_[_]]] {
@@ -24,13 +25,12 @@ object SimpleJsonLabelled { SimpleJsonLabelledSelf =>
     override val defaultValue: Option[F[({ type OptF[U1] = Option[() => U1] })#OptF]]
   ) extends SimpleJsonLabelled[F] { ImplSelf =>
     override def annotationsLabelled(implicit ann: ModelAnnotations[F, JsonKey]): SimpleJsonLabelled[F] = {
-      type Type1[T]       = String
-      type Type2[T]       = Option[JsonKey]
-      type MFunc[A, B, C] = (A, B) => C
+      type Type1[T] = String
+      type Type2[T] = Option[JsonKey]
 
-      val map2Generc: Map2Generc[F]                             = Map2Generc[F].derived(implicitly)
-      val funcMap: Map2Generc.Map2Function[Type1, Type2, Type1] = new Map2Generc.Map2Function[Type1, Type2, Type1] {
-        override def map[X1](in: String, in2: Option[JsonKey]): String = in2.fold(in)(_.value)
+      val map2Generc: Map2Generic[F]                            = Map2Generic[F].derived(implicitly)
+      val funcMap: Map2Generic.MapFunction[Type1, Type2, Type1] = new Map2Generic.MapFunction[Type1, Type2, Type1] {
+        override def func[X1](in: String, in2: Option[JsonKey]): String = in2.fold(in)(_.value)
       }
 
       val func: (F[Type1], F[Type2]) => F[Type1] = map2Generc.map[Type1, Type2, Type1](funcMap)

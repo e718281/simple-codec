@@ -2,6 +2,7 @@ package net.scalax.simple.codec
 
 import io.circe._
 import io.circe.syntax._
+import net.scalax.simple.codec.product.core.Map0Generic
 import net.scalax.simple.codec.to_list_generic.{
   BasedInstalledLabelled,
   BasedInstalledModelSized,
@@ -23,19 +24,19 @@ object CatName {
 
   implicit val li1222Encoder: FAlias[Encoder] = {
     val v: BasedInstalledSimpleProduct[FAlias] = implicitly
-    val simpleFillE: SimpleFill[FAlias]        = SimpleFill[FAlias].derived(v.simpleRunner.simpleRelease1)
+    val simpleFillE: Map0Generic[FAlias]       = Map0Generic[FAlias].derived(v.simpleRunner.simpleRelease1)
 
-    simpleFillE.fill[({ type E[T] = Encoder[String] })#E](new SimpleFill.FillI[({ type E[T] = Encoder[String] })#E] {
-      override def fill[T]: Encoder[String] = Encoder[String]
+    simpleFillE.map[({ type E[T] = Encoder[String] })#E](new Map0Generic.MapFunction[({ type E[T] = Encoder[String] })#E] {
+      override def func[T]: Encoder[String] = Encoder[String]
     })
   }
 
   implicit val li1222Decoder: FAlias[Decoder] = {
     val v: BasedInstalledSimpleProduct[FAlias] = implicitly
-    val simpleFillE: SimpleFill[FAlias]        = SimpleFill[FAlias].derived(v.simpleRunner.simpleRelease1)
+    val simpleFillE: Map0Generic[FAlias]       = Map0Generic[FAlias].derived(v.simpleRunner.simpleRelease1)
 
-    simpleFillE.fill[({ type E[T] = Decoder[String] })#E](new SimpleFill.FillI[({ type E[T] = Decoder[String] })#E] {
-      override def fill[T]: Decoder[String] = Decoder[String]
+    simpleFillE.map[({ type E[T] = Decoder[String] })#E](new Map0Generic.MapFunction[({ type E[T] = Decoder[String] })#E] {
+      override def func[T]: Decoder[String] = Decoder[String]
     })
   }
 }
