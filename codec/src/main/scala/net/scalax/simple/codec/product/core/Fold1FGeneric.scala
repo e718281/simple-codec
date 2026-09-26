@@ -5,12 +5,12 @@ import net.scalax.simple.adt.nat.support.ABCFunc
 import net.scalax.simple.adt.nat.support.FromToFunc
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 
-trait Fold1FGenerc[F[_[_]]] {
-  def foldLeft[N[_], SeqType](folder: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType
-  def foldRight[N[_], SeqType](folder: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType
+trait Fold1FGeneric[F[_[_]]] {
+  def foldLeft[N[_], SeqType](folder: Fold1FGeneric.FoldF[N, SeqType]): (F[N], SeqType) => SeqType
+  def foldRight[N[_], SeqType](folder: Fold1FGeneric.FoldF[N, SeqType]): (F[N], SeqType) => SeqType
 }
 
-object Fold1FGenerc {
+object Fold1FGeneric {
 
   trait FoldF[N[_], ColType] {
     def fold[T](n: N[T], col: ColType): ColType
@@ -51,11 +51,11 @@ object Fold1FGenerc {
     }
 
   class Builder[F[_[_]]] {
-    def derived(o1: AppenderSupport1.Simple1.Release[F]): Fold1FGenerc[F] = new Fold1FGenerc[F] {
-      override def foldLeft[N[_], SeqType](folderF: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType =
+    def derived(o1: AppenderSupport1.Simple1.Release[F]): Fold1FGeneric[F] = new Fold1FGeneric[F] {
+      override def foldLeft[N[_], SeqType](folderF: Fold1FGeneric.FoldF[N, SeqType]): (F[N], SeqType) => SeqType =
         o1.append[({ type T1[U] = (U, SeqType) => SeqType })#T1, N](monadAddLeft[N, SeqType](folderF), toNamed[N, SeqType](folderF))
 
-      override def foldRight[N[_], SeqType](folderF: Fold1FGenerc.FoldF[N, SeqType]): (F[N], SeqType) => SeqType =
+      override def foldRight[N[_], SeqType](folderF: Fold1FGeneric.FoldF[N, SeqType]): (F[N], SeqType) => SeqType =
         o1.append[({ type T1[U] = (U, SeqType) => SeqType })#T1, N](monadAddRight[N, SeqType](folderF), toNamed[N, SeqType](folderF))
     }
   }

@@ -15,6 +15,8 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     classTag: scala.reflect.ClassTag[Model],
     modelGet: ModelGet[F, Model],
     modelSet: ModelSet[F, Model],
+    fmodelGet: FModelGet[F],
+    fmodelSet: FModelSet[F],
     basedInstalled: BasedInstalledSimpleProduct[F],
     basedInstalledlabelled: BasedInstalledLabelled[F]
   ) extends Table[Model](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName) {
@@ -24,6 +26,8 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
       classTag: scala.reflect.ClassTag[Model],
       modelGet: ModelGet[F, Model],
       modelSet: ModelSet[F, Model],
+      fmodelGet: FModelGet[F],
+      fmodelSet: FModelSet[F],
       basedInstalled: BasedInstalledSimpleProduct[F],
       basedInstalledlabelled: BasedInstalledLabelled[F]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
@@ -43,7 +47,7 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     def rep: Columns = CodecUtils.userRep(basedInstalled.simpleRunner.simpleRelease4, columnName, columnOption, typedType, CommonTableSelf)
 
     override def * : slick.lifted.ProvenShape[Model] =
-      CodecUtils.mapShape(basedInstalled, shapeCol, rep, classTag, modelGet, modelSet)
+      CodecUtils.mapShape(basedInstalled, shapeCol, rep, classTag, modelGet, modelSet, fmodelGet = fmodelGet, fmodelSet = fmodelSet)
   }
 
   abstract class CommonTableF[F[_[_]]](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
