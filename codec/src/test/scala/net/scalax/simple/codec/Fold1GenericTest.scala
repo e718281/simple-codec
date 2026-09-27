@@ -1,6 +1,6 @@
 package net.scalax.simple.codec
 
-import net.scalax.simple.codec.to_list_generic.{Fold1FGenerc, ModelLink}
+import net.scalax.simple.codec.to_list_generic.{Fold1FGeneric, ModelLink}
 import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers._
@@ -13,8 +13,8 @@ class Fold1GenericTest extends AnyFlatSpec with should.Matchers {
     val nameLabelled: CatName[CatName.Named] = modelLike.labelled.stringLabelled
     nameLabelled should be(CatName[CatName.Named]("id1", "str1", "uClass1", "name1", "namexu1"))
 
-    val fold1FGenerc: Fold1FGenerc[CatName]                      = Fold1FGenerc[CatName].derived(modelLike.simpleRunner.simpleRelease1)
-    val foldF: Fold1FGenerc.FoldF[CatName.Named, Vector[String]] = new Fold1FGenerc.FoldF[CatName.Named, Vector[String]] {
+    val fold1FGenerc: Fold1FGeneric[CatName]                      = Fold1FGeneric[CatName].derived(modelLike.simpleRunner.simpleRelease1)
+    val foldF: Fold1FGeneric.FoldF[CatName.Named, Vector[String]] = new Fold1FGeneric.FoldF[CatName.Named, Vector[String]] {
       override def fold[T](n: String, col: Vector[String]): Vector[String] = col :+ n
     }
 
