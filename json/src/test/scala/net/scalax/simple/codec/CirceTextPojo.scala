@@ -3,14 +3,8 @@ package net.scalax.simple.codec
 import io.circe._
 import io.circe.generic.extras.JsonKey
 import io.circe.syntax._
-import net.scalax.simple.codec.to_list_generic.{
-  FillIdentity,
-  Fold1FGeneric,
-  ModelLink,
-  ModelLinkPojo,
-  PojoInstance,
-  ToListByTheSameTypeGeneric
-}
+import net.scalax.simple.codec.product.core.Fold1Generic
+import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo, PojoInstance, ToListByTheSameTypeGeneric}
 
 case class CatNameTest3(
   id3: Int,
@@ -59,7 +53,7 @@ object CatNameTest3TestCase {
 
   def getNames(model: PojoInstance[({ type M1[_] = String })#M1, CatNameTest3]): List[String] = {
     val ge = ToListByTheSameTypeGeneric[({ type U1[X[_]] = PojoInstance[X, CatNameTest3] })#U1].derived(
-      Fold1FGeneric[({ type U1[X[_]] = PojoInstance[X, CatNameTest3] })#U1]
+      Fold1Generic[({ type U1[X[_]] = PojoInstance[X, CatNameTest3] })#U1]
         .derived(implicitly[ModelLinkPojo[CatNameTest3]].simpleRunner.simpleRelease1)
     )
 

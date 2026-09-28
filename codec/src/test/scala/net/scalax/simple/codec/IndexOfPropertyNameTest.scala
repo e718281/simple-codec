@@ -1,7 +1,7 @@
 package net.scalax.simple
 package codec
 
-import net.scalax.simple.codec.to_list_generic.{Fold1FGeneric, ModelLink, ToListByTheSameTypeGeneric}
+import net.scalax.simple.codec.to_list_generic.ModelLink
 
 import org.scalatest._
 import org.scalatest.flatspec._
