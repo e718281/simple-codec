@@ -6,53 +6,21 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
+import net.scalax.simple.codec.product.core.Fold3Generic
 
 object PlayJsonGeneric2 {
   type Named[_]  = String
   type IdType[T] = T
 
-  type EncodeAction[Name, Enc, Model] = (Name, Enc, Model) => List[(String, JsValue)]
-
   def encodeImpl[F[_[_]]](sp3: AppenderSupport1.Simple3.Release[F], namedIns: F[Named], encIns: () => F[Writes]): F[IdType] => JsValue = {
-    val appender: AppenderSupport1.Simple3.Appender[EncodeAction, Named, Writes, IdType] =
-      new AppenderSupport1.Simple3.Appender[EncodeAction, Named, Writes, IdType] {
-        override def append[T, B1, B2, B3, C1, C2, C3](
-          abc1: ABCFunc[String, B1, C1],
-          abc2: ABCFunc[Writes[T], B2, C2],
-          abc3: ABCFunc[T, B3, C3],
-          ma: (B1, B2, B3) => List[(String, JsValue)]
-        ): (C1, C2, C3) => List[(String, JsValue)] = (c1: C1, c2: C2, c3: C3) => {
-          val nameStr: String = abc1.takeHead(c1)
-          val b1: B1          = abc1.takeTail(c1)
-          val wt2: Writes[T]  = abc2.takeHead(c2)
-          val b2: B2          = abc2.takeTail(c2)
-          val t1: T           = abc3.takeHead(c3)
-          val b3: B3          = abc3.takeTail(c3)
-          (nameStr, wt2.writes(t1)) :: ma(b1, b2, b3)
-        }
-      }
+    val folderGeneric: Fold3Generic[F] = Fold3Generic[F].derived(sp3)
 
-    val one: AppenderSupport1.Simple3.One[EncodeAction, Named, Writes, IdType] =
-      new AppenderSupport1.Simple3.One[EncodeAction, Named, Writes, IdType] {
-        override def one[T, B1, B2, B3](
-          func1: FromToFunc[String, B1],
-          func2: FromToFunc[Writes[T], B2],
-          func3: FromToFunc[T, B3]
-        ): (B1, B2, B3) => List[(String, JsValue)] = (b1: B1, b2: B2, b3: B3) => {
-          val key: String   = func1.to(b1)
-          val wt: Writes[T] = func2.to(b2)
-          val t: T          = func3.to(b3)
-          List(key -> wt.writes(t))
-        }
-      }
-
-    val action: (F[Named], F[Writes], F[IdType]) => List[(String, JsValue)] =
-      sp3.append[EncodeAction, Named, Writes, IdType](appender = appender, zero = one)
-
-    (model: F[IdType]) => {
-      val list: List[(String, JsValue)] = action(namedIns, encIns(), model)
-      JsObject(list)
+    val folderFunc = new Fold3Generic.Folder[Named, Writes, IdType, JsObject] {
+      override def fold[T](n1: String, n2: Writes[T], n3: T, col: JsObject): JsObject = col.+(n1 -> n2.writes(n3))
+      override def zero: JsObject                                                     = JsObject.empty
     }
+
+    (model: F[IdType]) => folderGeneric.foldLeft(namedIns, encIns(), model, folderFunc)
   }
 
   type DecodeJson[Name, Dec, Model, DefaultValue] = (Name, Dec, DefaultValue) => JsResult[Model]

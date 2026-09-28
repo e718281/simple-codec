@@ -1,8 +1,8 @@
 package net.scalax.simple.codec
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
-import net.scalax.simple.codec.product.core.Map3Generic
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, Fold2FGeneric}
+import net.scalax.simple.codec.product.core.{Fold2Generic, Map3Generic}
+import net.scalax.simple.codec.to_list_generic.BasedInstalledSimpleProduct
 import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
 import slick.lifted.ShapedValue
@@ -27,15 +27,17 @@ trait UtilsWrap[V <: JdbcProfile] {
       fmodelGet: FModelGet[F],
       fmodelSet: FModelSet[F]
     ): slick.lifted.MappedProjection[Model] = {
-      val folde2Generic: Fold2FGeneric[F] = Fold2FGeneric[F].derived(bi.simpleRunner.simpleRelease2)
-      val foldFunc                        = new Fold2FGeneric.FoldF[Rep, ShapeF, ShapedValueCompat.RepAdd] {
+      val folde2Generic: Fold2Generic[F] = Fold2Generic[F].derived(bi.simpleRunner.simpleRelease2)
+      val foldFunc                       = new Fold2Generic.Folder[Rep, ShapeF, ShapedValueCompat.RepAdd] {
         override def fold[T](
           rep: Rep[T],
           shape: Shape[_ <: FlatShapeLevel, Rep[T], T, Rep[T]],
           add: ShapedValueCompat.RepAdd
         ): ShapedValueCompat.RepAdd = ShapedValueCompat.RepAdd.cons[T](rep, shape, add)
+
+        override def zero: ShapedValueCompat.RepAdd = ShapedValueCompat.RepAdd.zero
       }
-      val repAdd: ShapedValueCompat.RepAdd = folde2Generic.foldRight(foldFunc)(repModel, shapeModel, ShapedValueCompat.RepAdd.zero)
+      val repAdd: ShapedValueCompat.RepAdd = folde2Generic.foldRight(repModel, shapeModel, foldFunc)
 
       ShapedValueCompat.mapToPro[repAdd.RepType, repAdd.ModelType, Model](
         ShapedValue(repAdd.rep, repAdd.shape),

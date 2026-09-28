@@ -4,12 +4,12 @@ import io.circe._
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 import net.scalax.simple.codec.GetFieldModel
+import net.scalax.simple.codec.product.core.Fold3Generic
 
 object EncodeHelperUtils {
   type Named[_]  = String
   type IdType[T] = T
 
-  type EncodeAction[Name, Enc, Model] = (Name, Enc, Model) => JsonObject
   val emptyJsonObj: JsonObject = JsonObject.empty
 
   def encodeImpl[F[_[_]]](
@@ -17,46 +17,14 @@ object EncodeHelperUtils {
     namedIns: F[Named],
     encIns: () => F[Encoder]
   ): F[IdType] => JsonObject = {
-    val one3: AppenderSupport1.Simple3.One[EncodeAction, Named, Encoder, IdType] =
-      new AppenderSupport1.Simple3.One[EncodeAction, Named, Encoder, IdType] {
-        override def one[T, B1, B2, B3](
-          func1: FromToFunc[String, B1],
-          func2: FromToFunc[Encoder[T], B2],
-          func3: FromToFunc[T, B3]
-        ): (B1, B2, B3) => JsonObject = (b1: B1, b2: B2, b3: B3) => {
-          val nameStr: String = func1.to(b1)
-          val en: Encoder[T]  = func2.to(b2)
-          val t: T            = func3.to(b3)
+    val folderGeneric: Fold3Generic[F] = Fold3Generic[F].derived(sp3)
 
-          emptyJsonObj.add(nameStr, en(t))
-        }
-      }
+    val folderFunc = new Fold3Generic.Folder[Named, Encoder, IdType, JsonObject] {
+      override def fold[T](n1: String, n2: Encoder[T], n3: T, col: JsonObject): JsonObject = col.add(n1, n2(n3))
+      override def zero: JsonObject                                                        = emptyJsonObj
+    }
 
-    val appender3: AppenderSupport1.Simple3.Appender[EncodeAction, Named, Encoder, IdType] =
-      new AppenderSupport1.Simple3.Appender[EncodeAction, Named, Encoder, IdType] {
-        override def append[T, B1, B2, B3, C1, C2, C3](
-          abc1: ABCFunc[String, B1, C1],
-          abc2: ABCFunc[Encoder[T], B2, C2],
-          abc3: ABCFunc[T, B3, C3],
-          ma: (B1, B2, B3) => JsonObject
-        ): (C1, C2, C3) => JsonObject = (n: C1, enc: C2, id: C3) => {
-          val str: String          = abc1.takeHead(n)
-          val b1: B1               = abc1.takeTail(n)
-          val encoderT: Encoder[T] = abc2.takeHead(enc)
-          val b2: B2               = abc2.takeTail(enc)
-          val t: T                 = abc3.takeHead(id)
-          val b3: B3               = abc3.takeTail(id)
-          val maJson: JsonObject   = ma(b1, b2, b3)
-          val jPro: Json           = encoderT(t)
-
-          maJson.add(str, jPro)
-        }
-
-      }
-
-    val action = sp3.append[EncodeAction, Named, Encoder, IdType](appender3, one3)
-
-    (model: F[IdType]) => action(namedIns, encIns(), model)
+    (model: F[IdType]) => folderGeneric.foldLeft(namedIns, encIns(), model, folderFunc)
   }
 
   type DecodeJson[Name, Dec, Model, DefaultValue] = (Name, Dec, DefaultValue) => Decoder.Result[Model]
