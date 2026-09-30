@@ -37,8 +37,8 @@ object EncodeHelperUtils {
     named: F[Named],
     g: () => F[Decoder],
     defaultValue: Option[F[({ type OptF[TU] = Option[() => TU] })#OptF]]
-  ): HCursor => Decoder.Result[F[IdType]] = (hCursor: HCursor) => {
-    defaultValue.fold(decodeImpl2(sp3, named, g)(hCursor))(d => decodeImpl1(sp2, sp4, named, g, d)(hCursor))
+  ): HCursor => Decoder.Result[F[IdType]] = {
+    defaultValue.fold(decodeImpl2(sp3, named, g))(d => decodeImpl1(sp2, sp4, named, g, d))
 
     /*type OptF[TU]    = Option[() => TU]
     type OptFGet[TU] = F[OptF] => OptF[TU]
