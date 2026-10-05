@@ -52,9 +52,10 @@ object PojoInstance {
     labelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
   ): ReplaceImpl[Model] = {
     val replaceByPropertyName: ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] =
-      ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1].derived(basedInstalled, labelled)
+      ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1].derived(basedInstalled.simpleRunner.simpleRelease2)
     new ReplaceImpl[Model] {
-      override def re[T[_]](r: PojoInstance[T, Model]): PojoInstance[T, Model] = replaceByPropertyName.replace[T](proName, data)(r)
+      override def re[T[_]](r: PojoInstance[T, Model]): PojoInstance[T, Model] =
+        replaceByPropertyName.replace[T](proName, data, labelled.labelled.stringLabelled, r)
     }
   }
 

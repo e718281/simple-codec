@@ -15,12 +15,21 @@ class ReplaceByIndexTest extends AnyFlatSpec with should.Matchers {
     val model: CatName[Id]              = CatName[Id](23, Some("foo"), Some(56), "bar", "bar2")
 
     val replaceByIndex: ReplaceByIndex[CatName] = ReplaceByIndex[CatName].derived(modelLike.simpleRunner.simpleRelease1)
-    val model1: CatName[Id]                     = replaceByIndex.replace[Id](0, 56)(model)
+
+    val model1: CatName[Id] = replaceByIndex.replace[Id](0, 56)(model)
     model1 should be(CatName[Id](56, Some("foo"), Some(56), "bar", "bar2"))
+
     val model2: CatName[Id] = replaceByIndex.replace[Id](1, Some("bar3"))(model)
     model2 should be(CatName[Id](23, Some("bar3"), Some(56), "bar", "bar2"))
-    val model3: CatName[Id] = replaceByIndex.replace[Id](3, "foo3")(model)
-    model3 should be(CatName[Id](23, Some("foo"), Some(56), "foo3", "bar2"))
+
+    val model3: CatName[Id] = replaceByIndex.replace[Id](2, None)(model)
+    model3 should be(CatName[Id](23, Some("foo"), Option.empty, "bar", "bar2"))
+
+    val model4: CatName[Id] = replaceByIndex.replace[Id](3, "foo3")(model)
+    model4 should be(CatName[Id](23, Some("foo"), Some(56), "foo3", "bar2"))
+
+    val model5: CatName[Id] = replaceByIndex.replace[Id](4, "bar2-1")(model)
+    model5 should be(CatName[Id](23, Some("foo"), Some(56), "bar", "bar2-1"))
   }
 
 }
