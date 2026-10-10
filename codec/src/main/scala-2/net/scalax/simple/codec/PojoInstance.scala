@@ -43,11 +43,11 @@ trait PojoInstance[U[_], Model] {
 
 object PojoInstance {
 
-  private trait ReplaceImpl[Model] {
-    def re[T[_]](r: PojoInstance[T, Model]): PojoInstance[T, Model]
+  private trait ReplaceImpl[T[_], Model] {
+    def re(r: PojoInstance[T, Model]): PojoInstance[T, Model]
   }
 
-  private def copyImpl1[Model](proName: String, data: Any)(
+  /*private def copyImpl1[Model](proName: String, data: Any)(
     basedInstalled: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1],
     labelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
   ): ReplaceImpl[Model] = {
@@ -57,7 +57,7 @@ object PojoInstance {
       override def re[T[_]](r: PojoInstance[T, Model]): PojoInstance[T, Model] =
         replaceByPropertyName.replace[T](proName, data, labelled.labelled.stringLabelled, r)
     }
-  }
+  }*/
 
   private def copyImpl2[Model, MP, XX1[_]](
     proName: String,
@@ -65,8 +65,14 @@ object PojoInstance {
   )(data: XX1[MP])(
     basedInstalled: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1],
     labelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
-  ): ReplaceImpl[Model] =
-    copyImpl1(proName, data)(basedInstalled, labelled)
+  ): ReplaceImpl[XX1, Model] = {
+    val replaceByPropertyName: ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] =
+      ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1].derived(basedInstalled.simpleRunner.simpleRelease2)
+    new ReplaceImpl[XX1, Model] {
+      override def re(r: PojoInstance[XX1, Model]): PojoInstance[XX1, Model] =
+        replaceByPropertyName.replace[XX1, MP](proName, data, labelled.labelled.stringLabelled, r)
+    }
+  }
 
   trait CopyAble[U[_], Model] {
     CopyAbleSelf =>

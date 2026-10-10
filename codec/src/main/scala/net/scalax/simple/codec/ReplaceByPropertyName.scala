@@ -10,7 +10,7 @@ trait ReplaceByPropertyName[F[_[_]]] {
     named: F[ReplaceByPropertyName.Named],
     fux: F[({ type X1[_] = UX })#X1]
   ): F[({ type X1[_] = UX })#X1]
-  def replace[T[_]](proName: String, proValue: Any, named: F[ReplaceByPropertyName.Named], ft: F[T]): F[T] = {
+  def replace[T[_], U](proName: String, proValue: T[U], named: F[ReplaceByPropertyName.Named], ft: F[T]): F[T] = {
     val funcImpl: F[({ type X1[_] = Any })#X1] =
       replaceImpl[Any](proName = proName, proValue = proValue, named, ft.asInstanceOf[F[({ type X1[_] = Any })#X1]])
     funcImpl.asInstanceOf[F[T]]

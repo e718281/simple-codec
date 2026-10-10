@@ -5,17 +5,18 @@ import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct}
 
 trait GetPropertyByPropertyName[F[_[_]]] {
-  def getPropertyImpl[T[_]](proName: String): F[T] => Any
+  def getPropertyImpl[T](proName: String): F[({ type Model[_] = T })#Model] => T
   def getProperty[T[_], U](proName: String): F[T] => T[U] = {
-    val pa: F[T] => Any = getPropertyImpl[T](proName)
+    val pa: F[GetPropertyByPropertyName.AnyF] => Any = getPropertyImpl[Any](proName)
     pa.asInstanceOf[F[T] => T[U]]
   }
 }
 
 object GetPropertyByPropertyName {
   type Named[_] = String
+  type AnyF[_]  = Any
 
-  def getProperty[F[_[_]], T](
+  def getPropertyInstance[F[_[_]], T](
     proName: String,
     namedModel: F[Named],
     model: F[({ type Model[_] = T })#Model],
@@ -51,14 +52,12 @@ object GetPropertyByPropertyName {
   class Builder[F[_[_]]] {
     def derived(appender1: BasedInstalledSimpleProduct[F], labelled: BasedInstalledLabelled[F]): GetPropertyByPropertyName[F] =
       new GetPropertyByPropertyName[F] {
-        override def getPropertyImpl[T[_]](proName: String): F[T] => Any = (ft: F[T]) => {
-          val getP = GetPropertyByIndex[F].derived(appender1.simpleRunner.simpleRelease1)
-          val inP  = IndexOfPropertyName[F].derived(appender1.simpleRunner.simpleRelease1)
-
-          val indexOfName: Int = inP.ofName(proName, labelled.labelled.stringLabelled)
-
-          getP.byIndex[T](indexOfName)(ft)
-        }
+        override def getPropertyImpl[T](proName: String): F[({ type Model[_] = T })#Model] => T = (ft: F[({ type Model[_] = T })#Model]) =>
+          {
+            val getP: Option[T] =
+              getPropertyInstance[F, T](proName, labelled.labelled.stringLabelled, ft, appender1.simpleRunner.simpleRelease2)
+            getP.get
+          }
       }
   }
 
