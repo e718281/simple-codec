@@ -1,7 +1,4 @@
-package net.scalax.simple.codec
-package to_list_generic
-
-import net.scalax.simple.codec.product.core.Fold1Generic
+package net.scalax.simple.codec.product.core
 
 trait ToListByTheSameTypeGeneric[F[_[_]]] {
   def toListByTheSameType[TA, SeqType](

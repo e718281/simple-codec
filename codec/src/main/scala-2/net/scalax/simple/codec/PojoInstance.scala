@@ -1,31 +1,30 @@
 package net.scalax.simple.codec
 package to_list_generic
 
-import shapeless.::
+import net.scalax.simple.codec.product.core.ReplaceByPropertyName
 
 trait PojoInstance[U[_], Model] {
   PojoInstanceSelf =>
 
   def instance: Any
 
-  def forCopy(implicit
-    basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1],
-    basedLabelledInput: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
-  ): PojoInstance.CopyAble[U, Model] = new PojoInstance.CopyAble[U, Model] {
-    override def value: PojoInstance[U, Model]                                                                   = PojoInstanceSelf
-    override def basedInstalled: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]    = basedInstalledInput
-    override def basedInstalledLabelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] = basedLabelledInput
-  }
-
   def copyImpl[T](proName: String, func: Model => T)(data: U[T])(implicit
     basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
     basedLabelledInput: BasedInstalledLabelled[({ type F1[X[_]] = PojoInstance[X, Model] })#F1]
-  ): PojoInstance[U, Model] = forCopy(basedInstalledInput, basedLabelledInput).copySelfImpl(proName = proName, func = func)(data).value
+  ): PojoInstance[U, Model] = {
+    val replaceByPropertyName: ReplaceByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1] =
+      ReplaceByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1].derived(basedInstalledInput.simpleRunner.simpleRelease2)
+    replaceByPropertyName.replace[U, T](proName, data, basedLabelledInput.labelled.stringLabelled, this)
+  }
 
   def applyImpl[T](proName: String, func: Model => T)(implicit
     basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
     basedLabelledInput: BasedInstalledLabelled[({ type F1[X[_]] = PojoInstance[X, Model] })#F1]
-  ): U[T] = forCopy(basedInstalledInput, basedLabelledInput).getSelfImpl3(proName = proName, func = func)
+  ): U[T] = {
+    val getPropertyByPropertyName: GetPropertyByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1] =
+      GetPropertyByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1].derived(basedInstalledInput, basedLabelledInput)
+    getPropertyByPropertyName.getProperty[U, T](proName)(this)
+  }
 
   import scala.language.experimental.macros
   def copy[MP](expr: Model => MP)(data: U[MP])(implicit
@@ -43,21 +42,9 @@ trait PojoInstance[U[_], Model] {
 
 object PojoInstance {
 
-  private trait ReplaceImpl[T[_], Model] {
+  /*private trait ReplaceImpl[T[_], Model] {
     def re(r: PojoInstance[T, Model]): PojoInstance[T, Model]
   }
-
-  /*private def copyImpl1[Model](proName: String, data: Any)(
-    basedInstalled: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1],
-    labelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
-  ): ReplaceImpl[Model] = {
-    val replaceByPropertyName: ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] =
-      ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1].derived(basedInstalled.simpleRunner.simpleRelease2)
-    new ReplaceImpl[Model] {
-      override def re[T[_]](r: PojoInstance[T, Model]): PojoInstance[T, Model] =
-        replaceByPropertyName.replace[T](proName, data, labelled.labelled.stringLabelled, r)
-    }
-  }*/
 
   private def copyImpl2[Model, MP, XX1[_]](
     proName: String,
@@ -93,7 +80,7 @@ object PojoInstance {
       GetPropertyByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1].derived(basedInstalled, basedInstalledLabelled)
 
     def getSelfImpl3[MP](proName: String, func: Model => MP): U[MP] = getPropertyByPropertyName.getProperty[U, MP](proName)(value)
-  }
+  }*/
 
   /*def derived[Model, E[_], H <: shapeless.HList](implicit
     x: shapeless.Generic.Aux[Model, H],

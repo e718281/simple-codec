@@ -1,8 +1,8 @@
 package net.scalax.simple
 package codec
 
+import net.scalax.simple.codec.product.core.FromListByTheSameTypeGeneric
 import net.scalax.simple.codec.to_list_generic.ModelLink
-
 import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers._

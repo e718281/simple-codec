@@ -7,7 +7,7 @@ import matchers._
 import net.scalax.simple.codec.product.core.Map1Generic
 import net.scalax.simple.codec.to_list_generic.ModelLink
 
-class MapGenericTest extends AnyFlatSpec with should.Matchers {
+class Map1GenericTest extends AnyFlatSpec with should.Matchers {
 
   "Map1Generic" should "map string data to int." in {
     type Len[_] = Int

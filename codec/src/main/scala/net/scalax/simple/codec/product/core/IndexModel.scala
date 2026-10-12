@@ -1,22 +1,22 @@
-package net.scalax.simple.codec
+package net.scalax.simple.codec.product.core
 
-trait IndexModel[F[_[_]]] {
+trait IndexModelGeneric[F[_[_]]] {
   def model: F[({ type Id[_] = Int })#Id]
 }
 
-object IndexModel {
+object IndexModelGeneric {
 
   class Builder[F[_[_]]] {
-    def derived(fromList: FromListByTheSameTypeGeneric[F]): IndexModel[F] = {
+    def derived(fromList: FromListByTheSameTypeGeneric[F]): IndexModelGeneric[F] = {
       val fromInt = fromList.fromListByTheSameType[Int, Int](takeHead = identity, takeTail = t => t + 1)
       val modelInt: F[({ type IntId[_] = Int })#IntId] = fromInt(0)
 
-      new IndexModel[F] {
+      new IndexModelGeneric[F] {
         override val model: F[({ type Id[_] = Int })#Id] = modelInt
       }
     }
 
-    @inline def implicitly(implicit modelSize: IndexModel[F]): IndexModel[F] = modelSize
+    @inline def implicitly(implicit modelSize: IndexModelGeneric[F]): IndexModelGeneric[F] = modelSize
   }
 
   def apply[F[_[_]]]: Builder[F] = new Builder[F]

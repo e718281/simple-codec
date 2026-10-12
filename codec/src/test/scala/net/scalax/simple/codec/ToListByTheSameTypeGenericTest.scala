@@ -4,8 +4,8 @@ package codec
 import org.scalatest._
 import flatspec._
 import matchers._
-import net.scalax.simple.codec.product.core.Fold1Generic
-import net.scalax.simple.codec.to_list_generic.{ModelLink, ToListByTheSameTypeGeneric}
+import net.scalax.simple.codec.product.core.{Fold1Generic, ToListByTheSameTypeGeneric}
+import net.scalax.simple.codec.to_list_generic.ModelLink
 
 class ToListByTheSameTypeGenericTest extends AnyFlatSpec with should.Matchers {
 

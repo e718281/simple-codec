@@ -3,8 +3,8 @@ package net.scalax.simple.codec
 import io.circe._
 import io.circe.generic.extras.JsonKey
 import io.circe.syntax._
-import net.scalax.simple.codec.product.core.Fold1Generic
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo, PojoInstance, ToListByTheSameTypeGeneric}
+import net.scalax.simple.codec.product.core.{Fold1Generic, ToListByTheSameTypeGeneric}
+import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo, PojoInstance}
 
 case class CatNameTest3(
   id3: Int,

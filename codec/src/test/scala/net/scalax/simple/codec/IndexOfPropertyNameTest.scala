@@ -1,8 +1,7 @@
-package net.scalax.simple
-package codec
+package net.scalax.simple.codec
 
+import net.scalax.simple.codec.product.core.IndexOfPropertyName
 import net.scalax.simple.codec.to_list_generic.ModelLink
-
 import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers._

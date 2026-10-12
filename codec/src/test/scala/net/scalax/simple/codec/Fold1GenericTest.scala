@@ -5,7 +5,6 @@ import net.scalax.simple.codec.to_list_generic.ModelLink
 import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers._
-import scala.collection.compat._
 
 class Fold1GenericTest extends AnyFlatSpec with should.Matchers {
 

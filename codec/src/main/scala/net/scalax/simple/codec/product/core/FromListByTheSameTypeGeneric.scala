@@ -1,4 +1,4 @@
-package net.scalax.simple.codec
+package net.scalax.simple.codec.product.core
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}

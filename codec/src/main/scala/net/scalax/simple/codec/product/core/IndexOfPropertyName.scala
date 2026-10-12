@@ -1,9 +1,7 @@
-package net.scalax.simple.codec
+package net.scalax.simple.codec.product.core
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
-import net.scalax.simple.codec.product.core.Fold1Generic
-import net.scalax.simple.codec.to_list_generic.ToListByTheSameTypeGeneric
 
 trait IndexOfPropertyName[F[_[_]]] {
   def ofName(input1: String, model: F[({ type T1[_] = String })#T1]): Int

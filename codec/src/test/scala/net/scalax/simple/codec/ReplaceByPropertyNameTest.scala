@@ -1,7 +1,7 @@
 package net.scalax.simple.codec
 
-import net.scalax.simple.codec.product.core.Fold1Generic
-import net.scalax.simple.codec.to_list_generic.{ModelLink, ToListByTheSameTypeGeneric}
+import net.scalax.simple.codec.product.core.ReplaceByPropertyName
+import net.scalax.simple.codec.to_list_generic.ModelLink
 import org.scalatest._
 import org.scalatest.flatspec._
 import org.scalatest.matchers._
@@ -19,15 +19,15 @@ class ReplaceByPropertyNameTest extends AnyFlatSpec with should.Matchers {
     val replaceByPropertyName: ReplaceByPropertyName[CatName] =
       ReplaceByPropertyName[CatName].derived(modelLike.simpleRunner.simpleRelease2)
 
-    val replaceModel1: CatName[IntF] = replaceByPropertyName.replace[IntF]("id1", 25, nameLabelled, indexF)
+    val replaceModel1: CatName[IntF] = replaceByPropertyName.replace[IntF, Int]("id1", 25, nameLabelled, indexF)
     replaceModel1 should be(CatName[IntF](25, 1, 2, 3, 4))
-    val replaceModel2: CatName[IntF] = replaceByPropertyName.replace[IntF]("str1", 26, nameLabelled, indexF)
+    val replaceModel2: CatName[IntF] = replaceByPropertyName.replace[IntF, Option[String]]("str1", 26, nameLabelled, indexF)
     replaceModel2 should be(CatName[IntF](0, 26, 2, 3, 4))
-    val replaceModel3: CatName[IntF] = replaceByPropertyName.replace[IntF]("uClass1", 27, nameLabelled, indexF)
+    val replaceModel3: CatName[IntF] = replaceByPropertyName.replace[IntF, Option[Long]]("uClass1", 27, nameLabelled, indexF)
     replaceModel3 should be(CatName[IntF](0, 1, 27, 3, 4))
-    val replaceModel4: CatName[IntF] = replaceByPropertyName.replace[IntF]("name1", 28, nameLabelled, indexF)
+    val replaceModel4: CatName[IntF] = replaceByPropertyName.replace[IntF, String]("name1", 28, nameLabelled, indexF)
     replaceModel4 should be(CatName[IntF](0, 1, 2, 28, 4))
-    val replaceModel5: CatName[IntF] = replaceByPropertyName.replace[IntF]("namexu1", 29, nameLabelled, indexF)
+    val replaceModel5: CatName[IntF] = replaceByPropertyName.replace[IntF, String]("namexu1", 29, nameLabelled, indexF)
     replaceModel5 should be(CatName[IntF](0, 1, 2, 3, 29))
   }
 
