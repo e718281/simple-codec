@@ -1,13 +1,13 @@
-package net.scalax.simple.codec
+package net.scalax.simple.codec.product.core
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 
-trait GetFieldModel[F[_[_]]] {
-  def getFieldModel[I[_]]: F[({ type XI[t] = F[I] => I[t] })#XI]
+trait GetFieldGeneric[F[_[_]]] {
+  def getField[I[_]]: F[({ type XI[T] = F[I] => I[T] })#XI]
 }
 
-object GetFieldModel {
+object GetFieldGeneric {
 
   class TestGenericHelper[Sum] {
     type Func[Temp, Item] = (Sum => Temp) => Item
@@ -41,8 +41,8 @@ object GetFieldModel {
     }
 
   class Builder[F[_[_]]] {
-    def derived(o1: AppenderSupport1.Simple2.Release[F]): GetFieldModel[F] = new GetFieldModel[F] {
-      override def getFieldModel[UX[_]]: F[({ type S1[T] = F[UX] => UX[T] })#S1] = {
+    def derived(o1: AppenderSupport1.Simple2.Release[F]): GetFieldGeneric[F] = new GetFieldGeneric[F] {
+      override def getField[UX[_]]: F[({ type S1[T] = F[UX] => UX[T] })#S1] = {
         val func: (F[UX] => F[UX]) => F[({ type NU2[T] = F[UX] => UX[T] })#NU2] =
           o1.append[TestGenericHelper[F[UX]]#Func, UX, ({ type NU2[T] = F[UX] => UX[T] })#NU2](
             appender = appender[F[UX], UX],
