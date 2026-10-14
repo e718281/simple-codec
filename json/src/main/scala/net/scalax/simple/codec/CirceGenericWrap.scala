@@ -61,7 +61,7 @@ object EncodeHelperUtils {
           } yield t(a1, b1)
       }
 
-    decoderHelper.map(named, g(), getField.getField[OptF], helper)
+    decoderHelper.map[Named, Decoder, OptFGet, Decoder.Result, IdType](named, g(), getField.getField[OptF], helper)
   }
 
   def decodeImpl2[F[_[_]]](

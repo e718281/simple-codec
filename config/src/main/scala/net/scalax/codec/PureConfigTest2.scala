@@ -2,7 +2,7 @@ package net.scalax.codec
 
 import com.typesafe.config.ConfigRenderOptions
 import net.scalax.simple.codec.pureconfig.PureConfigLabelled
-import net.scalax.simple.codec.DefaultValuePojo
+import net.scalax.simple.codec.product.core.DefaultValueGeneric
 import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, PojoInstance}
 import pureconfig._
 
@@ -18,7 +18,7 @@ object SampleConf2 {
   implicit def readerInstance: PojoInstance[ConfigReader, SampleConf2] = FillIdentity.Pojo[ConfigReader, SampleConf2].derived
   implicit def writerInstance: PojoInstance[ConfigWriter, SampleConf2] = FillIdentity.Pojo[ConfigWriter, SampleConf2].derived
 
-  implicit def defaultValueInstance: DefaultValuePojo[SampleConf2] = DefaultValuePojo[SampleConf2].derives
+  implicit def defaultValueInstance: DefaultValueGeneric.Pojo[SampleConf2] = DefaultValueGeneric.Pojo[SampleConf2].derived
 
 }
 

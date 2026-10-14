@@ -1,7 +1,7 @@
 package net.scalax.simple.codec.pureconfig
 
 import net.scalax.simple.codec.product.core.Map1Generic
-import net.scalax.simple.codec.DefaultValue
+import net.scalax.simple.codec.product.core.DefaultValueGeneric
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, PojoInstance}
 import pureconfig._
 
@@ -14,7 +14,7 @@ trait PureConfigLabelled[F[_[_]]] {
     initFunc: F[({ type OptF[U1] = Option[() => U1] })#OptF] => F[({ type OptF[U1] = Option[() => U1] })#OptF] =
       identity[F[({ type OptF[U1] = Option[() => U1] })#OptF]]
   )(implicit
-    defaultValue: DefaultValue[F]
+    defaultValue: DefaultValueGeneric[F]
   ): PureConfigLabelled[F]
   def mapLabelled(func: F[({ type Str[_] = String })#Str] => F[({ type Str[_] = String })#Str]): PureConfigLabelled[F]
   def mapWithConfigFieldMapping(c: ConfigFieldMapping): PureConfigLabelled[F]
@@ -28,7 +28,7 @@ object PureConfigLabelled { PureConfigLabelledSelf =>
     override def useDefaultValue(
       initFunc: F[({ type OptF[U1] = Option[() => U1] })#OptF] => F[({ type OptF[U1] = Option[() => U1] })#OptF]
     )(implicit
-      defaultValue: DefaultValue[F]
+      defaultValue: DefaultValueGeneric[F]
     ): PureConfigLabelled[F] = new PureConfigLabelledSelf.Impl[F](
       labelledValueFunc = ImplSelf.labelledValueFunc,
       defaultValue = Some(initFunc(defaultValue.defaultValueFunction1))

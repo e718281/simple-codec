@@ -1,23 +1,23 @@
-package net.scalax.simple.codec
+package net.scalax.simple.codec.product.core
 
+import net.scalax.simple.codec.FModelGet
 import net.scalax.simple.codec.to_list_generic.PojoInstance
 import shapeless.HList
+
 import scala.collection.compat._
 
-trait DefaultValue[F[_[_]]] {
+trait DefaultValueGeneric[F[_[_]]] {
   def defaultValueFunction1: F[({ type UA[T1] = Option[() => T1] })#UA]
 }
 
-trait DefaultValuePojo[Model] extends DefaultValue[({ type T1[U2[_]] = PojoInstance[U2, Model] })#T1]
-
-object DefaultValuePojo { DefaultValuePojoSelf =>
+object DefaultValueGeneric { DefaultValuePojoSelf =>
 
   class Builder[ModelType] {
 
-    def derives(implicit
+    def derived(implicit
       fModelGet: FModelGet[({ type F1[U[_]] = PojoInstance[U, ModelType] })#F1],
       compatModel: SModelFill[ModelType]
-    ): DefaultValuePojo[ModelType] = {
+    ): DefaultValueGeneric.Pojo[ModelType] = {
       def appendLImpl(n: List[Option[() => Any]]): shapeless.HList = n match {
         case head :: tail => shapeless.HList.ListCompat.#:(head, appendLImpl(tail))
         case Nil          => shapeless.HNil
@@ -29,13 +29,14 @@ object DefaultValuePojo { DefaultValuePojoSelf =>
       val ins1: PojoInstance[({ type UA[T1] = Option[() => T1] })#UA, ModelType] =
         fModelGet.FFromHList[({ type UA[T1] = Option[() => T1] })#UA](defaultVHList)
 
-      new DefaultValuePojo[ModelType] {
+      new DefaultValueGeneric[({ type T1[U2[_]] = PojoInstance[U2, ModelType] })#T1] {
         override def defaultValueFunction1: PojoInstance[({ type UA[T1] = Option[() => T1] })#UA, ModelType] = ins1
       }
     }
   }
 
-  def apply[ModelType]: Builder[ModelType] = new Builder[ModelType]
+  type Pojo[ModelType] = DefaultValueGeneric[({ type T1[U2[_]] = PojoInstance[U2, ModelType] })#T1]
+  def Pojo[ModelType]: Builder[ModelType] = new Builder[ModelType]
 
 }
 

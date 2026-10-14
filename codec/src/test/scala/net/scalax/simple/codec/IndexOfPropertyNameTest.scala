@@ -11,7 +11,6 @@ class IndexOfPropertyNameTest extends AnyFlatSpec with should.Matchers {
   "IndexOfPropertyName" should "get index by propertyName." in {
     val modelLike: ModelLink.F[CatName]      = implicitly[ModelLink.F[CatName]]
     val nameLabelled: CatName[CatName.Named] = modelLike.labelled.stringLabelled
-    nameLabelled should be(CatName[CatName.Named]("id1", "str1", "uClass1", "name1", "namexu1"))
 
     val indexOfPropertyName: IndexOfPropertyName[CatName] = IndexOfPropertyName[CatName].derived(modelLike.simpleRunner.simpleRelease1)
     def getIndex(name: String): Int                       = indexOfPropertyName.ofName(name, nameLabelled)

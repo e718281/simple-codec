@@ -3,8 +3,7 @@ package codec
 
 import io.circe.generic.extras.JsonKey
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
-import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
-import net.scalax.simple.codec.product.core.Map2Generic
+import net.scalax.simple.codec.product.core.{DefaultValueGeneric, Map2Generic}
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, PojoInstance}
 
 trait SimpleJsonLabelled[F[_[_]]] {
@@ -14,7 +13,7 @@ trait SimpleJsonLabelled[F[_[_]]] {
   def labelledValueFunc: F[({ type Str[_] = String })#Str] => F[({ type Str[_] = String })#Str]
   def defaultValue: Option[F[({ type OptF[U1] = Option[() => U1] })#OptF]]
   def useDefaultValue(initFunc: F[({ type OptF[U1] = Option[() => U1] })#OptF] => F[({ type OptF[U1] = Option[() => U1] })#OptF])(implicit
-    defaultValue: DefaultValue[F]
+    defaultValue: DefaultValueGeneric[F]
   ): SimpleJsonLabelled[F]
   def mapLabelled(func: F[({ type Str[_] = String })#Str] => F[({ type Str[_] = String })#Str]): SimpleJsonLabelled[F]
 }
@@ -44,7 +43,7 @@ object SimpleJsonLabelled { SimpleJsonLabelledSelf =>
     override def useDefaultValue(
       initFunc: F[({ type OptF[U1] = Option[() => U1] })#OptF] => F[({ type OptF[U1] = Option[() => U1] })#OptF]
     )(implicit
-      defaultValue: DefaultValue[F]
+      defaultValue: DefaultValueGeneric[F]
     ): SimpleJsonLabelled[F] = new SimpleJsonLabelled.Impl[F](
       labelledValueFunc = ImplSelf.labelledValueFunc,
       defaultValue = Some(initFunc(defaultValue.defaultValueFunction1))

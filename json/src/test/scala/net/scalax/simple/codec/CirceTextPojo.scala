@@ -3,7 +3,7 @@ package net.scalax.simple.codec
 import io.circe._
 import io.circe.generic.extras.JsonKey
 import io.circe.syntax._
-import net.scalax.simple.codec.product.core.{Fold1Generic, ToListByTheSameTypeGeneric}
+import net.scalax.simple.codec.product.core.{DefaultValueGeneric, Fold1Generic, ToListByTheSameTypeGeneric}
 import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo, PojoInstance}
 
 case class CatNameTest3(
@@ -20,9 +20,11 @@ object CatNameTest3 {
 
   implicit val modelLinkPojo: ModelLinkPojo[CatNameTest3] = ModelLink.Pojo[CatNameTest3].derived
 
+  implicit def defValue: DefaultValueGeneric.Pojo[CatNameTest3] = DefaultValueGeneric.Pojo[CatNameTest3].derived
+
   implicit def annInstance: ModelAnnotationsPojo[CatNameTest3, JsonKey] = ModelAnnotationsPojo[CatNameTest3, JsonKey].derived
   implicit val jsonLabelled: SimpleJsonLabelled.Pojo[CatNameTest3]      =
-    SimpleJsonLabelled.pojo[CatNameTest3].mapLabelled(_.copy(_.id3)("miaomiao id")).annotationsLabelled
+    SimpleJsonLabelled.pojo[CatNameTest3].mapLabelled(_.copy(_.id3)("miaomiao id")).annotationsLabelled.useDefaultValue(identity)
 
   import CirceGen.Pojo._
   implicit def modelEncoder: FillIdentity.Pojo[Encoder, CatNameTest3] =

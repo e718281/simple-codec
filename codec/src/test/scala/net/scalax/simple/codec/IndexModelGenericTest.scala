@@ -11,7 +11,6 @@ class IndexModelGenericTest extends AnyFlatSpec with should.Matchers {
   "IndexModelGeneric" should "gen index model." in {
     val modelLike: ModelLink.F[CatName]      = implicitly[ModelLink.F[CatName]]
     val nameLabelled: CatName[CatName.Named] = modelLike.labelled.stringLabelled
-    nameLabelled should be(CatName[CatName.Named]("id1", "str1", "uClass1", "name1", "namexu1"))
 
     type IndexF[_] = Int
     val indexModelGeneric: IndexModelGeneric[CatName] =

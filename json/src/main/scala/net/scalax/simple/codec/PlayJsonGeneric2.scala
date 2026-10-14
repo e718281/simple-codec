@@ -61,7 +61,7 @@ object PlayJsonGeneric2 {
           } yield t(a1, b1)
       }
 
-    decoderHelper.map(named, g(), getField.getField[OptF], helper)
+    decoderHelper.map[Named, Reads, OptFGet, JsResult, IdType](named, g(), getField.getField[OptF], helper)
   }
 
   def decodeImpl2[F[_[_]]](
