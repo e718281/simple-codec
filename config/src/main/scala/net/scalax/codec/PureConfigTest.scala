@@ -17,7 +17,7 @@ object SampleConf {
       .Pojo[SampleConf, PureConfigPoly]
       .derived
       .mapLabelled(_.copy(_.optValue)("nextValue"))
-      .mapLabelled(configFieldMappingApplyPojo(fieldName => fieldName.toUpperCase))
+      .mapLabelled(configFieldMappingPojo(fieldName => fieldName.toUpperCase))
       .useDefaultValue
 
   implicit def readerInstance: PojoInstance[ConfigReader, SampleConf] = FillIdentity.Pojo[ConfigReader, SampleConf].derived

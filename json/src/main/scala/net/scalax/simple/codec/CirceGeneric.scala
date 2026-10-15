@@ -79,22 +79,26 @@ object CirceGen {
     implicit def objectEncoder[Model](implicit mapper: SingletonMap[Model]): Encoder[Model] =
       Encoder.encodeJsonObject.contramapObject(_ => JsonObject.empty)
 
-    def annotationsLabelled[Model](implicit
-      bs: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-      ann: ModelAnnotationsPojo[Model, JsonKey]
-    ): PojoInstance[Named, Model] => PojoInstance[Named, Model] = {
-      type PojoPro[U[_]] = PojoInstance[U, Model]
+    def jsonKeyF[F[_[_]]](implicit
+      bs: BasedInstalledSimpleProduct[F],
+      ann: ModelAnnotations.F[F, JsonKey]
+    ): F[Named] => F[Named] = {
       type JsonKeyPro[_] = Option[JsonKey]
-      val map2Generc = Map2Generic[PojoPro].derived(bs.simpleRunner.simpleRelease3)
+      val map2Generc = Map2Generic[F].derived(bs.simpleRunner.simpleRelease3)
       val mapper2    = new Map2Generic.MapFunction[Named, JsonKeyPro, Named] {
         override def func[X1](in: String, in2: Option[JsonKey]): String = in2.fold(in)(ann => ann.value)
       }
 
-      val func: (PojoInstance[Named, Model], PojoInstance[JsonKeyPro, Model]) => PojoInstance[Named, Model] =
+      val func: (F[Named], F[JsonKeyPro]) => F[Named] =
         map2Generc.map[Named, JsonKeyPro, Named](mapper2)
 
-      (labelled: PojoInstance[Named, Model]) => func(labelled, ann.annInstance)
+      (labelled: F[Named]) => func(labelled, ann.annInstance)
     }
+
+    def jsonKeyPojo[Model](implicit
+      bs: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
+      ann: ModelAnnotations.Pojo[Model, JsonKey]
+    ): PojoInstance[Named, Model] => PojoInstance[Named, Model] = jsonKeyF[({ type F[X[_]] = PojoInstance[X, Model] })#F]
 
   }
 

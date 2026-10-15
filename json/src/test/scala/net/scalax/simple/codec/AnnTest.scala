@@ -15,8 +15,8 @@ case class AnnTestCatName(
 
 object AnnTestCatName {
 
-  implicit def modelLink: ModelLink.Pojo[AnnTestCatName]         = ModelLink.Pojo[AnnTestCatName].derived
-  def annInstance: ModelAnnotationsPojo[AnnTestCatName, JsonKey] = ModelAnnotationsPojo[AnnTestCatName, JsonKey].derived
+  implicit def modelLink: ModelLink.Pojo[AnnTestCatName]          = ModelLink.Pojo[AnnTestCatName].derived
+  def annInstance: ModelAnnotations.Pojo[AnnTestCatName, JsonKey] = ModelAnnotations.Pojo[AnnTestCatName, JsonKey].derived
 
 }
 

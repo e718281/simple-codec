@@ -76,7 +76,7 @@ object PureConfigUtils {
     writer.contramap[Model](g1.toIdentity)
   }
 
-  def configFieldMappingApply[F[_[_]]](c: ConfigFieldMapping)(implicit bs: BasedInstalledSimpleProduct[F]): F[Str1] => F[Str1] = {
+  def configFieldMappingF[F[_[_]]](c: ConfigFieldMapping)(implicit bs: BasedInstalledSimpleProduct[F]): F[Str1] => F[Str1] = {
     val map1Generic: Map1Generic[F] = Map1Generic[F].derived(bs.simpleRunner.simpleRelease2)
     val mapping                     = new Map1Generic.MapFunction[Str1, Str1] {
       override def func[X1](in: String): String = c(in)
@@ -84,8 +84,8 @@ object PureConfigUtils {
     map1Generic.map[Str1, Str1](mapping)
   }
 
-  def configFieldMappingApplyPojo[Model](c: ConfigFieldMapping)(implicit
+  def configFieldMappingPojo[Model](c: ConfigFieldMapping)(implicit
     bs: BasedInstalledSimpleProduct[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1]
-  ): PojoInstance[Str1, Model] => PojoInstance[Str1, Model] = configFieldMappingApply[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1](c)
+  ): PojoInstance[Str1, Model] => PojoInstance[Str1, Model] = configFieldMappingF[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1](c)
 
 }

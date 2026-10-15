@@ -7,28 +7,27 @@ trait ModelAnnotations[F[_[_]], Ann] {
   def annInstance: F[({ type U11[_] = Option[Ann] })#U11]
 }
 
-trait ModelAnnotationsPojo[Model, Ann] extends ModelAnnotations[({ type UA[X1[_]] = PojoInstance[X1, Model] })#UA, Ann]
 
-object ModelAnnotationsPojo {
+object ModelAnnotations {
 
-  trait ModelBuilder[Model, Ann] {
+  class ModelBuilder[Model, Ann] {
     def derived(implicit
       sa: shapeless.Annotations[Ann, Model],
       fModelGet: FModelGet[({ type F1[U[_]] = PojoInstance[U, Model] })#F1]
-    ): ModelAnnotationsPojo[Model, Ann] = {
+    ): ModelAnnotations.Pojo[Model, Ann] = {
       def annIns: shapeless.HList = sa.apply()
 
       def toModel: PojoInstance[({ type U11[_] = Option[Ann] })#U11, Model] =
         fModelGet.FFromHList[({ type U11[_] = Option[Ann] })#U11](annIns)
 
-      new ModelAnnotationsPojo[Model, Ann] {
+      new ModelAnnotations.Pojo[Model, Ann] {
         override def annInstance: PojoInstance[({ type U11[_] = Option[Ann] })#U11, Model] = toModel
       }
     }
   }
 
-  def apply[Model, Ann]: ModelBuilder[Model, Ann] = new ModelBuilder[Model, Ann] {
-    //
-  }
+  type F[U1[_[_]],Ann] = ModelAnnotations[U1,Ann]
+  type Pojo[Model,Ann] = ModelAnnotations[({type U1[U2[_]]=PojoInstance[U2,Model]})#U1,Ann]
+  def Pojo[Model, Ann]: ModelBuilder[Model, Ann] = new ModelBuilder[Model, Ann]
 
 }
