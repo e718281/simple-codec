@@ -14,11 +14,11 @@ class IndexOfPropertyNameTest extends AnyFlatSpec with should.Matchers {
 
     val indexOfPropertyName: IndexOfPropertyName[CatName] = IndexOfPropertyName[CatName].derived(modelLike.simpleRunner.simpleRelease1)
     def getIndex(name: String): Int                       = indexOfPropertyName.ofName(name, nameLabelled)
-    getIndex("id1") should be(0)
-    getIndex("str1") should be(1)
-    getIndex("uClass1") should be(2)
-    getIndex("name1") should be(3)
-    getIndex("namexu1") should be(4)
+    getIndex("foo1") should be(0)
+    getIndex("foo2") should be(1)
+    getIndex("foo3") should be(2)
+    getIndex("bar1") should be(3)
+    getIndex("bar2") should be(4)
   }
 
 }

@@ -1,12 +1,11 @@
 package net.scalax.simple
 package codec
 
-import io.circe.generic.extras.JsonKey
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
-import net.scalax.simple.codec.product.core.Map2Generic
-import net.scalax.simple.codec.to_list_generic.BasedInstalledSimpleProduct
+import net.scalax.simple.codec.product.core.{DefaultValueGeneric, Map2Generic}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, PojoInstance}
 
-trait ConfigPojo[F[_[_]]] { Self =>
+trait ConfigGeneric[F[_[_]], Poly] { Self =>
 
   type StrF[_]    = String
   type OptVal[U1] = Option[() => U1]
@@ -14,24 +13,22 @@ trait ConfigPojo[F[_[_]]] { Self =>
   def labelledValueFunc: F[StrF] => F[StrF]
   def defaultValue: Option[F[OptVal]]
 
-  def mapLabelled(func: F[StrF] => F[StrF]): ConfigPojo[F] = new ConfigPojo[F] {
+  def mapLabelled(func: F[StrF] => F[StrF]): ConfigGeneric[F, Poly] = new ConfigGeneric[F, Poly] {
     InnerSelf =>
     override def labelledValueFunc: F[StrF] => F[StrF] =
       Self.labelledValueFunc.andThen(func)
     override def defaultValue: Option[F[OptVal]] = Self.defaultValue
   }
 
-  def fillDefaultValue(func: F[OptVal]): ConfigPojo[F] = new ConfigPojo[F] { InnerSelf =>
+  def useDefaultValue(implicit func: DefaultValueGeneric[F]): ConfigGeneric[F, Poly] = new ConfigGeneric[F, Poly] { InnerSelf =>
     override def labelledValueFunc: F[StrF] => F[StrF] = Self.labelledValueFunc
-    override def defaultValue: Option[F[OptVal]]       = Some(func)
+    override def defaultValue: Option[F[OptVal]]       = Some(func.defaultValueFunction1)
   }
-
-  def map(m: ConfigPojo[F] => ConfigPojo[F]): ConfigPojo[F] = m(Self)
 
 }
 
-object ConfigPojo {
-  type StrF[_]  = String
+object ConfigGeneric {
+  /*type StrF[_]  = String
   type Type2[T] = Option[JsonKey]
 
   def fromAnnotationImpl[F[_[_]]](ann: ModelAnnotations[F, JsonKey], sp3: AppenderSupport1.Simple3.Release[F]): F[StrF] => F[StrF] = {
@@ -51,6 +48,20 @@ object ConfigPojo {
   ): ConfigPojo[F] => ConfigPojo[F] = {
     val mapLabelled = fromAnnotationImpl[F](ann, bs.simpleRunner.simpleRelease3)
     (conf: ConfigPojo[F]) => conf.mapLabelled(mapLabelled)
+  }*/
+
+  class Builder[F[_[_]], Poly] {
+    def derived: ConfigGeneric[F, Poly] = new ConfigGeneric[F, Poly] {
+      override def labelledValueFunc: F[StrF] => F[StrF] = identity
+      override def defaultValue: Option[F[OptVal]]       = Option.empty
+    }
   }
+
+  type F[U1[_[_]], Poly] = ConfigGeneric[U1, Poly]
+  type Pojo[Model, Poly] = ConfigGeneric[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1, Poly]
+
+  def F[U1[_[_]], Poly]: Builder[U1, Poly]                                                = new Builder[U1, Poly]
+  def Pojo[Model, Poly]: Builder[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1, Poly] =
+    new Builder[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1, Poly]
 
 }

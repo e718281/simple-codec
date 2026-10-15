@@ -15,7 +15,7 @@ object CatNameTest5 {
 
   implicit val modelLinkPojo: ModelLink.Pojo[CatNameTest5] = ModelLink.Pojo[CatNameTest5].derived
 
-  implicit val jsonLabelled: SimpleJsonLabelled.Pojo[CatNameTest5] = SimpleJsonLabelled.pojo[CatNameTest5]
+  implicit val jsonLabelled: ConfigGeneric.Pojo[CatNameTest5, PlayJsonPoly] = ConfigGeneric.Pojo[CatNameTest5, PlayJsonPoly].derived
 
   import PlayJsonGeneric.Pojo._
   implicit val modelWrites: FillIdentity.Pojo[Writes, CatNameTest5] = FillIdentity.Pojo[Writes, CatNameTest5].derived

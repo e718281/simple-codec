@@ -17,7 +17,7 @@ class ToListByTheSameTypeGenericTest extends AnyFlatSpec with should.Matchers {
     val toListByTheSameTypeGeneric: ToListByTheSameTypeGeneric[CatName] = ToListByTheSameTypeGeneric[CatName].derived(fold1FGenerc)
     def nameList: List[String]                                          =
       toListByTheSameTypeGeneric.toListByTheSameType[String, List[String]](List.empty, (l, h) => h :: l)(nameLabelled)
-    nameList should be(List("id1", "str1", "uClass1", "name1", "namexu1"))
+    nameList should be(List("foo1", "foo2", "foo3", "bar1", "bar2"))
   }
 
 }

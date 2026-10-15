@@ -20,7 +20,7 @@ object CatName {
     : BasedInstalledLabelled[FAlias] with BasedInstalledSimpleProduct[FAlias] with BasedInstalledModelSized[FAlias] =
     ToItera[CatName].derived.toBasedInstalled[String](implicitly)
 
-  implicit val jsonLabelled: SimpleJsonLabelled.F[FAlias] = SimpleJsonLabelled.F[FAlias]
+  implicit val jsonLabelled: ConfigGeneric.F[FAlias, CircePoly] = ConfigGeneric.F[FAlias, CircePoly].derived
 
   implicit val li1222Encoder: FAlias[Encoder] = {
     val v: BasedInstalledSimpleProduct[FAlias] = implicitly

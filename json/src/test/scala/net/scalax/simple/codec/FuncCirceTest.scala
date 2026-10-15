@@ -31,8 +31,8 @@ object FuncCirceTest {
 
   val impl2EncoderGiven: FuncCirceTestImpl2[Encoder] = FillIdentity.F[Encoder, FuncCirceTestImpl2].derived
   val impl2DecoderGiven: FuncCirceTestImpl2[Decoder] = FillIdentity.F[Decoder, FuncCirceTestImpl2].derived
-  implicit def jsonLabelled[T]: SimpleJsonLabelled.F[({ type X1[U[_]] = FuncCirceTest[T, U] })#X1] =
-    SimpleJsonLabelled.F[({ type X1[U[_]] = FuncCirceTest[T, U] })#X1]
+  implicit def jsonLabelled[T]: ConfigGeneric.F[({ type X1[U[_]] = FuncCirceTest[T, U] })#X1, CircePoly] =
+    ConfigGeneric.F[({ type X1[U[_]] = FuncCirceTest[T, U] })#X1, CircePoly].derived
   implicit def impl0EncoderGiven[T](implicit u: FuncCirceTestImpl1[T, Encoder]): FuncCirceTest[T, Encoder] =
     abcFromTo[T, Encoder].append(implicitly, impl2EncoderGiven)
   implicit def impl0DecoderGiven[T](implicit u: FuncCirceTestImpl1[T, Decoder]): FuncCirceTest[T, Decoder] =

@@ -18,7 +18,7 @@ class Fold1GenericTest extends AnyFlatSpec with should.Matchers {
       override def zero: Vector[String]                                    = Vector.empty
     }
 
-    val nameSeq: Vector[String]       = Vector("id1", "str1", "uClass1", "name1", "namexu1")
+    val nameSeq: Vector[String]       = Vector("foo1", "foo2", "foo3", "bar1", "bar2")
     val foldLeftNamed: Vector[String] = fold1FGenerc.foldLeft[CatName.Named, Vector[String]](nameLabelled, foldF)
     foldLeftNamed should be(nameSeq)
 

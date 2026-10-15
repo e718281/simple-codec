@@ -13,7 +13,7 @@ class FromListByTheSameTypeGenericTest extends AnyFlatSpec with should.Matchers 
     val modelLike: ModelLink.F[CatName]      = implicitly[ModelLink.F[CatName]]
     val nameLabelled: CatName[CatName.Named] = modelLike.labelled.stringLabelled
 
-    val list: List[String]                                           = List("id1", "str1", "uClass1", "name1", "namexu1")
+    val list: List[String]                                           = List("foo1", "foo2", "foo3", "bar1", "bar2")
     val fromListByTheSameType: FromListByTheSameTypeGeneric[CatName] =
       FromListByTheSameTypeGeneric[CatName].derived(modelLike.simpleRunner.simpleRelease1)
     val namePro: CatName[CatName.Named] = fromListByTheSameType.fromListByTheSameType[String, List[String]](_.head, _.tail)(list)

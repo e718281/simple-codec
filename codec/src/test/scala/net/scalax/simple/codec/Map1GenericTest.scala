@@ -20,7 +20,7 @@ class Map1GenericTest extends AnyFlatSpec with should.Matchers {
       override def func[X1](in: String): Int = in.length
     }
     val nameSize: CatName[Len] = mapGeneric.map[CatName.Named, Len](mapper)(nameLabelled)
-    nameSize should be(CatName[Len](3, 4, 7, 5, 7))
+    nameSize should be(CatName[Len](4, 4, 4, 4, 4))
   }
 
 }

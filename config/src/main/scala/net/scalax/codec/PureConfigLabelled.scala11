@@ -1,0 +1,16 @@
+package net.scalax.simple.codec.pureconfig
+
+import net.scalax.simple.codec.product.core.Map1Generic
+import pureconfig._
+
+object PureConfigLabelled { PureConfigLabelledSelf =>
+
+  def mapWithConfigFieldMapping(c: ConfigFieldMapping): PureConfigLabelled[F] = {
+    val mapping = new Map1Generic.MapFunction[({ type Str[_] = String })#Str, ({ type Str[_] = String })#Str] {
+      override def func[X1](in: String): String = c(in)
+    }
+
+    ImplSelf.mapLabelled(implicitly[Map1Generic[F]].map[({ type Str[_] = String })#Str, ({ type Str[_] = String })#Str](mapping))
+  }
+
+}

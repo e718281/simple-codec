@@ -9,8 +9,7 @@ import org.scalatest.matchers._
 class IndexModelGenericTest extends AnyFlatSpec with should.Matchers {
 
   "IndexModelGeneric" should "gen index model." in {
-    val modelLike: ModelLink.F[CatName]      = implicitly[ModelLink.F[CatName]]
-    val nameLabelled: CatName[CatName.Named] = modelLike.labelled.stringLabelled
+    val modelLike: ModelLink.F[CatName] = implicitly[ModelLink.F[CatName]]
 
     type IndexF[_] = Int
     val indexModelGeneric: IndexModelGeneric[CatName] =

@@ -3,7 +3,7 @@ package codec
 
 import net.scalax.simple.codec.to_list_generic.ModelLink
 
-case class CatName[F[_]](id1: F[Int], str1: F[Option[String]], uClass1: F[Option[Long]], name1: F[String], namexu1: F[String])
+case class CatName[F[_]](foo1: F[Int], foo2: F[Option[String]], foo3: F[Option[Long]], bar1: F[String], bar2: F[String])
 object CatName {
   type Named[_] = String
   implicit val deco2_1: ModelLink.F[CatName] = ModelLink.F[CatName].derived

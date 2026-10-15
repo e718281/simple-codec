@@ -6,6 +6,7 @@ import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedIns
 import net.scalax.simple.codec.utils.ByNameImplicit
 import play.api.libs.json._
 
+trait PlayJsonPoly
 object PlayJsonGeneric {
 
   object F {
@@ -13,7 +14,7 @@ object PlayJsonGeneric {
       g: ByNameImplicit[F[Writes]],
       g1: BasedInstalledSimpleProduct[F],
       lb: BasedInstalledLabelled[F],
-      sjn: SimpleJsonLabelled[F]
+      sjn: ConfigGeneric[F, PlayJsonPoly] = ConfigGeneric.F[F, PlayJsonPoly].derived
     ): Writes[F[({ type IDF[T] = T })#IDF]] = {
       val simpleRunner: AppenderSupport4[F] = g1.simpleRunner
 
@@ -26,7 +27,7 @@ object PlayJsonGeneric {
       g: ByNameImplicit[F[Reads]],
       g1: BasedInstalledSimpleProduct[F],
       lb: BasedInstalledLabelled[F],
-      sg: SimpleJsonLabelled[F]
+      sg: ConfigGeneric[F, PlayJsonPoly] = ConfigGeneric.F[F, PlayJsonPoly].derived
     ): Reads[F[({ type IDF[T] = T })#IDF]] = {
       val simpleRunner: AppenderSupport4[F] = g1.simpleRunner
 
@@ -53,7 +54,7 @@ object PlayJsonGeneric {
       basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
       lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
       g: ByNameImplicit[PojoInstance[Writes, Model]],
-      sjn: SimpleJsonLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+      sjn: ConfigGeneric.Pojo[Model, PlayJsonPoly] = ConfigGeneric.Pojo[Model, PlayJsonPoly].derived
     ): Writes[Model] = {
       val w1: Writes[PojoInstance[({ type IDF[T] = T })#IDF, Model]] = F.encodeModelF[({ type F[X[_]] = PojoInstance[X, Model] })#F]
       w1.contramap[Model](g1.toIdentity)
@@ -64,7 +65,7 @@ object PlayJsonGeneric {
       basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
       lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
       g3: ByNameImplicit[PojoInstance[Reads, Model]],
-      sg: SimpleJsonLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+      sg: ConfigGeneric.Pojo[Model, PlayJsonPoly] = ConfigGeneric.Pojo[Model, PlayJsonPoly].derived
     ): Reads[Model] = {
       val de1: Reads[PojoInstance[({ type IDF[T] = T })#IDF, Model]] = F.getCirceDecoderF[({ type F[X[_]] = PojoInstance[X, Model] })#F]
       for (model <- de1) yield g1.fromIdentity(model)

@@ -1,5 +1,6 @@
 package net.scalax.simple.codec.pureconfig
 
+import net.scalax.simple.codec.ConfigGeneric
 import net.scalax.simple.codec.product.core.DefaultValueGeneric
 import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, PojoInstance}
 import pureconfig._
@@ -11,15 +12,13 @@ object SampleConf {
   implicit val modelLinkPojo: ModelLink.Pojo[SampleConf] = ModelLink.Pojo[SampleConf].derived
 
   import PureConfigUtils._
-  implicit def pureConfigNamed: PureConfigLabelled.Pojo[SampleConf] =
-    PureConfigLabelled
-      .pojo[SampleConf]
-      .default
+  implicit def pureConfigNamed: ConfigGeneric.Pojo[SampleConf, PureConfigPoly] =
+    ConfigGeneric
+      .Pojo[SampleConf, PureConfigPoly]
+      .derived
       .mapLabelled(_.copy(_.optValue)("nextValue"))
-      .mapWithConfigFieldMapping(new ConfigFieldMapping {
-        override def apply(fieldName: String): String = fieldName.toUpperCase
-      })
-      .useDefaultValue()
+      .mapLabelled(configFieldMappingApplyPojo(fieldName => fieldName.toUpperCase))
+      .useDefaultValue
 
   implicit def readerInstance: PojoInstance[ConfigReader, SampleConf] = FillIdentity.Pojo[ConfigReader, SampleConf].derived
   implicit def writerInstance: PojoInstance[ConfigWriter, SampleConf] = FillIdentity.Pojo[ConfigWriter, SampleConf].derived
