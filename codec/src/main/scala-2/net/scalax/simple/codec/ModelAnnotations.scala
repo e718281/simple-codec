@@ -7,7 +7,6 @@ trait ModelAnnotations[F[_[_]], Ann] {
   def annInstance: F[({ type U11[_] = Option[Ann] })#U11]
 }
 
-
 object ModelAnnotations {
 
   class ModelBuilder[Model, Ann] {
@@ -26,8 +25,8 @@ object ModelAnnotations {
     }
   }
 
-  type F[U1[_[_]],Ann] = ModelAnnotations[U1,Ann]
-  type Pojo[Model,Ann] = ModelAnnotations[({type U1[U2[_]]=PojoInstance[U2,Model]})#U1,Ann]
+  type F[U1[_[_]], Ann] = ModelAnnotations[U1, Ann]
+  type Pojo[Model, Ann] = ModelAnnotations[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1, Ann]
   def Pojo[Model, Ann]: ModelBuilder[Model, Ann] = new ModelBuilder[Model, Ann]
 
 }
