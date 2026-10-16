@@ -4,11 +4,11 @@ import io.circe._
 import net.scalax.simple.codec.to_list_generic.FillIdentity
 
 object DogNameHelper {
-  def toJsonLaw(dogName: DogName): Json = {
+  def toJsonLaw(dogName: DogName): String = {
     import io.circe.generic.semiauto._
     import io.circe.syntax._
     implicit val enc: Encoder[DogName] = deriveEncoder
-    dogName.asJson
+    dogName.asJson.noSpaces
   }
 
   def fromJsonLaw(json: Json): Decoder.Result[DogName] = {
@@ -17,11 +17,11 @@ object DogNameHelper {
     json.as[DogName]
   }
 
-  def toJsonSimple(dogName: DogName): Json = {
+  def toJsonSimple(dogName: DogName): String = {
     import net.scalax.simple.codec.CirceGen.Pojo._
     import io.circe.syntax._
     implicit val modelEncoder: FillIdentity.Pojo[Encoder, DogName] = FillIdentity.Pojo[Encoder, DogName].derived
-    dogName.asJson
+    dogName.asJson.noSpaces
   }
 
   def fromJsonSimple(json: Json): Decoder.Result[DogName] = {
