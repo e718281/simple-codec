@@ -2,7 +2,7 @@ package net.scalax.simple.codec
 
 import io.circe._
 import io.circe.syntax._
-import net.scalax.simple.codec.CirceGen.Pojo._
+import net.scalax.simple.codec.Circe._
 import net.scalax.simple.codec.to_list_generic.SingletonMap
 
 object JsonObjectTest {

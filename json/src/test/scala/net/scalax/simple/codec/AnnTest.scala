@@ -22,7 +22,7 @@ object AnnTestCatName {
 
 object AnnCirceTest1 {
 
-  import CirceGen.Pojo._
+  import Circe._
 
   final def main1(args: Array[String]): Unit = {
     println(AnnTestCatName.annInstance.annInstance(_.name114))

@@ -17,7 +17,7 @@ object S3CatName {
 
 object S3CirceTest1 {
 
-  import CirceGen.Pojo._
+  import Circe._
 
   val modelInstance: S3CatName = S3CatName(
     id4 = 8594,

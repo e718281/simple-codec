@@ -18,14 +18,14 @@ object DogNameHelper {
   }
 
   def toJsonSimple(dogName: DogName): String = {
-    import net.scalax.simple.codec.CirceGen.Pojo._
+    import net.scalax.simple.codec.Circe._
     import io.circe.syntax._
     implicit val modelEncoder: FillIdentity.Pojo[Encoder, DogName] = FillIdentity.Pojo[Encoder, DogName].derived
     dogName.asJson.noSpaces
   }
 
   def fromJsonSimple(json: Json): Decoder.Result[DogName] = {
-    import net.scalax.simple.codec.CirceGen.Pojo._
+    import net.scalax.simple.codec.Circe._
     implicit val modelDecoder: FillIdentity.Pojo[Decoder, DogName] = FillIdentity.Pojo[Decoder, DogName].derived
     json.as[DogName]
   }

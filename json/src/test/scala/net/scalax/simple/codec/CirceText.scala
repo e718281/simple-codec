@@ -23,7 +23,7 @@ object CatName {
 
 object CirceText1 {
 
-  import CirceGen.F._
+  import Circe._
 
   val modelInstance: CatName[cats.Id] = CatName[cats.Id](
     id1 = 8594,

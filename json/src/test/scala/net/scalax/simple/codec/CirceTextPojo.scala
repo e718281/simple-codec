@@ -23,9 +23,14 @@ object CatNameTest3 {
   implicit def defValue: DefaultValueGeneric.Pojo[CatNameTest3] = DefaultValueGeneric.Pojo[CatNameTest3].derived
 
   implicit def annInstance: ModelAnnotations.Pojo[CatNameTest3, JsonKey] = ModelAnnotations.Pojo[CatNameTest3, JsonKey].derived
-  import CirceGen.Pojo._
+  import Circe._
   implicit val jsonLabelled: ConfigGeneric.Pojo[CatNameTest3, CircePoly] =
-    ConfigGeneric.Pojo[CatNameTest3, CircePoly].derived.mapLabelled(_.copy(_.id3)("miaomiao id")).mapLabelled(jsonKeyPojo).useDefaultValue
+    ConfigGeneric
+      .Pojo[CatNameTest3, CircePoly]
+      .derived
+      .mapLabelled(_.copy(_.id3)("miaomiao id"))
+      .mapLabelled(CirceHepler.jsonKeyPojo)
+      .useDefaultValue
 
   implicit def modelEncoder: FillIdentity.Pojo[Encoder, CatNameTest3] =
     FillIdentity.Pojo[Encoder, CatNameTest3].derived.copy(_.uClass3)(longOptEncoder)
@@ -35,7 +40,7 @@ object CatNameTest3 {
 
 object CatNameTest3TestCase {
 
-  import CirceGen.Pojo._
+  import Circe._
 
   val cat1: CatNameTest3 = CatNameTest3(
     id3 = 1257,

@@ -9,7 +9,7 @@ case class CatNameTest6(id3: Int, str3: Option[String], uClass3: Option[CusType]
 
 object CatNameTest6 {
 
-  import CirceGen.Pojo._
+  import Circe._
 
   implicit val modelLinkPojo: ModelLink.Pojo[CatNameTest6] = ModelLink.Pojo[CatNameTest6].derived
 

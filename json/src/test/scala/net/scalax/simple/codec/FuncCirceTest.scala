@@ -42,7 +42,7 @@ object FuncCirceTest {
 
 object FuncCirceTest1 {
 
-  import CirceGen.F._
+  import Circe._
 
   type UTest[F[_]] = FuncCirceTest[String, F]
 

@@ -45,7 +45,7 @@ object CirceText2 {
 
   type FAlias[UX[_]] = CatName[({ type U1[_] = UX[String] })#U1]
 
-  import CirceGen.F._
+  import Circe._
 
   val namedMode: FAlias[cats.Id] = implicitly[BasedInstalledLabelled[FAlias]].labelled.stringLabelled
 
