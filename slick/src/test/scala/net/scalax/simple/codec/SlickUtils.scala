@@ -2,7 +2,15 @@ package net.scalax.simple.codec
 package aa
 
 import net.scalax.simple.codec.product.core.Map0Generic
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, FillIdentity, ModelLink, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{
+  BasedInstalledLabelled,
+  BasedInstalledSimpleProduct,
+  FillIdentity,
+  GenericAuxFrom,
+  GenericAuxTo,
+  ModelLink,
+  PojoInstance
+}
 import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
 
@@ -15,8 +23,8 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     classTag: scala.reflect.ClassTag[Model],
     modelGet: ModelGet[F, Model],
     modelSet: ModelSet[F, Model],
-    fmodelGet: FModelGet[F],
-    fmodelSet: FModelSet[F],
+    fmodelGet: GenericAuxFrom[F],
+    fmodelSet: GenericAuxTo[F],
     basedInstalled: BasedInstalledSimpleProduct[F],
     basedInstalledlabelled: BasedInstalledLabelled[F]
   ) extends Table[Model](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName) {
@@ -26,8 +34,8 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
       classTag: scala.reflect.ClassTag[Model],
       modelGet: ModelGet[F, Model],
       modelSet: ModelSet[F, Model],
-      fmodelGet: FModelGet[F],
-      fmodelSet: FModelSet[F],
+      fmodelGet: GenericAuxFrom[F],
+      fmodelSet: GenericAuxTo[F],
       basedInstalled: BasedInstalledSimpleProduct[F],
       basedInstalledlabelled: BasedInstalledLabelled[F]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)

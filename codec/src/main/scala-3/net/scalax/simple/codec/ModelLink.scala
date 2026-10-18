@@ -9,8 +9,8 @@ trait ModelLink[F[_[_]], Model]
     with BasedInstalledModelSized[F]
     with ModelGet[F, Model]
     with ModelSet[F, Model]
-    with FModelGet[F]
-    with FModelSet[F]
+    with GenericAuxFrom[F]
+    with GenericAuxTo[F]
 
 object ModelLink {
 
@@ -18,11 +18,12 @@ object ModelLink {
 
   def buildUtilImplCommonF[FMM[_[_]]](cNamed: Any, fromTuple: Any => FMM[[_] =>> Any]): ModelLinkCommonF[FMM] = new ModelLinkCommonF[FMM] {
     ModelLinkCommonFSelf =>
-    override def FToHList[T[_]](x: FMM[T]): Any   = Tuple.fromProduct(x.asInstanceOf)
-    override def FFromHList[T[_]](x: Any): FMM[T] = fromTuple(x).asInstanceOf[FMM[T]]
-    override def size: ModelSize[FMM]             = ModelSize[FMM].derived(cNamed)
-    override def labelled: CompatLabelled[FMM]    = new CompatLabelledImplHelper.Impl[FMM] {
-      override def stringLabelled: FMM[({ type T1[_] = String })#T1] = ModelLinkCommonFSelf.FFromHList[({ type T1[_] = String })#T1](cNamed)
+    override def fromFToHList[T[_]](x: FMM[T]): Any = Tuple.fromProduct(x.asInstanceOf)
+    override def fromHListToF[T[_]](x: Any): FMM[T] = fromTuple(x).asInstanceOf[FMM[T]]
+    override def size: ModelSize[FMM]               = ModelSize[FMM].derived(cNamed)
+    override def labelled: CompatLabelled[FMM]      = new CompatLabelledImplHelper.Impl[FMM] {
+      override def stringLabelled: FMM[({ type T1[_] = String })#T1] =
+        ModelLinkCommonFSelf.fromHListToF[({ type T1[_] = String })#T1](cNamed)
       override def mapGeneric: Map1Generic[FMM] = Map1Generic[FMM].derived(ModelLinkCommonFSelf.simpleRunner.simpleRelease2)
     }
   }
@@ -39,19 +40,19 @@ object ModelLink {
   class BuilderPojo[Model] {
     def buildUtilImplPojo[Model <: Product](cNamed: Any, fromTuple: Any => Model): ModelLinkPojo[Model] = new ModelLinkPojo[Model] {
       ModelLinkPojoSelf =>
-      override def genericTo(x: Model): Any                         = Tuple.fromProduct(x.asInstanceOf)
-      override def genericFrom(x: Any): Model                       = fromTuple(x.asInstanceOf[Tuple]).asInstanceOf[Model]
-      override def FFromHList[U[_]](t: Any): PojoInstance[U, Model] = new PojoInstance[U, Model] {
+      override def genericTo(x: Model): Any                           = Tuple.fromProduct(x.asInstanceOf)
+      override def genericFrom(x: Any): Model                         = fromTuple(x.asInstanceOf[Tuple]).asInstanceOf[Model]
+      override def fromHListToF[U[_]](t: Any): PojoInstance[U, Model] = new PojoInstance[U, Model] {
         override def instance: Any = t
       }
-      override def FToHList[U[_]](t: PojoInstance[U, Model]): Any                     = t.instance
+      override def fromFToHList[U[_]](t: PojoInstance[U, Model]): Any                 = t.instance
       override def size: ModelSize[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
         ModelSize[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(cNamed)
 
       override def labelled: CompatLabelled[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
         new CompatLabelledImplHelper.Impl[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] {
           override def stringLabelled: PojoInstance[({ type T1[_] = String })#T1, Model] =
-            ModelLinkPojoSelf.FFromHList[({ type T1[_] = String })#T1](cNamed)
+            ModelLinkPojoSelf.fromHListToF[({ type T1[_] = String })#T1](cNamed)
           override def mapGeneric: Map1Generic[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
             Map1Generic[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
         }

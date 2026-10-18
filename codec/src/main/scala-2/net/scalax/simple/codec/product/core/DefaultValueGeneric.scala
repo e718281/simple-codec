@@ -1,7 +1,6 @@
 package net.scalax.simple.codec.product.core
 
-import net.scalax.simple.codec.FModelGet
-import net.scalax.simple.codec.to_list_generic.PojoInstance
+import net.scalax.simple.codec.to_list_generic.{GenericAuxFrom, PojoInstance}
 import shapeless.HList
 
 import scala.collection.compat._
@@ -15,7 +14,7 @@ object DefaultValueGeneric { DefaultValuePojoSelf =>
   class Builder[ModelType] {
 
     def derived(implicit
-      fModelGet: FModelGet[({ type F1[U[_]] = PojoInstance[U, ModelType] })#F1],
+      fModelGet: GenericAuxFrom[({ type F1[U[_]] = PojoInstance[U, ModelType] })#F1],
       compatModel: SModelFill[ModelType]
     ): DefaultValueGeneric.Pojo[ModelType] = {
       def appendLImpl(n: List[Option[() => Any]]): shapeless.HList = n match {
@@ -27,7 +26,7 @@ object DefaultValueGeneric { DefaultValuePojoSelf =>
       val defaultVHList: HList              = appendLImpl(defaultV)
 
       val ins1: PojoInstance[({ type UA[T1] = Option[() => T1] })#UA, ModelType] =
-        fModelGet.FFromHList[({ type UA[T1] = Option[() => T1] })#UA](defaultVHList)
+        fModelGet.fromHListToF[({ type UA[T1] = Option[() => T1] })#UA](defaultVHList)
 
       new DefaultValueGeneric[({ type T1[U2[_]] = PojoInstance[U2, ModelType] })#T1] {
         override def defaultValueFunction1: PojoInstance[({ type UA[T1] = Option[() => T1] })#UA, ModelType] = ins1

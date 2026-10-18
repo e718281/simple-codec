@@ -1,7 +1,6 @@
 package net.scalax.simple.codec
 
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, PojoInstance}
-import shapeless.HList
+import net.scalax.simple.codec.to_list_generic.{GenericAuxFrom, PojoInstance}
 
 trait ModelAnnotations[F[_[_]], Ann] {
   def annInstance: F[({ type U11[_] = Option[Ann] })#U11]
@@ -12,12 +11,12 @@ object ModelAnnotations {
   class ModelBuilder[Model, Ann] {
     def derived(implicit
       sa: shapeless.Annotations[Ann, Model],
-      fModelGet: FModelGet[({ type F1[U[_]] = PojoInstance[U, Model] })#F1]
+      fModelGet: GenericAuxFrom[({ type F1[U[_]] = PojoInstance[U, Model] })#F1]
     ): ModelAnnotations.Pojo[Model, Ann] = {
       def annIns: shapeless.HList = sa.apply()
 
       def toModel: PojoInstance[({ type U11[_] = Option[Ann] })#U11, Model] =
-        fModelGet.FFromHList[({ type U11[_] = Option[Ann] })#U11](annIns)
+        fModelGet.fromHListToF[({ type U11[_] = Option[Ann] })#U11](annIns)
 
       new ModelAnnotations.Pojo[Model, Ann] {
         override def annInstance: PojoInstance[({ type U11[_] = Option[Ann] })#U11, Model] = toModel

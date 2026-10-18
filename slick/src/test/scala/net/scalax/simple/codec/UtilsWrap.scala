@@ -2,7 +2,7 @@ package net.scalax.simple.codec
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.codec.product.core.{Fold2Generic, Map3Generic}
-import net.scalax.simple.codec.to_list_generic.BasedInstalledSimpleProduct
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, GenericAuxFrom, GenericAuxTo}
 import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
 import slick.lifted.ShapedValue
@@ -24,8 +24,8 @@ trait UtilsWrap[V <: JdbcProfile] {
       cst: scala.reflect.ClassTag[Model],
       modelGet: ModelGet[F, Model],
       modelSet: ModelSet[F, Model],
-      fmodelGet: FModelGet[F],
-      fmodelSet: FModelSet[F]
+      fmodelGet: GenericAuxFrom[F],
+      fmodelSet: GenericAuxTo[F]
     ): slick.lifted.MappedProjection[Model] = {
       val folde2Generic: Fold2Generic[F] = Fold2Generic[F].derived(bi.simpleRunner.simpleRelease2)
       val foldFunc                       = new Fold2Generic.Folder[Rep, ShapeF, ShapedValueCompat.RepAdd] {
@@ -42,8 +42,8 @@ trait UtilsWrap[V <: JdbcProfile] {
       ShapedValueCompat.mapToPro[repAdd.RepType, repAdd.ModelType, Model](
         ShapedValue(repAdd.rep, repAdd.shape),
         from = (model: Model) =>
-          repAdd.fromShapeless(fmodelSet.FToHList[Id](modelGet.toIdentity(model)).asInstanceOf[repAdd.ShapelessModelType]),
-        to = (h: repAdd.ModelType) => modelSet.fromIdentity(fmodelGet.FFromHList[Id](repAdd.toShapeless(h))),
+          repAdd.fromShapeless(fmodelSet.fromFToHList[Id](modelGet.toIdentity(model)).asInstanceOf[repAdd.ShapelessModelType]),
+        to = (h: repAdd.ModelType) => modelSet.fromIdentity(fmodelGet.fromHListToF[Id](repAdd.toShapeless(h))),
         modelClassTag = cst
       )
     }
