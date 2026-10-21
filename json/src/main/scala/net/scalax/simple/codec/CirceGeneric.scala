@@ -18,11 +18,11 @@ object Circe {
     g1: BasedInstalledSimpleProduct[F],
     lb: BasedInstalledLabelled[F],
     sg: ConfigGeneric[F, CircePoly] = ConfigGeneric.F[F, CircePoly].derived
-  ): Encoder[F[Id]] = {
+  ): Encoder.AsObject[F[Id]] = {
     val labelledIns: F[Named] = sg.labelledValueFunc(lb.labelled.stringLabelled)
 
-    Encoder.instance[F[Id]](
-      EncodeHelperUtils.encodeImpl[F](g1.simpleRunner.simpleRelease3, labelledIns, () => g.value).andThen(Json.fromJsonObject)
+    Encoder.AsObject.instance[F[Id]](
+      EncodeHelperUtils.encodeImpl[F, Encoder](g1.simpleRunner.simpleRelease3, labelledIns, () => g.value)
     )
   }
 
@@ -32,20 +32,44 @@ object Circe {
     lb: BasedInstalledLabelled[F],
     sg: ConfigGeneric[F, CircePoly] = ConfigGeneric.F[F, CircePoly].derived
   ): Decoder[F[Id]] = {
-    val simpleRunner: AppenderSupport4[F] = g1.simpleRunner
-
     val labelledIns: F[Named] = sg.labelledValueFunc(lb.labelled.stringLabelled)
 
     Decoder.instance[F[Id]](
-      EncodeHelperUtils.decodeImpl[F](
-        simpleRunner.simpleRelease2,
-        simpleRunner.simpleRelease3,
-        simpleRunner.simpleRelease4,
+      EncodeHelperUtils.decodeImpl[F, Decoder](
+        g1.simpleRunner.simpleRelease2,
+        g1.simpleRunner.simpleRelease3,
+        g1.simpleRunner.simpleRelease4,
         labelledIns,
         () => g.value,
         sg.defaultValue
       )
     )
+  }
+
+  implicit def simpleCirceCodecFImplicit[F[_[_]]](implicit
+    g: ByNameImplicit[F[Codec]],
+    g1: BasedInstalledSimpleProduct[F],
+    lb: BasedInstalledLabelled[F],
+    sg: ConfigGeneric[F, CircePoly] = ConfigGeneric.F[F, CircePoly].derived
+  ): Codec.AsObject[F[Id]] = {
+    val labelledIns: F[Named] = sg.labelledValueFunc(lb.labelled.stringLabelled)
+
+    val encoderAsobj: Encoder.AsObject[F[Id]] = Encoder.AsObject.instance[F[Id]](
+      EncodeHelperUtils.encodeImpl[F, Codec](g1.simpleRunner.simpleRelease3, labelledIns, () => g.value)
+    )
+
+    val decoder: Decoder[F[Id]] = Decoder.instance[F[Id]](
+      EncodeHelperUtils.decodeImpl[F, Codec](
+        g1.simpleRunner.simpleRelease2,
+        g1.simpleRunner.simpleRelease3,
+        g1.simpleRunner.simpleRelease4,
+        labelledIns,
+        () => g.value,
+        sg.defaultValue
+      )
+    )
+
+    Codec.AsObject.from[F[Id]](decoder, encoderAsobj)
   }
 
   implicit def simpleCirceEncoderPojoImplicit[Model](implicit
@@ -54,10 +78,10 @@ object Circe {
     lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
     g3: ByNameImplicit[PojoInstance[Encoder, Model]],
     sg: ConfigGeneric.Pojo[Model, CircePoly] = ConfigGeneric.Pojo[Model, CircePoly].derived
-  ): Encoder[Model] = {
-    val en1: Encoder[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
+  ): Encoder.AsObject[Model] = {
+    val en1: Encoder.AsObject[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
       simpleCirceEncoderFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
-    en1.contramap[Model](g1.toIdentity)
+    en1.contramapObject[Model](g1.toIdentity)
   }
 
   implicit def simpleCirceDecoderPojoImplicit[Model](implicit
@@ -72,8 +96,30 @@ object Circe {
     for (model <- de1) yield g1.fromIdentity(model)
   }
 
-  implicit def objectEncoder[Model](implicit mapper: SingletonMap[Model]): Encoder[Model] =
+  implicit def simpleCirceCodecPojoImplicit[Model](implicit
+    g1: ModelSet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
+    g2: ModelGet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
+    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
+    g3: ByNameImplicit[PojoInstance[Codec, Model]],
+    sg: ConfigGeneric.Pojo[Model, CircePoly] = ConfigGeneric.Pojo[Model, CircePoly].derived
+  ): Codec.AsObject[Model] = {
+    val codec1: Codec.AsObject[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
+      simpleCirceCodecFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    Codec.AsObject.from[Model](for (m1 <- codec1) yield g1.fromIdentity(m1), codec1.contramapObject(g2.toIdentity))
+  }
+
+  implicit def simpleCaseObjectEncoderImplicit[Model](implicit mapper: SingletonMap[Model]): Encoder.AsObject[Model] =
     Encoder.encodeJsonObject.contramapObject(_ => JsonObject.empty)
+
+  implicit def simpleCaseObjectDecoderImplicit[Model](implicit mapper: SingletonMap[Model]): Decoder[Model] =
+    Decoder.decodeJsonObject.map(_ => mapper.instance)
+
+  implicit def simpleCaseObjectCodecImplicit[Model](implicit mapper: SingletonMap[Model]): Decoder[Model] = {
+    val encoder: Encoder.AsObject[Model] = simpleCaseObjectEncoderImplicit[Model]
+    val decoder: Decoder[Model]          = simpleCaseObjectDecoderImplicit[Model]
+    Codec.AsObject.from[Model](decoder, encoder)
+  }
 
   object CirceHepler {
     def jsonKeyF[F[_[_]]](implicit

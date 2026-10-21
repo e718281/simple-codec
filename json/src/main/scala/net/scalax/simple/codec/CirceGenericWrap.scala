@@ -2,6 +2,7 @@ package net.scalax.simple.codec.circe
 
 import io.circe._
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
+import net.scalax.simple.codec.CodecHelper
 import net.scalax.simple.codec.product.core.GetFieldGeneric
 import net.scalax.simple.codec.product.core.{DecodeHelper2, DecodeHelper3, Fold3Generic}
 
@@ -11,46 +12,47 @@ object EncodeHelperUtils {
 
   val emptyJsonObj: JsonObject = JsonObject.empty
 
-  def encodeImpl[F[_[_]]](
+  def encodeImpl[F[_[_]], Enc[_]](
     sp3: AppenderSupport1.Simple3.Release[F],
     namedIns: F[Named],
-    encIns: () => F[Encoder]
-  ): F[IdType] => JsonObject = {
+    encIns: () => F[Enc]
+  )(implicit helper: CodecHelper[Enc, Encoder]): F[IdType] => JsonObject = {
     val folderGeneric: Fold3Generic[F] = Fold3Generic[F].derived(sp3)
 
-    val folderFunc = new Fold3Generic.Folder[Named, Encoder, IdType, JsonObject] {
-      override def fold[T](n1: String, n2: Encoder[T], n3: T, col: JsonObject): JsonObject = col.add(n1, n2(n3))
-      override def zero: JsonObject                                                        = emptyJsonObj
+    val folderFunc = new Fold3Generic.Folder[Named, Enc, IdType, JsonObject] {
+      override def fold[T](n1: String, n2: Enc[T], n3: T, col: JsonObject): JsonObject = col.add(n1, helper.to(n2)(n3))
+      override def zero: JsonObject                                                    = emptyJsonObj
     }
 
     (model: F[IdType]) => folderGeneric.foldLeft(namedIns, encIns(), model, folderFunc)
   }
 
-  def decodeImpl[F[_[_]]](
+  def decodeImpl[F[_[_]], Dec[_]](
     sp2: AppenderSupport1.Simple2.Release[F],
     sp3: AppenderSupport1.Simple3.Release[F],
     sp4: AppenderSupport1.Simple4.Release[F],
     named: F[Named],
-    g: () => F[Decoder],
+    g: () => F[Dec],
     defaultValue: Option[F[({ type OptF[TU] = Option[() => TU] })#OptF]]
-  ): HCursor => Decoder.Result[F[IdType]] = defaultValue.fold(decodeImpl2(sp3, named, g))(d => decodeImpl1(sp2, sp4, named, g, d))
+  )(implicit helper: CodecHelper[Dec, Decoder]): HCursor => Decoder.Result[F[IdType]] =
+    defaultValue.fold(decodeImpl2(sp3, named, g))(d => decodeImpl1(sp2, sp4, named, g, d))
 
-  def decodeImpl1[F[_[_]]](
+  def decodeImpl1[F[_[_]], Dec[_]](
     sp2: AppenderSupport1.Simple2.Release[F],
     sp4: AppenderSupport1.Simple4.Release[F],
     named: F[Named],
-    g: () => F[Decoder],
+    g: () => F[Dec],
     defaultValue: F[({ type OptF[TU] = Option[() => TU] })#OptF]
-  ): HCursor => Decoder.Result[F[IdType]] = (hCursor: HCursor) => {
+  )(implicit codecHelper: CodecHelper[Dec, Decoder]): HCursor => Decoder.Result[F[IdType]] = (hCursor: HCursor) => {
     type OptF[TU]    = Option[() => TU]
     type OptFGet[TU] = F[OptF] => OptF[TU]
 
-    val getField: GetFieldGeneric[F]                                                  = GetFieldGeneric[F].derived(sp2)
-    val decoderHelper: DecodeHelper3[F]                                               = DecodeHelper3[F].derived(sp4)
-    val helper: DecodeHelper3.Helper[Named, Decoder, OptFGet, Decoder.Result, IdType] =
-      new DecodeHelper3.Helper[Named, Decoder, OptFGet, Decoder.Result, IdType] {
-        override def func[X1](nameStr: String, decoderT: Decoder[X1], in3: F[OptF] => Option[() => X1]): Decoder.Result[X1] = {
-          val result1: Decoder.Result[X1] = hCursor.downField(nameStr).as(decoderT)
+    val getField: GetFieldGeneric[F]                                              = GetFieldGeneric[F].derived(sp2)
+    val decoderHelper: DecodeHelper3[F]                                           = DecodeHelper3[F].derived(sp4)
+    val helper: DecodeHelper3.Helper[Named, Dec, OptFGet, Decoder.Result, IdType] =
+      new DecodeHelper3.Helper[Named, Dec, OptFGet, Decoder.Result, IdType] {
+        override def func[X1](nameStr: String, decoderT: Dec[X1], in3: F[OptF] => Option[() => X1]): Decoder.Result[X1] = {
+          val result1: Decoder.Result[X1] = hCursor.downField(nameStr).as(codecHelper.to(decoderT))
           result1.left.flatMap[DecodingFailure, X1](_ => in3(defaultValue).fold(result1)(v1 => Right(v1())))
         }
         override def map1[A, B](t: A => B): Decoder.Result[A] => Decoder.Result[B] = a => for (a1 <- a) yield t(a1)
@@ -61,19 +63,19 @@ object EncodeHelperUtils {
           } yield t(a1, b1)
       }
 
-    decoderHelper.map[Named, Decoder, OptFGet, Decoder.Result, IdType](named, g(), getField.getField[OptF], helper)
+    decoderHelper.map[Named, Dec, OptFGet, Decoder.Result, IdType](named, g(), getField.getField[OptF], helper)
   }
 
-  def decodeImpl2[F[_[_]]](
+  def decodeImpl2[F[_[_]], Dec[_]](
     sp3: AppenderSupport1.Simple3.Release[F],
     named: F[Named],
-    g: () => F[Decoder]
-  ): HCursor => Decoder.Result[F[IdType]] = (hCursor: HCursor) => {
-    val decoderHelper: DecodeHelper2[F]                                      = DecodeHelper2[F].derived(sp3)
-    val helper: DecodeHelper2.Helper[Named, Decoder, Decoder.Result, IdType] =
-      new DecodeHelper2.Helper[Named, Decoder, Decoder.Result, IdType] {
-        override def func[X1](nameStr: String, decoderT: Decoder[X1]): Decoder.Result[X1] =
-          hCursor.downField(nameStr).as(decoderT)
+    g: () => F[Dec]
+  )(implicit codecHelper: CodecHelper[Dec, Decoder]): HCursor => Decoder.Result[F[IdType]] = (hCursor: HCursor) => {
+    val decoderHelper: DecodeHelper2[F]                                  = DecodeHelper2[F].derived(sp3)
+    val helper: DecodeHelper2.Helper[Named, Dec, Decoder.Result, IdType] =
+      new DecodeHelper2.Helper[Named, Dec, Decoder.Result, IdType] {
+        override def func[X1](nameStr: String, decoderT: Dec[X1]): Decoder.Result[X1] =
+          hCursor.downField(nameStr).as(codecHelper.to(decoderT))
         override def map1[A, B](t: A => B): Decoder.Result[A] => Decoder.Result[B] = a => for (a1 <- a) yield t(a1)
         override def map2[A, B, C](t: (A, B) => C): (Decoder.Result[A], Decoder.Result[B]) => Decoder.Result[C] = (a, b) =>
           for {
