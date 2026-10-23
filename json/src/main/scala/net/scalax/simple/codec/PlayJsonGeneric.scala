@@ -15,12 +15,12 @@ object PlayJsonGeneric {
       g1: BasedInstalledSimpleProduct[F],
       lb: BasedInstalledLabelled[F],
       sjn: ConfigGeneric[F, PlayJsonPoly] = ConfigGeneric.F[F, PlayJsonPoly].derived
-    ): Writes[F[({ type IDF[T] = T })#IDF]] = {
+    ): OWrites[F[({ type IDF[T] = T })#IDF]] = {
       val simpleRunner: AppenderSupport4[F] = g1.simpleRunner
 
       val labelledIns: F[({ type Str1[_] = String })#Str1] = sjn.labelledValueFunc(lb.labelled.stringLabelled)
 
-      Writes(PlayJsonGeneric2.encodeImpl[F](sp3 = simpleRunner.simpleRelease3, labelledIns, () => g.value))
+      OWrites(PlayJsonGeneric2.encodeImpl[F](sp3 = simpleRunner.simpleRelease3, labelledIns, () => g.value))
     }
 
     implicit def getCirceDecoderF[F[_[_]]](implicit

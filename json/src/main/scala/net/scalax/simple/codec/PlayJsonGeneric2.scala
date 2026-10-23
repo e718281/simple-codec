@@ -12,7 +12,7 @@ object PlayJsonGeneric2 {
   type Named[_]  = String
   type IdType[T] = T
 
-  def encodeImpl[F[_[_]]](sp3: AppenderSupport1.Simple3.Release[F], namedIns: F[Named], encIns: () => F[Writes]): F[IdType] => JsValue = {
+  def encodeImpl[F[_[_]]](sp3: AppenderSupport1.Simple3.Release[F], namedIns: F[Named], encIns: () => F[Writes]): F[IdType] => JsObject = {
     val folderGeneric: Fold3Generic[F] = Fold3Generic[F].derived(sp3)
 
     val folderFunc = new Fold3Generic.Folder[Named, Writes, IdType, JsObject] {
