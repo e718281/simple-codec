@@ -17,7 +17,7 @@ object CatNameTest5 {
 
   implicit val jsonLabelled: ConfigGeneric.Pojo[CatNameTest5, PlayJsonPoly] = ConfigGeneric.Pojo[CatNameTest5, PlayJsonPoly].derived
 
-  import PlayJsonGeneric.Pojo._
+  import PlayJsonGeneric._
   implicit val modelWrites: FillIdentity.Pojo[Writes, CatNameTest5] = FillIdentity.Pojo[Writes, CatNameTest5].derived
 
   implicit def optionWithNull[T](implicit rds: Reads[T]): Reads[Option[T]] = Reads.optionWithNull[T]
@@ -27,7 +27,7 @@ object CatNameTest5 {
 
 object PlayJsonTest1234 {
 
-  import PlayJsonGeneric.Pojo._
+  import PlayJsonGeneric._
 
   val friend2: CatNameTest5 = CatNameTest5(
     id5 = 8594,

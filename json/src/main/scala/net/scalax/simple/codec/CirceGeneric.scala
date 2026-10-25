@@ -2,8 +2,7 @@ package net.scalax.simple.codec
 
 import io.circe._
 import io.circe.generic.extras.JsonKey
-import net.scalax.simple.adt.nat.support.v5.AppenderSupport4
-import net.scalax.simple.codec.circe.EncodeHelperUtils
+import net.scalax.simple.codec.circe.CirceGenericUtils
 import net.scalax.simple.codec.product.core.Map2Generic
 import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance, SingletonMap}
 import net.scalax.simple.codec.utils.ByNameImplicit
@@ -22,7 +21,7 @@ object Circe {
     val labelledIns: F[Named] = sg.labelledValueFunc(lb.labelled.stringLabelled)
 
     Encoder.AsObject.instance[F[Id]](
-      EncodeHelperUtils.encodeImpl[F, Encoder](g1.simpleRunner.simpleRelease3, labelledIns, () => g.value)
+      CirceGenericUtils.encode[F, Encoder](g1.simpleRunner.simpleRelease3, labelledIns, () => g.value)
     )
   }
 
@@ -33,15 +32,23 @@ object Circe {
     sg: ConfigGeneric[F, CircePoly] = ConfigGeneric.F[F, CircePoly].derived
   ): Decoder[F[Id]] = {
     val labelledIns: F[Named] = sg.labelledValueFunc(lb.labelled.stringLabelled)
+    val defaultValueOpt       = sg.defaultValue
 
     Decoder.instance[F[Id]](
-      EncodeHelperUtils.decodeImpl[F, Decoder](
-        g1.simpleRunner.simpleRelease2,
-        g1.simpleRunner.simpleRelease3,
-        g1.simpleRunner.simpleRelease4,
-        labelledIns,
-        () => g.value,
-        sg.defaultValue
+      defaultValueOpt.fold(
+        CirceGenericUtils.decode[F, Decoder](
+          g1.simpleRunner.simpleRelease3,
+          labelledIns,
+          () => g.value
+        )
+      )(defValue =>
+        CirceGenericUtils.decodeWithDefault[F, Decoder](
+          g1.simpleRunner.simpleRelease2,
+          g1.simpleRunner.simpleRelease4,
+          labelledIns,
+          () => g.value,
+          defValue
+        )
       )
     )
   }
@@ -53,19 +60,27 @@ object Circe {
     sg: ConfigGeneric[F, CircePoly] = ConfigGeneric.F[F, CircePoly].derived
   ): Codec.AsObject[F[Id]] = {
     val labelledIns: F[Named] = sg.labelledValueFunc(lb.labelled.stringLabelled)
+    val defaultValueOpt       = sg.defaultValue
 
     val encoderAsobj: Encoder.AsObject[F[Id]] = Encoder.AsObject.instance[F[Id]](
-      EncodeHelperUtils.encodeImpl[F, Codec](g1.simpleRunner.simpleRelease3, labelledIns, () => g.value)
+      CirceGenericUtils.encode[F, Codec](g1.simpleRunner.simpleRelease3, labelledIns, () => g.value)
     )
 
     val decoder: Decoder[F[Id]] = Decoder.instance[F[Id]](
-      EncodeHelperUtils.decodeImpl[F, Codec](
-        g1.simpleRunner.simpleRelease2,
-        g1.simpleRunner.simpleRelease3,
-        g1.simpleRunner.simpleRelease4,
-        labelledIns,
-        () => g.value,
-        sg.defaultValue
+      defaultValueOpt.fold(
+        CirceGenericUtils.decode[F, Codec](
+          g1.simpleRunner.simpleRelease3,
+          labelledIns,
+          () => g.value
+        )
+      )(defValue =>
+        CirceGenericUtils.decodeWithDefault[F, Codec](
+          g1.simpleRunner.simpleRelease2,
+          g1.simpleRunner.simpleRelease4,
+          labelledIns,
+          () => g.value,
+          defValue
+        )
       )
     )
 

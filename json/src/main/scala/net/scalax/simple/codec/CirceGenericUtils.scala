@@ -6,13 +6,13 @@ import net.scalax.simple.codec.CodecHelper
 import net.scalax.simple.codec.product.core.GetFieldGeneric
 import net.scalax.simple.codec.product.core.{DecodeHelper2, DecodeHelper3, Fold3Generic}
 
-object EncodeHelperUtils {
+object CirceGenericUtils {
   type Named[_]  = String
   type IdType[T] = T
 
   val emptyJsonObj: JsonObject = JsonObject.empty
 
-  def encodeImpl[F[_[_]], Enc[_]](
+  def encode[F[_[_]], Enc[_]](
     sp3: AppenderSupport1.Simple3.Release[F],
     namedIns: F[Named],
     encIns: () => F[Enc]
@@ -27,17 +27,7 @@ object EncodeHelperUtils {
     (model: F[IdType]) => folderGeneric.foldLeft(namedIns, encIns(), model, folderFunc)
   }
 
-  def decodeImpl[F[_[_]], Dec[_]](
-    sp2: AppenderSupport1.Simple2.Release[F],
-    sp3: AppenderSupport1.Simple3.Release[F],
-    sp4: AppenderSupport1.Simple4.Release[F],
-    named: F[Named],
-    g: () => F[Dec],
-    defaultValue: Option[F[({ type OptF[TU] = Option[() => TU] })#OptF]]
-  )(implicit helper: CodecHelper[Dec, Decoder]): HCursor => Decoder.Result[F[IdType]] =
-    defaultValue.fold(decodeImpl2(sp3, named, g))(d => decodeImpl1(sp2, sp4, named, g, d))
-
-  def decodeImpl1[F[_[_]], Dec[_]](
+  def decodeWithDefault[F[_[_]], Dec[_]](
     sp2: AppenderSupport1.Simple2.Release[F],
     sp4: AppenderSupport1.Simple4.Release[F],
     named: F[Named],
@@ -66,7 +56,7 @@ object EncodeHelperUtils {
     decoderHelper.map[Named, Dec, OptFGet, Decoder.Result, IdType](named, g(), getField.getField[OptF], helper)
   }
 
-  def decodeImpl2[F[_[_]], Dec[_]](
+  def decode[F[_[_]], Dec[_]](
     sp3: AppenderSupport1.Simple3.Release[F],
     named: F[Named],
     g: () => F[Dec]
