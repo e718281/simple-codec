@@ -1,7 +1,7 @@
 package net.scalax.simple.codec
 package aa
 
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{ModelLink, PojoProjection}
 import slick.ast.TypedType
 import slick.jdbc.JdbcProfile
 
@@ -24,7 +24,7 @@ object User2Cat {
 
     object CommonT {
       import scala.language.implicitConversions
-      implicit def TableUserAbsTableImpl(tb: CommonT): PojoInstance[Rep, User2Cat] = tb.rep
+      implicit def TableUserAbsTableImpl(tb: CommonT): PojoProjection[Rep, User2Cat] = tb.rep
     }
 
     def CommonTq: TableQuery[CommonT] = TableQuery(cons => new CommonT(cons))

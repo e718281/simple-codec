@@ -7,9 +7,8 @@ import net.scalax.simple.codec.to_list_generic.{
   BasedInstalledSimpleProduct,
   FillIdentity,
   GenericAuxFrom,
-  GenericAuxTo,
   ModelLink,
-  PojoInstance
+  PojoProjection
 }
 import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
@@ -24,7 +23,6 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     modelGet: ModelGet[F, Model],
     modelSet: ModelSet[F, Model],
     fmodelGet: GenericAuxFrom[F],
-    fmodelSet: GenericAuxTo[F],
     basedInstalled: BasedInstalledSimpleProduct[F],
     basedInstalledlabelled: BasedInstalledLabelled[F]
   ) extends Table[Model](_tableTag = _tableTag, _schemaName = _schemaName, _tableName = _tableName) {
@@ -35,7 +33,6 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
       modelGet: ModelGet[F, Model],
       modelSet: ModelSet[F, Model],
       fmodelGet: GenericAuxFrom[F],
-      fmodelSet: GenericAuxTo[F],
       basedInstalled: BasedInstalledSimpleProduct[F],
       basedInstalledlabelled: BasedInstalledLabelled[F]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
@@ -55,7 +52,7 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
     def rep: Columns = CodecUtils.userRep(basedInstalled.simpleRunner.simpleRelease4, columnName, columnOption, typedType, CommonTableSelf)
 
     override def * : slick.lifted.ProvenShape[Model] =
-      CodecUtils.mapShape(basedInstalled, shapeCol, rep, classTag, modelGet, modelSet, fmodelGet = fmodelGet, fmodelSet = fmodelSet)
+      CodecUtils.mapShape(basedInstalled, shapeCol, rep, classTag, modelGet, modelSet, fmodelGet = fmodelGet)
   }
 
   abstract class CommonTableF[F[_[_]]](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
@@ -77,7 +74,7 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
   abstract class CommonTablePojo[Model](_tableTag: Tag, _schemaName: Option[String], _tableName: String)(implicit
     classTag: scala.reflect.ClassTag[Model],
     modelLink: ModelLink.Pojo[Model]
-  ) extends CommonTable[({ type PojoF[XU[_]] = PojoInstance[XU, Model] })#PojoF, Model](
+  ) extends CommonTable[({ type PojoF[XU[_]] = PojoProjection[XU, Model] })#PojoF, Model](
         _tableTag = _tableTag,
         _schemaName = _schemaName,
         _tableName = _tableName

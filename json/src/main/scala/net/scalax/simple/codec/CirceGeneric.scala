@@ -4,7 +4,7 @@ import io.circe._
 import io.circe.generic.extras.JsonKey
 import net.scalax.simple.codec.circe.CirceGenericUtils
 import net.scalax.simple.codec.product.core.Map2Generic
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance, SingletonMap}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection, SingletonMap}
 import net.scalax.simple.codec.utils.ByNameImplicit
 
 trait CircePoly
@@ -88,39 +88,39 @@ object Circe {
   }
 
   implicit def simpleCirceEncoderPojoImplicit[Model](implicit
-    g1: ModelGet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g3: ByNameImplicit[PojoInstance[Encoder, Model]],
+    g1: ModelGet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g3: ByNameImplicit[PojoProjection[Encoder, Model]],
     sg: ConfigGeneric.Pojo[Model, CircePoly] = ConfigGeneric.Pojo[Model, CircePoly].derived
   ): Encoder.AsObject[Model] = {
-    val en1: Encoder.AsObject[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
-      simpleCirceEncoderFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val en1: Encoder.AsObject[PojoProjection[({ type IDF[T] = T })#IDF, Model]] =
+      simpleCirceEncoderFImplicit[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     en1.contramapObject[Model](g1.toIdentity)
   }
 
   implicit def simpleCirceDecoderPojoImplicit[Model](implicit
-    g1: ModelSet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g3: ByNameImplicit[PojoInstance[Decoder, Model]],
+    g1: ModelSet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g3: ByNameImplicit[PojoProjection[Decoder, Model]],
     sg: ConfigGeneric.Pojo[Model, CircePoly] = ConfigGeneric.Pojo[Model, CircePoly].derived
   ): Decoder[Model] = {
-    val de1: Decoder[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
-      simpleCirceDecoderFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val de1: Decoder[PojoProjection[({ type IDF[T] = T })#IDF, Model]] =
+      simpleCirceDecoderFImplicit[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     for (model <- de1) yield g1.fromIdentity(model)
   }
 
   implicit def simpleCirceCodecPojoImplicit[Model](implicit
-    g1: ModelSet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    g2: ModelGet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g3: ByNameImplicit[PojoInstance[Codec, Model]],
+    g1: ModelSet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    g2: ModelGet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g3: ByNameImplicit[PojoProjection[Codec, Model]],
     sg: ConfigGeneric.Pojo[Model, CircePoly] = ConfigGeneric.Pojo[Model, CircePoly].derived
   ): Codec.AsObject[Model] = {
-    val codec1: Codec.AsObject[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
-      simpleCirceCodecFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val codec1: Codec.AsObject[PojoProjection[({ type IDF[T] = T })#IDF, Model]] =
+      simpleCirceCodecFImplicit[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     Codec.AsObject.from[Model](for (m1 <- codec1) yield g1.fromIdentity(m1), codec1.contramapObject(g2.toIdentity))
   }
 
@@ -154,9 +154,9 @@ object Circe {
     }
 
     def jsonKeyPojo[Model](implicit
-      bs: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
+      bs: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
       ann: ModelAnnotations.Pojo[Model, JsonKey]
-    ): PojoInstance[Named, Model] => PojoInstance[Named, Model] = jsonKeyF[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    ): PojoProjection[Named, Model] => PojoProjection[Named, Model] = jsonKeyF[({ type F[X[_]] = PojoProjection[X, Model] })#F]
 
   }
 

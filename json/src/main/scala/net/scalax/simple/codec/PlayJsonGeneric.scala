@@ -1,7 +1,7 @@
 package net.scalax.simple
 package codec
 
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection}
 import net.scalax.simple.codec.utils.ByNameImplicit
 import play.api.libs.json._
 
@@ -82,39 +82,39 @@ object PlayJsonGeneric {
   }
 
   implicit def simplePlayJsonOWritesPojoImplicit[Model](implicit
-    g1: ModelGet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g: ByNameImplicit[PojoInstance[Writes, Model]],
+    g1: ModelGet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g: ByNameImplicit[PojoProjection[Writes, Model]],
     sjn: ConfigGeneric.Pojo[Model, PlayJsonPoly] = ConfigGeneric.Pojo[Model, PlayJsonPoly].derived
   ): OWrites[Model] = {
-    val w1: OWrites[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
-      simplePlayJsonOWritesFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val w1: OWrites[PojoProjection[({ type IDF[T] = T })#IDF, Model]] =
+      simplePlayJsonOWritesFImplicit[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     w1.contramap[Model](g1.toIdentity)
   }
 
   implicit def simplePlayJsonReadsPojoImplicit[Model](implicit
-    g1: ModelSet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g3: ByNameImplicit[PojoInstance[Reads, Model]],
+    g1: ModelSet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g3: ByNameImplicit[PojoProjection[Reads, Model]],
     sg: ConfigGeneric.Pojo[Model, PlayJsonPoly] = ConfigGeneric.Pojo[Model, PlayJsonPoly].derived
   ): Reads[Model] = {
-    val de1: Reads[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
-      simplePlayJsonReadsFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val de1: Reads[PojoProjection[({ type IDF[T] = T })#IDF, Model]] =
+      simplePlayJsonReadsFImplicit[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     for (model <- de1) yield g1.fromIdentity(model)
   }
 
   implicit def simplePlayJsonOFormatPojoImplicit[Model](implicit
-    g1: ModelGet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    g2: ModelSet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g: ByNameImplicit[PojoInstance[Format, Model]],
+    g1: ModelGet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    g2: ModelSet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    lb: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g: ByNameImplicit[PojoProjection[Format, Model]],
     sjn: ConfigGeneric.Pojo[Model, PlayJsonPoly] = ConfigGeneric.Pojo[Model, PlayJsonPoly].derived
   ): OFormat[Model] = {
-    val w1: OFormat[PojoInstance[({ type IDF[T] = T })#IDF, Model]] =
-      simplePlayJsonOFormatFImplicit[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val w1: OFormat[PojoProjection[({ type IDF[T] = T })#IDF, Model]] =
+      simplePlayJsonOFormatFImplicit[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     w1.bimap[Model](g2.fromIdentity, g1.toIdentity)
   }
 

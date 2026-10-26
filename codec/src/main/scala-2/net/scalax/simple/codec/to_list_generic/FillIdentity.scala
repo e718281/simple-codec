@@ -26,7 +26,7 @@ object FillIdentity {
     def derived[H <: shapeless.HList, HCol <: shapeless.HList](implicit
       x: shapeless.Generic.Aux[Model, H],
       n: FillIdentityHelper.U1Content.Aux[E, H, HCol]
-    ): PojoInstance[E, Model] = new PojoInstance[E, Model] {
+    ): PojoProjection[E, Model] = new PojoProjection[E, Model] {
       override def instance: Any = n.insAny
     }
   }
@@ -39,7 +39,7 @@ object FillIdentity {
   object Pojo {
     def apply[U[_], Model]: ModelPojoBuilder[U, Model] = new ModelPojoBuilder[U, Model]
   }
-  type Pojo[U[_], Model] = PojoInstance[U, Model]
+  type Pojo[U[_], Model] = PojoProjection[U, Model]
 
 }
 

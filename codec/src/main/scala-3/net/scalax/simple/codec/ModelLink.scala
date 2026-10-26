@@ -10,7 +10,6 @@ trait ModelLink[F[_[_]], Model]
     with ModelGet[F, Model]
     with ModelSet[F, Model]
     with GenericAuxFrom[F]
-    with GenericAuxTo[F]
 
 object ModelLink {
 
@@ -40,21 +39,21 @@ object ModelLink {
   class BuilderPojo[Model] {
     def buildUtilImplPojo[Model <: Product](cNamed: Any, fromTuple: Any => Model): ModelLinkPojo[Model] = new ModelLinkPojo[Model] {
       ModelLinkPojoSelf =>
-      override def genericTo(x: Model): Any                           = Tuple.fromProduct(x.asInstanceOf)
-      override def genericFrom(x: Any): Model                         = fromTuple(x.asInstanceOf[Tuple]).asInstanceOf[Model]
-      override def fromHListToF[U[_]](t: Any): PojoInstance[U, Model] = new PojoInstance[U, Model] {
+      override def genericTo(x: Model): Any                             = Tuple.fromProduct(x.asInstanceOf)
+      override def genericFrom(x: Any): Model                           = fromTuple(x.asInstanceOf[Tuple]).asInstanceOf[Model]
+      override def fromHListToF[U[_]](t: Any): PojoProjection[U, Model] = new PojoProjection[U, Model] {
         override def instance: Any = t
       }
-      override def fromFToHList[U[_]](t: PojoInstance[U, Model]): Any                 = t.instance
-      override def size: ModelSize[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
-        ModelSize[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(cNamed)
+      override def fromFToHList[U[_]](t: PojoProjection[U, Model]): Any                 = t.instance
+      override def size: ModelSize[({ type FX[U1[_]] = PojoProjection[U1, Model] })#FX] =
+        ModelSize[({ type FX[U1[_]] = PojoProjection[U1, Model] })#FX].derived(cNamed)
 
-      override def labelled: CompatLabelled[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
-        new CompatLabelledImplHelper.Impl[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] {
-          override def stringLabelled: PojoInstance[({ type T1[_] = String })#T1, Model] =
+      override def labelled: CompatLabelled[({ type FX[U1[_]] = PojoProjection[U1, Model] })#FX] =
+        new CompatLabelledImplHelper.Impl[({ type FX[U1[_]] = PojoProjection[U1, Model] })#FX] {
+          override def stringLabelled: PojoProjection[({ type T1[_] = String })#T1, Model] =
             ModelLinkPojoSelf.fromHListToF[({ type T1[_] = String })#T1](cNamed)
-          override def mapGeneric: Map1Generic[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX] =
-            Map1Generic[({ type FX[U1[_]] = PojoInstance[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
+          override def mapGeneric: Map1Generic[({ type FX[U1[_]] = PojoProjection[U1, Model] })#FX] =
+            Map1Generic[({ type FX[U1[_]] = PojoProjection[U1, Model] })#FX].derived(ModelLinkPojoSelf.simpleRunner.simpleRelease2)
         }
     }
 
@@ -72,6 +71,6 @@ object ModelLink {
   object Pojo {
     def apply[Model]: BuilderPojo[Model] = new BuilderPojo[Model]
   }
-  type Pojo[Model] = ModelLink[({ type T1[U1[_]] = PojoInstance[U1, Model] })#T1, Model]
+  type Pojo[Model] = ModelLink[({ type T1[U1[_]] = PojoProjection[U1, Model] })#T1, Model]
 
 }

@@ -4,7 +4,7 @@ import com.typesafe.config.ConfigValue
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport4
 import net.scalax.simple.codec.product.core.Map1Generic
 import net.scalax.simple.codec.{ConfigGeneric, ModelGet, ModelSet}
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection}
 import net.scalax.simple.codec.utils.ByNameImplicit
 import pureconfig.ConfigReader.Result
 import pureconfig._
@@ -55,24 +55,24 @@ object PureConfigUtils {
   }
 
   implicit def getCirceDecoderPojo[Model](implicit
-    g1: ModelSet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    modelLabelled: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g3: ByNameImplicit[PojoInstance[ConfigReader, Model]],
+    g1: ModelSet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    modelLabelled: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g3: ByNameImplicit[PojoProjection[ConfigReader, Model]],
     sg: ConfigGeneric.Pojo[Model, PureConfigPoly] = ConfigGeneric.Pojo[Model, PureConfigPoly].derived
   ): ConfigReader[Model] = {
-    val reader = getCirceDecoderF[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val reader = getCirceDecoderF[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     for (r1 <- reader) yield g1.fromIdentity(r1)
   }
 
   implicit def getPureConfigWriterPojo[Model](implicit
-    g1: ModelGet[({ type F[X[_]] = PojoInstance[X, Model] })#F, Model],
-    modelLabelled: BasedInstalledLabelled[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoInstance[X, Model] })#F],
-    g3: ByNameImplicit[PojoInstance[ConfigWriter, Model]],
+    g1: ModelGet[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model],
+    modelLabelled: BasedInstalledLabelled[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    basedInstalled: BasedInstalledSimpleProduct[({ type F[X[_]] = PojoProjection[X, Model] })#F],
+    g3: ByNameImplicit[PojoProjection[ConfigWriter, Model]],
     sg: ConfigGeneric.Pojo[Model, PureConfigPoly] = ConfigGeneric.Pojo[Model, PureConfigPoly].derived
   ): ConfigWriter[Model] = {
-    val writer = getPureConfigWriterF[({ type F[X[_]] = PojoInstance[X, Model] })#F]
+    val writer = getPureConfigWriterF[({ type F[X[_]] = PojoProjection[X, Model] })#F]
     writer.contramap[Model](g1.toIdentity)
   }
 
@@ -85,7 +85,8 @@ object PureConfigUtils {
   }
 
   def configFieldMappingPojo[Model](c: ConfigFieldMapping)(implicit
-    bs: BasedInstalledSimpleProduct[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1]
-  ): PojoInstance[Str1, Model] => PojoInstance[Str1, Model] = configFieldMappingF[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1](c)
+    bs: BasedInstalledSimpleProduct[({ type U1[U2[_]] = PojoProjection[U2, Model] })#U1]
+  ): PojoProjection[Str1, Model] => PojoProjection[Str1, Model] =
+    configFieldMappingF[({ type U1[U2[_]] = PojoProjection[U2, Model] })#U1](c)
 
 }

@@ -1,7 +1,7 @@
 package net.scalax.simple.codec
 
 import net.scalax.simple.codec.aa.SlickUtils
-import net.scalax.simple.codec.to_list_generic.{ModelLink, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{ModelLink, PojoProjection}
 import slick.jdbc.JdbcProfile
 
 case class User3Cat(id: Option[Int], first: String, last: String, nickName: String, age: Long)
@@ -24,7 +24,7 @@ object User3Cat {
     }
     object CommonT {
       import scala.language.implicitConversions
-      implicit def cv(table: CommonT): PojoInstance[Rep, User3Cat] = table.rep
+      implicit def cv(table: CommonT): PojoProjection[Rep, User3Cat] = table.rep
     }
 
     def CommonTq: TableQuery[CommonT] = TableQuery(cons => new CommonT(cons))

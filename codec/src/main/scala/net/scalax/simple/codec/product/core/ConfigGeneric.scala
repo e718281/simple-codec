@@ -1,9 +1,8 @@
 package net.scalax.simple
 package codec
 
-import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
-import net.scalax.simple.codec.product.core.{DefaultValueGeneric, Map2Generic}
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledSimpleProduct, PojoInstance}
+import net.scalax.simple.codec.product.core.DefaultValueGeneric
+import net.scalax.simple.codec.to_list_generic.PojoProjection
 
 trait ConfigGeneric[F[_[_]], Poly] { Self =>
 
@@ -58,10 +57,10 @@ object ConfigGeneric {
   }
 
   type F[U1[_[_]], Poly] = ConfigGeneric[U1, Poly]
-  type Pojo[Model, Poly] = ConfigGeneric[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1, Poly]
+  type Pojo[Model, Poly] = ConfigGeneric[({ type U1[U2[_]] = PojoProjection[U2, Model] })#U1, Poly]
 
-  def F[U1[_[_]], Poly]: Builder[U1, Poly]                                                = new Builder[U1, Poly]
-  def Pojo[Model, Poly]: Builder[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1, Poly] =
-    new Builder[({ type U1[U2[_]] = PojoInstance[U2, Model] })#U1, Poly]
+  def F[U1[_[_]], Poly]: Builder[U1, Poly]                                                  = new Builder[U1, Poly]
+  def Pojo[Model, Poly]: Builder[({ type U1[U2[_]] = PojoProjection[U2, Model] })#U1, Poly] =
+    new Builder[({ type U1[U2[_]] = PojoProjection[U2, Model] })#U1, Poly]
 
 }

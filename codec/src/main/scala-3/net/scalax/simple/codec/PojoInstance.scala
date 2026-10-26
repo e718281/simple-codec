@@ -3,7 +3,7 @@ package to_list_generic
 
 import net.scalax.simple.codec.product.core.ReplaceByPropertyName
 
-trait PojoInstance[U[_], Model] {
+trait PojoProjection[U[_], Model] {
   PojoInstanceSelf =>
 
   def instance: Any
@@ -18,78 +18,50 @@ trait PojoInstance[U[_], Model] {
   }*/
 
   def copyImpl[T](proName: String, func: Model => T)(data: U[T])(implicit
-    basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
-    basedLabelledInput: BasedInstalledLabelled[({ type F1[X[_]] = PojoInstance[X, Model] })#F1]
-  ): PojoInstance[U, Model] = {
-    val replaceByPropertyName: ReplaceByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1] =
-      ReplaceByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1].derived(basedInstalledInput.simpleRunner.simpleRelease2)
+    basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1],
+    basedLabelledInput: BasedInstalledLabelled[({ type F1[X[_]] = PojoProjection[X, Model] })#F1]
+  ): PojoProjection[U, Model] = {
+    val replaceByPropertyName: ReplaceByPropertyName[({ type F1[U1[_]] = PojoProjection[U1, Model] })#F1] =
+      ReplaceByPropertyName[({ type F1[U1[_]] = PojoProjection[U1, Model] })#F1].derived(basedInstalledInput.simpleRunner.simpleRelease2)
     replaceByPropertyName.replace[U, T](proName, data, basedLabelledInput.labelled.stringLabelled, this)
   }
 
   def applyImpl[T](proName: String, func: Model => T)(implicit
-    basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
-    basedLabelledInput: BasedInstalledLabelled[({ type F1[X[_]] = PojoInstance[X, Model] })#F1]
+    basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1],
+    basedLabelledInput: BasedInstalledLabelled[({ type F1[X[_]] = PojoProjection[X, Model] })#F1]
   ): U[T] = {
-    val getPropertyByPropertyName: GetPropertyByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1] =
-      GetPropertyByPropertyName[({ type F1[U1[_]] = PojoInstance[U1, Model] })#F1].derived(basedInstalledInput, basedLabelledInput)
+    val getPropertyByPropertyName: GetPropertyByPropertyName[({ type F1[U1[_]] = PojoProjection[U1, Model] })#F1] =
+      GetPropertyByPropertyName[({ type F1[U1[_]] = PojoProjection[U1, Model] })#F1].derived(basedInstalledInput, basedLabelledInput)
     getPropertyByPropertyName.getProperty[U, T](proName)(this)
   }
 
   transparent inline def copy[MP](inline expr: Model => MP)(data: U[MP])(implicit
-    bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
-    lInstall: BasedInstalledLabelled[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1]
-  ): PojoInstance[U, Model] = ${ NameOfImpl.nameOf1('PojoInstanceSelf)('expr)('data)(using 'bInstall, 'lInstall) }
+    bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1],
+    lInstall: BasedInstalledLabelled[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1]
+  ): PojoProjection[U, Model] = ${ NameOfImpl.nameOf1('PojoInstanceSelf)('expr)('data)(using 'bInstall, 'lInstall) }
 
   transparent inline def apply[MP](inline expr: Model => MP)(implicit
-    bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
-    lInstall: BasedInstalledLabelled[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1]
+    bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1],
+    lInstall: BasedInstalledLabelled[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1]
   ): U[MP] = ${ NameOfImpl.nameOf2('PojoInstanceSelf)('expr)(using 'bInstall, 'lInstall) }
 
   transparent inline def get[MP](inline expr: Model => MP)(implicit
-    bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1],
-    lInstall: BasedInstalledLabelled[({ type F1[XX[_]] = PojoInstance[XX, Model] })#F1]
+    bInstall: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1],
+    lInstall: BasedInstalledLabelled[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1]
   ): U[MP] = ${ NameOfImpl.nameOf2('PojoInstanceSelf)('expr)(using 'bInstall, 'lInstall) }
 }
 
-object PojoInstance {
-  PojoInstanceSelf =>
-
-  /*trait CopyAble[U[_], Model] {
-    CopyAbleSelf =>
-    def value: PojoInstance[U, Model]
-    def basedInstalled: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
-    def basedInstalledLabelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
-    private def copyImpl3[MP](proName: String, func: Model => MP)(data: U[MP]): PojoInstance[U, Model] = {
-      val replaceByPropertyName: ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] =
-        ReplaceByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1].derived(basedInstalled.simpleRunner.simpleRelease2)
-      replaceByPropertyName.replace[U, MP](proName, data, basedInstalledLabelled.labelled.stringLabelled, value)
-    }
-
-    def copySelfImpl[MP](proName: String, func: Model => MP)(data: U[MP]): CopyAble[U, Model] = new CopyAble[U, Model] {
-      override def value: PojoInstance[U, Model] = CopyAbleSelf.copyImpl3(proName = proName, func = func)(data)
-      override def basedInstalled: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] =
-        CopyAbleSelf.basedInstalled
-      override def basedInstalledLabelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] =
-        CopyAbleSelf.basedInstalledLabelled
-    }
-
-    private val getPropertyByPropertyName: GetPropertyByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] =
-      GetPropertyByPropertyName[({ type F1[T[_]] = PojoInstance[T, Model] })#F1].derived(basedInstalled, basedInstalledLabelled)
-
-    def getSelfImpl3[MP](proName: String, func: Model => MP): U[MP] = getPropertyByPropertyName.getProperty[U, MP](proName)(value)
-  }*/
-
-}
+object PojoProjection
 
 import scala.annotation.tailrec
 import scala.quoted.*
 
 object NameOfImpl {
 
-  def nameOf1[M, T, U[_]](thisObj: Expr[PojoInstance[U, M]])(expr: Expr[M => T])(data: Expr[U[T]])(using
-    bInstall: Expr[BasedInstalledSimpleProduct[[XX[_]] =>> PojoInstance[XX, M]]],
-    lInstall: Expr[BasedInstalledLabelled[[XX[_]] =>> PojoInstance[XX, M]]]
-  )(using Quotes, Type[U], Type[M], Type[T]): Expr[PojoInstance[U, M]] = {
+  def nameOf1[M, T, U[_]](thisObj: Expr[PojoProjection[U, M]])(expr: Expr[M => T])(data: Expr[U[T]])(using
+    bInstall: Expr[BasedInstalledSimpleProduct[[XX[_]] =>> PojoProjection[XX, M]]],
+    lInstall: Expr[BasedInstalledLabelled[[XX[_]] =>> PojoProjection[XX, M]]]
+  )(using Quotes, Type[U], Type[M], Type[T]): Expr[PojoProjection[U, M]] = {
     import quotes.reflect.*
     @tailrec def extract(tree: Tree): String = tree match {
       case Ident(name)                                                     => name
@@ -110,9 +82,9 @@ object NameOfImpl {
     '{ $thisObj.copyImpl($nameExpr, $expr)($data)(using $bInstall, $lInstall) }
   }
 
-  def nameOf2[M, T, U[_]](thisObj: Expr[PojoInstance[U, M]])(expr: Expr[M => T])(using
-    bInstall: Expr[BasedInstalledSimpleProduct[[XX[_]] =>> PojoInstance[XX, M]]],
-    lInstall: Expr[BasedInstalledLabelled[[XX[_]] =>> PojoInstance[XX, M]]]
+  def nameOf2[M, T, U[_]](thisObj: Expr[PojoProjection[U, M]])(expr: Expr[M => T])(using
+    bInstall: Expr[BasedInstalledSimpleProduct[[XX[_]] =>> PojoProjection[XX, M]]],
+    lInstall: Expr[BasedInstalledLabelled[[XX[_]] =>> PojoProjection[XX, M]]]
   )(using Quotes, Type[U], Type[M], Type[T]): Expr[U[T]] = {
     import quotes.reflect.*
     @tailrec def extract(tree: Tree): String = tree match {

@@ -3,7 +3,7 @@ package codec
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection}
 import net.scalax.simple.codec.utils.ByNameImplicit
 
 trait Builder[En[_]] { Builder1Self =>
@@ -22,15 +22,15 @@ trait Builder[En[_]] { Builder1Self =>
     implicit def implicitImpl2[T]: EncoderGetter[T] = EncoderGetter(None)
   }
 
-  def Pojo[Model]: Builder1Self.Builder[({ type X1[U1[_]] = PojoInstance[U1, Model] })#X1] =
-    new Builder1Self.Builder[({ type X1[U1[_]] = PojoInstance[U1, Model] })#X1] {
+  def Pojo[Model]: Builder1Self.Builder[({ type X1[U1[_]] = PojoProjection[U1, Model] })#X1] =
+    new Builder1Self.Builder[({ type X1[U1[_]] = PojoProjection[U1, Model] })#X1] {
       //
     }
 
   def F[UX[_[_]]]: Builder1Self.Builder[UX] = new Builder1Self.Builder[UX] {
     //
   }
-  type Pojo[Model] = TypeClassContent[({ type X1[U1[_]] = PojoInstance[U1, Model] })#X1, En]
+  type Pojo[Model] = TypeClassContent[({ type X1[U1[_]] = PojoProjection[U1, Model] })#X1, En]
   type F[UX[_[_]]] = TypeClassContent[UX, En]
 
   trait Builder[F[_[_]]] { Builder2Self =>

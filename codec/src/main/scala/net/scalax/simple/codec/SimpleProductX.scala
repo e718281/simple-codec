@@ -15,11 +15,11 @@ object SimpleProductX {
         fromModel = toU(to.toModel: F[({ type ToAny[_] = Any })#ToAny] => Any)
       )*/
 
-    def derivedRunner(from: GenericAuxFrom[F], to: GenericAuxTo[F], modelSize: ModelSize[F]): AppenderSupport4[F] =
+    def derivedRunner(from: GenericAuxFrom[F], modelSize: ModelSize[F]): AppenderSupport4[F] =
       Append3Impl.genSimpleProduct[F](
         length = modelSize.modelSize,
         toModel = toU(from.fromHListToF: Any => F[({ type ToAny[_] = Any })#ToAny]),
-        fromModel = toU(to.fromFToHList: F[({ type ToAny[_] = Any })#ToAny] => Any)
+        fromModel = toU(from.fromFToHList: F[({ type ToAny[_] = Any })#ToAny] => Any)
       )
   }
 

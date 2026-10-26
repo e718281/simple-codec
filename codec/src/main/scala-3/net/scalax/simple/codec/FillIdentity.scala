@@ -27,10 +27,10 @@ object FillIdentity {
     inline def derived(using
       g: scala.deriving.Mirror.ProductOf[Model],
       inst: K0.ProductInstances[FillIdentity, Tuple.Map[g.MirroredElemTypes, E]]
-    ): PojoInstance[E, Model] = {
+    ): PojoProjection[E, Model] = {
       val fillIdentity: FillIdentity[Tuple.Map[g.MirroredElemTypes, E]] = FillIdentity.monoidGen[Tuple.Map[g.MirroredElemTypes, E]]
 
-      new PojoInstance[E, Model] {
+      new PojoProjection[E, Model] {
         override def instance: Any = fillIdentity.value
       }
     }
@@ -44,6 +44,6 @@ object FillIdentity {
   object Pojo {
     def apply[U[_], Model]: ModelPojoBuilder[U, Model] = new ModelPojoBuilder[U, Model]
   }
-  type Pojo[U[_], Model] = PojoInstance[U, Model]
+  type Pojo[U[_], Model] = PojoProjection[U, Model]
 
 }

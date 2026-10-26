@@ -1,6 +1,6 @@
 package net.scalax.simple.codec.product.core
 
-import net.scalax.simple.codec.to_list_generic.{GenericAuxFrom, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{GenericAuxFrom, PojoProjection}
 import shapeless.HList
 
 import scala.collection.compat._
@@ -14,7 +14,7 @@ object DefaultValueGeneric { DefaultValuePojoSelf =>
   class Builder[ModelType] {
 
     def derived(implicit
-      fModelGet: GenericAuxFrom[({ type F1[U[_]] = PojoInstance[U, ModelType] })#F1],
+      fModelGet: GenericAuxFrom[({ type F1[U[_]] = PojoProjection[U, ModelType] })#F1],
       compatModel: SModelFill[ModelType]
     ): DefaultValueGeneric.Pojo[ModelType] = {
       def appendLImpl(n: List[Option[() => Any]]): shapeless.HList = n match {
@@ -25,16 +25,16 @@ object DefaultValueGeneric { DefaultValuePojoSelf =>
       val defaultV: List[Option[() => Any]] = compatModel.list
       val defaultVHList: HList              = appendLImpl(defaultV)
 
-      val ins1: PojoInstance[({ type UA[T1] = Option[() => T1] })#UA, ModelType] =
+      val ins1: PojoProjection[({ type UA[T1] = Option[() => T1] })#UA, ModelType] =
         fModelGet.fromHListToF[({ type UA[T1] = Option[() => T1] })#UA](defaultVHList)
 
-      new DefaultValueGeneric[({ type T1[U2[_]] = PojoInstance[U2, ModelType] })#T1] {
-        override def defaultValueFunction1: PojoInstance[({ type UA[T1] = Option[() => T1] })#UA, ModelType] = ins1
+      new DefaultValueGeneric[({ type T1[U2[_]] = PojoProjection[U2, ModelType] })#T1] {
+        override def defaultValueFunction1: PojoProjection[({ type UA[T1] = Option[() => T1] })#UA, ModelType] = ins1
       }
     }
   }
 
-  type Pojo[ModelType] = DefaultValueGeneric[({ type T1[U2[_]] = PojoInstance[U2, ModelType] })#T1]
+  type Pojo[ModelType] = DefaultValueGeneric[({ type T1[U2[_]] = PojoProjection[U2, ModelType] })#T1]
   def Pojo[ModelType]: Builder[ModelType] = new Builder[ModelType]
 
 }

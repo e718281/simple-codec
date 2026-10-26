@@ -4,7 +4,7 @@ import io.circe._
 import io.circe.generic.extras.JsonKey
 import io.circe.syntax._
 import net.scalax.simple.codec.product.core.{DefaultValueGeneric, Fold1Generic, ToListByTheSameTypeGeneric}
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo, PojoInstance}
+import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo, PojoProjection}
 
 case class CatNameTest3(
   id3: Int,
@@ -58,9 +58,9 @@ object CatNameTest3TestCase {
     friends = List(cat1)
   )
 
-  def getNames(model: PojoInstance[({ type M1[_] = String })#M1, CatNameTest3]): List[String] = {
-    val ge = ToListByTheSameTypeGeneric[({ type U1[X[_]] = PojoInstance[X, CatNameTest3] })#U1].derived(
-      Fold1Generic[({ type U1[X[_]] = PojoInstance[X, CatNameTest3] })#U1]
+  def getNames(model: PojoProjection[({ type M1[_] = String })#M1, CatNameTest3]): List[String] = {
+    val ge = ToListByTheSameTypeGeneric[({ type U1[X[_]] = PojoProjection[X, CatNameTest3] })#U1].derived(
+      Fold1Generic[({ type U1[X[_]] = PojoProjection[X, CatNameTest3] })#U1]
         .derived(implicitly[ModelLinkPojo[CatNameTest3]].simpleRunner.simpleRelease1)
     )
 
