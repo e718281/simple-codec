@@ -7,7 +7,7 @@ trait IndexModelGeneric[F[_[_]]] {
 object IndexModelGeneric {
 
   class Builder[F[_[_]]] {
-    def derived(fromList: FromListByTheSameTypeGeneric[F]): IndexModelGeneric[F] = {
+    def derived(fromList: FromListGeneric[F]): IndexModelGeneric[F] = {
       val fromInt = fromList.fromListByTheSameType[Int, Int](takeHead = identity, takeTail = t => t + 1)
       val modelInt: F[({ type IntId[_] = Int })#IntId] = fromInt(0)
 

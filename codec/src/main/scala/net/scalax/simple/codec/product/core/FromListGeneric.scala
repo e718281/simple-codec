@@ -3,14 +3,14 @@ package net.scalax.simple.codec.product.core
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
 
-trait FromListByTheSameTypeGeneric[F[_[_]]] {
+trait FromListGeneric[F[_[_]]] {
   def fromListByTheSameType[TA, SeqType](
     takeHead: SeqType => TA,
     takeTail: SeqType => SeqType
   ): SeqType => F[({ type U1[_] = TA })#U1]
 }
 
-object FromListByTheSameTypeGeneric {
+object FromListGeneric {
 
   private def toNamed[T, SeqType](
     takeHead: SeqType => T,
@@ -34,7 +34,7 @@ object FromListByTheSameTypeGeneric {
     }
 
   class Builder[F[_[_]]] {
-    def derived(o1: AppenderSupport1.Simple1.Release[F]): FromListByTheSameTypeGeneric[F] = new FromListByTheSameTypeGeneric[F] {
+    def derived(o1: AppenderSupport1.Simple1.Release[F]): FromListGeneric[F] = new FromListGeneric[F] {
       override def fromListByTheSameType[TA, SeqType](
         takeHead: SeqType => TA,
         takeTail: SeqType => SeqType

@@ -50,14 +50,14 @@ trait HListFunc[HLLike, Ap[_, _ <: HLLike] <: HLLike] {
 trait CoProductFunc[HLLike, Ap[_, _ <: HLLike] <: HLLike] {
   HListFuncSelf =>
 
-  def takeHead[Head, Tail <: HLLike](m: Head): Ap[Head, Tail]
-  def takeTail[Head, Tail <: HLLike](m: Tail): Ap[Head, Tail]
+  def liftHead[Head, Tail <: HLLike](m: Head): Ap[Head, Tail]
+  def liftTail[Head, Tail <: HLLike](m: Tail): Ap[Head, Tail]
   def append[T, Head, Tail <: HLLike](h: Head => T, t: Tail => T): Ap[Head, Tail] => T
 
   def toABCFunc[Head, HCollecio <: HLLike]: ABCCoProduct[Head, HCollecio, Ap[Head, HCollecio]] =
     new ABCCoProduct[Head, HCollecio, Ap[Head, HCollecio]] {
-      override def liftHead(m: Head): Ap[Head, HCollecio]                               = HListFuncSelf.takeHead(m)
-      override def liftTail(m: HCollecio): Ap[Head, HCollecio]                          = HListFuncSelf.takeTail(m)
+      override def liftHead(m: Head): Ap[Head, HCollecio]                               = HListFuncSelf.liftHead(m)
+      override def liftTail(m: HCollecio): Ap[Head, HCollecio]                          = HListFuncSelf.liftTail(m)
       override def append[T](h: Head => T, t: HCollecio => T): Ap[Head, HCollecio] => T = HListFuncSelf.append(h, t)
     }
 

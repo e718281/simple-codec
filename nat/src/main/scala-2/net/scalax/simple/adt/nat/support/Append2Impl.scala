@@ -17,8 +17,8 @@ object Append2Impl extends v5.AppenderSupport2[shapeless.HList, ::] {
 }
 
 object CoProductFunc extends CoProductFunc[Coproduct, :+:] {
-  override def takeHead[Head, Tail <: Coproduct](m: Head): Head :+: Tail                                   = Inl(m)
-  override def takeTail[Head, Tail <: Coproduct](m: Tail): Head :+: Tail                                   = Inr(m)
+  override def liftHead[Head, Tail <: Coproduct](m: Head): Head :+: Tail                                   = Inl(m)
+  override def liftTail[Head, Tail <: Coproduct](m: Tail): Head :+: Tail                                   = Inr(m)
   override def append[T, Head, Tail <: Coproduct](h: Head => T, t: Tail => T): Head :+: Tail => T          = ht => ht.eliminate(h, t)
   override def fromTo[Head, HCollecio <: Coproduct](hCol: HCollecio): FromToFunc[Head, Head :+: HCollecio] =
     new FromToFunc[Head, Head :+: HCollecio] {
