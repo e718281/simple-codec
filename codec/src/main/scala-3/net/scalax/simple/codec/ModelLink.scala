@@ -16,18 +16,6 @@ object ModelLink {
 
   import scala.deriving.Mirror
 
-  sealed trait M1
-  case class M2(name: String) extends M1
-  case class M3(name: String) extends M1
-  case object M4              extends M1
-  case object M5              extends M1
-
-  import scala.deriving.Mirror
-  def input(using e: Mirror.SumOf[M1]): e.type = e
-  def bb: input.MirroredElemTypes              = ???
-  val cc: (M2, M3, M4.type, M5.type)           = bb
-  println("Succeed.")
-
   def buildUtilImplCommonF[FMM[_[_]]](cNamed: Any, fromTuple: Any => FMM[[_] =>> Any]): ModelLinkCommonF[FMM] = new ModelLinkCommonF[FMM] {
     ModelLinkCommonFSelf =>
     override def fromFToHList[T[_]](x: FMM[T]): Any = Tuple.fromProduct(x.asInstanceOf)
@@ -41,8 +29,6 @@ object ModelLink {
   }
 
   class BuilderCommonF[FMM[_[_]]] {
-    inline def implicitly(using x: ModelLink[FMM, FMM[({ type IDF[T] = T })#IDF]]): ModelLink[FMM, FMM[({ type IDF[T] = T })#IDF]] = x
-
     inline def derived(using g: Mirror.ProductOf[FMM[({ type U1[_] = Any })#U1]]): ModelLink.F[FMM] = {
       val namedModel = scala.compiletime.constValueTuple[g.MirroredElemLabels]
       buildUtilImplCommonF(namedModel, g.fromTuple.asInstanceOf[Any => FMM[[_] =>> Any]])

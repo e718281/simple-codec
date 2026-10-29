@@ -14,13 +14,13 @@ trait ModelLink[F[_[_]], Model]
     with GenericAuxFrom[F]
 
 object ModelLink {
-  ModelLinkSelf =>
+  Self =>
 
   class BuilderCommonF[FMM[_[_]]] {
     def derived(implicit
       compatNamed1: DefaultSymbolicLabelling.Aux[FMM[({ type U1[X] = X })#U1], _ <: shapeless.HList],
       g: shapeless.Generic.Aux[FMM[({ type U1[_] = Any })#U1], _ <: shapeless.HList]
-    ): ModelLinkSelf.F[FMM] = {
+    ): Self.F[FMM] = {
       val namedModel = compatNamed1.apply()
 
       new ModelLinkCommonF[FMM] { ModelLinkCommonFSelf =>
@@ -34,8 +34,6 @@ object ModelLink {
         override def size: ModelSize[FMM]               = ModelSize[FMM].derived(namedModel)
       }
     }
-
-    def implicitly(implicit u: ModelLinkSelf.F[FMM]): ModelLinkSelf.F[FMM] = u
   }
 
   class BuilderPojo[Model] {
