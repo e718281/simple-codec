@@ -1,9 +1,10 @@
 package net.scalax.simple
 package codec
 
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct}
 import net.scalax.simple.codec.utils.ByNameImplicit
 import play.api.libs.json._
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait PlayJsonPoly
 object PlayJsonGeneric {

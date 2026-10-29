@@ -1,24 +1,26 @@
 package net.scalax.simple.codec
 package to_list_generic
 
-trait FillIdentity[T] {
+import net.scalax.simple.codec.product.core.PojoProjection
+
+trait Packager[T] {
   def value: T
 }
 
-object FillIdentity {
+object Packager {
   import shapeless3.deriving.*
 
-  given [A1](using a: => A1): FillIdentity[A1] with {
+  given [A1](using a: => A1): Packager[A1] with {
     override def value: A1 = a
   }
 
-  given monoidGen[A2](using inst: K0.ProductInstances[FillIdentity, A2]): FillIdentity[A2] with {
-    override def value: A2 = inst.construct([t] => (ma: FillIdentity[t]) => ma.value)
+  given monoidGen[A2](using inst: K0.ProductInstances[Packager, A2]): Packager[A2] with {
+    override def value: A2 = inst.construct([t] => (ma: Packager[t]) => ma.value)
   }
 
   class ModelFBuilder[T] {
     inline def derived(using generic: K0.ProductGeneric[T]): T = {
-      val fillIdentity: FillIdentity[T] = FillIdentity.monoidGen[T]
+      val fillIdentity: Packager[T] = Packager.monoidGen[T]
       fillIdentity.value
     }
   }
@@ -26,9 +28,9 @@ object FillIdentity {
   class ModelPojoBuilder[E[_], Model] {
     inline def derived(using
       g: scala.deriving.Mirror.ProductOf[Model],
-      inst: K0.ProductInstances[FillIdentity, Tuple.Map[g.MirroredElemTypes, E]]
+      inst: K0.ProductInstances[Packager, Tuple.Map[g.MirroredElemTypes, E]]
     ): PojoProjection[E, Model] = {
-      val fillIdentity: FillIdentity[Tuple.Map[g.MirroredElemTypes, E]] = FillIdentity.monoidGen[Tuple.Map[g.MirroredElemTypes, E]]
+      val fillIdentity: Packager[Tuple.Map[g.MirroredElemTypes, E]] = Packager.monoidGen[Tuple.Map[g.MirroredElemTypes, E]]
 
       new PojoProjection[E, Model] {
         override def instance: Any = fillIdentity.value

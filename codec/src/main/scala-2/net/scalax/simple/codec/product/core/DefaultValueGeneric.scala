@@ -1,6 +1,6 @@
 package net.scalax.simple.codec.product.core
 
-import net.scalax.simple.codec.to_list_generic.{GenericAuxFrom, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.GenericAuxFrom
 import shapeless.HList
 
 import scala.collection.compat._

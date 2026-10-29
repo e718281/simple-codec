@@ -1,7 +1,7 @@
 package net.scalax.simple.codec
 package aa
 
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink}
+import net.scalax.simple.codec.to_list_generic.{ModelLink, Packager}
 import slick.ast.TypedType
 import slick.jdbc.JdbcProfile
 

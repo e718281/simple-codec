@@ -3,6 +3,7 @@ package to_list_generic
 
 import net.scalax.simple.codec.product.core.Map1Generic
 import shapeless.DefaultSymbolicLabelling
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait ModelLink[F[_[_]], Model]
     extends BasedInstalledSimpleProduct[F]

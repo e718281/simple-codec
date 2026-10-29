@@ -4,7 +4,8 @@ import io.circe._
 import io.circe.generic.extras.JsonKey
 import io.circe.syntax._
 import net.scalax.simple.codec.product.core.{DefaultValueGeneric, Fold1Generic, ToListByTheSameTypeGeneric}
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, ModelLinkPojo, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.{ModelLink, ModelLinkPojo, Packager}
+import net.scalax.simple.codec.product.core.PojoProjection
 
 case class CatNameTest3(
   id3: Int,
@@ -32,9 +33,9 @@ object CatNameTest3 {
       .mapLabelled(CirceHepler.jsonKeyPojo)
       .useDefaultValue
 
-  implicit def modelEncoder: FillIdentity.Pojo[Encoder, CatNameTest3] =
-    FillIdentity.Pojo[Encoder, CatNameTest3].derived.copy(_.uClass3)(longOptEncoder)
-  implicit def modelDecoder: FillIdentity.Pojo[Decoder, CatNameTest3] = FillIdentity.Pojo[Decoder, CatNameTest3].derived
+  implicit def modelEncoder: Packager.Pojo[Encoder, CatNameTest3] =
+    Packager.Pojo[Encoder, CatNameTest3].derived.copy(_.uClass3)(longOptEncoder)
+  implicit def modelDecoder: Packager.Pojo[Decoder, CatNameTest3] = Packager.Pojo[Decoder, CatNameTest3].derived
 
 }
 

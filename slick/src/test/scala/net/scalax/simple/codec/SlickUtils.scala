@@ -2,16 +2,10 @@ package net.scalax.simple.codec
 package aa
 
 import net.scalax.simple.codec.product.core.Map0Generic
-import net.scalax.simple.codec.to_list_generic.{
-  BasedInstalledLabelled,
-  BasedInstalledSimpleProduct,
-  FillIdentity,
-  GenericAuxFrom,
-  ModelLink,
-  PojoProjection
-}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, GenericAuxFrom, ModelLink, Packager}
 import slick.ast.{ColumnOption, TypedType}
 import slick.jdbc.JdbcProfile
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
   val slickProfile: V
@@ -66,8 +60,8 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
       modelLink: ModelLink.F[F]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
-    def typedTypeBuilder: FillIdentity.ModelFBuilder[F[TypedType]]     = FillIdentity.F[TypedType, F]
-    def shapeBuilder: FillIdentity.ModelFBuilder[F[CodecUtils.ShapeF]] = FillIdentity.F[CodecUtils.ShapeF, F]
+    def typedTypeBuilder: Packager.ModelFBuilder[F[TypedType]]     = Packager.F[TypedType, F]
+    def shapeBuilder: Packager.ModelFBuilder[F[CodecUtils.ShapeF]] = Packager.F[CodecUtils.ShapeF, F]
 
   }
 
@@ -86,8 +80,8 @@ trait SlickUtils[V <: JdbcProfile] extends UtilsWrap[V] {
       modelLink: ModelLink.Pojo[Model]
     ) = this(_tableTag = _tableTag, _schemaName = None, _tableName = _tableName)
 
-    def typedTypeBuilder: FillIdentity.ModelPojoBuilder[TypedType, Model]     = FillIdentity.Pojo[TypedType, Model]
-    def shapeBuilder: FillIdentity.ModelPojoBuilder[CodecUtils.ShapeF, Model] = FillIdentity.Pojo[CodecUtils.ShapeF, Model]
+    def typedTypeBuilder: Packager.ModelPojoBuilder[TypedType, Model]     = Packager.Pojo[TypedType, Model]
+    def shapeBuilder: Packager.ModelPojoBuilder[CodecUtils.ShapeF, Model] = Packager.Pojo[CodecUtils.ShapeF, Model]
 
   }
 

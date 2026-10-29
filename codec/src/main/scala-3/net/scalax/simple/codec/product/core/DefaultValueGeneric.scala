@@ -1,6 +1,6 @@
 package net.scalax.simple.codec.product.core
 
-import net.scalax.simple.codec.to_list_generic.{GenericAuxFrom, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.GenericAuxFrom
 
 trait DefaultValueGeneric[F[_[_]]] {
   def defaultValueFunction1: F[({ type UA[T1] = Option[() => T1] })#UA]

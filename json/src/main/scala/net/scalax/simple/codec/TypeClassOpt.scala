@@ -3,8 +3,9 @@ package codec
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport1
 import net.scalax.simple.adt.nat.support.{ABCFunc, FromToFunc}
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct}
 import net.scalax.simple.codec.utils.ByNameImplicit
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait Builder[En[_]] { Builder1Self =>
   type TC1[T]                                  = String

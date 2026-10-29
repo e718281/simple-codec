@@ -4,8 +4,9 @@ import com.typesafe.config.ConfigRenderOptions
 import net.scalax.simple.codec.ConfigGeneric
 import net.scalax.simple.codec.pureconfig.PureConfigPoly
 import net.scalax.simple.codec.product.core.DefaultValueGeneric
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.{ModelLink, Packager}
 import pureconfig._
+import net.scalax.simple.codec.product.core.PojoProjection
 
 case class SampleConf2(foo: Int = 22, name2: String, age: Int, bar: String, nick: String)
 
@@ -16,8 +17,8 @@ object SampleConf2 {
   import net.scalax.simple.codec.pureconfig.PureConfigUtils._
   implicit def pureConfigNamed: ConfigGeneric.Pojo[SampleConf2, PureConfigPoly] = ConfigGeneric.Pojo[SampleConf2, PureConfigPoly].derived
 
-  implicit def readerInstance: PojoProjection[ConfigReader, SampleConf2] = FillIdentity.Pojo[ConfigReader, SampleConf2].derived
-  implicit def writerInstance: PojoProjection[ConfigWriter, SampleConf2] = FillIdentity.Pojo[ConfigWriter, SampleConf2].derived
+  implicit def readerInstance: PojoProjection[ConfigReader, SampleConf2] = Packager.Pojo[ConfigReader, SampleConf2].derived
+  implicit def writerInstance: PojoProjection[ConfigWriter, SampleConf2] = Packager.Pojo[ConfigWriter, SampleConf2].derived
 
   implicit def defaultValueInstance: DefaultValueGeneric.Pojo[SampleConf2] = DefaultValueGeneric.Pojo[SampleConf2].derived
 

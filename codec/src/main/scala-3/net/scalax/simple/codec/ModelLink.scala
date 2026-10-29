@@ -2,6 +2,7 @@ package net.scalax.simple.codec
 package to_list_generic
 
 import net.scalax.simple.codec.product.core.Map1Generic
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait ModelLink[F[_[_]], Model]
     extends BasedInstalledSimpleProduct[F]
@@ -14,6 +15,18 @@ trait ModelLink[F[_[_]], Model]
 object ModelLink {
 
   import scala.deriving.Mirror
+
+  sealed trait M1
+  case class M2(name: String) extends M1
+  case class M3(name: String) extends M1
+  case object M4              extends M1
+  case object M5              extends M1
+
+  import scala.deriving.Mirror
+  def input(using e: Mirror.SumOf[M1]): e.type = e
+  def bb: input.MirroredElemTypes              = ???
+  val cc: (M2, M3, M4.type, M5.type)           = bb
+  println("Succeed.")
 
   def buildUtilImplCommonF[FMM[_[_]]](cNamed: Any, fromTuple: Any => FMM[[_] =>> Any]): ModelLinkCommonF[FMM] = new ModelLinkCommonF[FMM] {
     ModelLinkCommonFSelf =>

@@ -2,6 +2,7 @@ package net.scalax.simple.codec
 package to_list_generic
 
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport4
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait ModelLinkPojo[Model] extends ModelLink[({ type F[X[_]] = PojoProjection[X, Model] })#F, Model] { Self =>
 

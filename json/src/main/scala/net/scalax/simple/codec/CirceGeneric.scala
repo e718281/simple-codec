@@ -4,8 +4,9 @@ import io.circe._
 import io.circe.generic.extras.JsonKey
 import net.scalax.simple.codec.circe.CirceGenericUtils
 import net.scalax.simple.codec.product.core.Map2Generic
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection, SingletonMap}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, SingletonMap}
 import net.scalax.simple.codec.utils.ByNameImplicit
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait CircePoly
 object Circe {

@@ -5,7 +5,7 @@ package func_circe_test
 import io.circe._
 import io.circe.syntax._
 import net.scalax.simple.adt.nat.support.ABCFunc
-import net.scalax.simple.codec.to_list_generic.{FillIdentity, ModelLink}
+import net.scalax.simple.codec.to_list_generic.{ModelLink, Packager}
 
 case class FuncCirceTestImpl1[T, F[_]](str1: F[Option[T]])
 object FuncCirceTestImpl1 {
@@ -29,8 +29,8 @@ object FuncCirceTest {
   implicit def deco2_1[T]: ModelLink.F[({ type U[X[_]] = FuncCirceTest[T, X] })#U] =
     ModelLink.F[({ type U[X[_]] = FuncCirceTest[T, X] })#U].derived
 
-  val impl2EncoderGiven: FuncCirceTestImpl2[Encoder] = FillIdentity.F[Encoder, FuncCirceTestImpl2].derived
-  val impl2DecoderGiven: FuncCirceTestImpl2[Decoder] = FillIdentity.F[Decoder, FuncCirceTestImpl2].derived
+  val impl2EncoderGiven: FuncCirceTestImpl2[Encoder] = Packager.F[Encoder, FuncCirceTestImpl2].derived
+  val impl2DecoderGiven: FuncCirceTestImpl2[Decoder] = Packager.F[Decoder, FuncCirceTestImpl2].derived
   implicit def jsonLabelled[T]: ConfigGeneric.F[({ type X1[U[_]] = FuncCirceTest[T, U] })#X1, CircePoly] =
     ConfigGeneric.F[({ type X1[U[_]] = FuncCirceTest[T, U] })#X1, CircePoly].derived
   implicit def impl0EncoderGiven[T](implicit u: FuncCirceTestImpl1[T, Encoder]): FuncCirceTest[T, Encoder] =

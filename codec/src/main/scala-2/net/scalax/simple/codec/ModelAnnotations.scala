@@ -1,6 +1,7 @@
 package net.scalax.simple.codec
 
-import net.scalax.simple.codec.to_list_generic.{GenericAuxFrom, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.GenericAuxFrom
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait ModelAnnotations[F[_[_]], Ann] {
   def annInstance: F[({ type U11[_] = Option[Ann] })#U11]

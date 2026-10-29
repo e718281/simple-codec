@@ -3,24 +3,25 @@ package to_list_generic
 
 import net.scalax.simple.codec.utils.ByNameImplicit
 import shapeless.{::, Generic, HList, HNil}
+import net.scalax.simple.codec.product.core.PojoProjection
 
-trait FillIdentity[T] {
+trait Packager[T] {
   def value: T
 }
 
-object FillIdentity {
+object Packager {
 
-  implicit def hlistImplicit1[T, Tail <: HList](implicit u: ByNameImplicit[T], t1: FillIdentity[Tail]): FillIdentity[T :: Tail] =
-    new FillIdentity[T :: Tail] {
+  implicit def hlistImplicit1[T, Tail <: HList](implicit u: ByNameImplicit[T], t1: Packager[Tail]): Packager[T :: Tail] =
+    new Packager[T :: Tail] {
       override def value: T :: Tail = u.value :: t1.value
     }
 
-  implicit val hlistHNilImplicit2: FillIdentity[HNil] = new FillIdentity[HNil] {
+  implicit val hlistHNilImplicit2: Packager[HNil] = new Packager[HNil] {
     override val value: HNil = HNil
   }
 
   class ModelFBuilder[T] {
-    def derived[H <: HList](implicit generic: Generic.Aux[T, H], filler: FillIdentity[H]): T = generic.from(filler.value)
+    def derived[H <: HList](implicit generic: Generic.Aux[T, H], filler: Packager[H]): T = generic.from(filler.value)
   }
   class ModelPojoBuilder[E[_], Model] {
     def derived[H <: shapeless.HList, HCol <: shapeless.HList](implicit

@@ -2,7 +2,7 @@ package net.scalax.simple
 package codec
 
 import net.scalax.simple.codec.product.core.DefaultValueGeneric
-import net.scalax.simple.codec.to_list_generic.PojoProjection
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait ConfigGeneric[F[_[_]], Poly] { Self =>
 

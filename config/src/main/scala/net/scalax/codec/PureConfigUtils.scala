@@ -4,10 +4,11 @@ import com.typesafe.config.ConfigValue
 import net.scalax.simple.adt.nat.support.v5.AppenderSupport4
 import net.scalax.simple.codec.product.core.Map1Generic
 import net.scalax.simple.codec.{ConfigGeneric, ModelGet, ModelSet}
-import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct, PojoProjection}
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct}
 import net.scalax.simple.codec.utils.ByNameImplicit
 import pureconfig.ConfigReader.Result
 import pureconfig._
+import net.scalax.simple.codec.product.core.PojoProjection
 
 trait PureConfigPoly
 object PureConfigUtils {

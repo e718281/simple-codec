@@ -1,21 +1,12 @@
-package net.scalax.simple.codec
-package to_list_generic
+package net.scalax.simple.codec.product.core
 
-import net.scalax.simple.codec.product.core.ReplaceByPropertyName
+import net.scalax.simple.codec.GetPropertyByPropertyName
+import net.scalax.simple.codec.to_list_generic.{BasedInstalledLabelled, BasedInstalledSimpleProduct}
 
 trait PojoProjection[U[_], Model] {
   PojoInstanceSelf =>
 
   def instance: Any
-
-  /*def forCopy(implicit
-    basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1],
-    basedLabelledInput: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]
-  ): PojoInstance.CopyAble[U, Model] = new PojoInstance.CopyAble[U, Model] {
-    override def value: PojoInstance[U, Model]                                                                   = PojoInstanceSelf
-    override def basedInstalled: BasedInstalledSimpleProduct[({ type F1[T[_]] = PojoInstance[T, Model] })#F1]    = basedInstalledInput
-    override def basedInstalledLabelled: BasedInstalledLabelled[({ type F1[T[_]] = PojoInstance[T, Model] })#F1] = basedLabelledInput
-  }*/
 
   def copyImpl[T](proName: String, func: Model => T)(data: U[T])(implicit
     basedInstalledInput: BasedInstalledSimpleProduct[({ type F1[XX[_]] = PojoProjection[XX, Model] })#F1],

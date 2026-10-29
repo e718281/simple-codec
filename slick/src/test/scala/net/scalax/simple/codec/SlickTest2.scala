@@ -1,9 +1,9 @@
 package net.scalax.simple.codec
 package aa
 
-import net.scalax.simple.codec.to_list_generic.{ModelLink, PojoProjection}
-import slick.ast.TypedType
+import net.scalax.simple.codec.to_list_generic.ModelLink
 import slick.jdbc.JdbcProfile
+import net.scalax.simple.codec.product.core.PojoProjection
 
 case class User2Cat(id: Option[Int], first: String, last: String, nickName: String, age: Long)
 object User2Cat {
